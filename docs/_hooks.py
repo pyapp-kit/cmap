@@ -53,7 +53,7 @@ class DocCmap(Colormap):
             return fp.getvalue()
 
     def url(self) -> str:
-        return f'/catalog/{self.category}/{self.name.replace("_r", "")}/'
+        return f'/catalog/{self.category}/{self.name.lower().replace("_r", "")}/'
 
 
 def _cmap_div(match: re.Match | str, class_list: Sequence[str] = ()) -> str:

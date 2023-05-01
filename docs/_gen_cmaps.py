@@ -102,7 +102,7 @@ def build_catalog(catalog: _catalog.Catalog) -> None:
         }
 
         # write the actual markdown file
-        with mkdocs_gen_files.open(f"catalog/{category}/{name}.md", "w") as f:
+        with mkdocs_gen_files.open(f"catalog/{category}/{name.lower()}.md", "w") as f:
             f.write(
                 TEMPLATE.format(
                     name=name,
