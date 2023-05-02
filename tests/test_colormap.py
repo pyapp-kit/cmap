@@ -1,3 +1,4 @@
+import sys
 from functools import partial
 from typing import Any
 
@@ -164,3 +165,16 @@ def test_mpl_segment_conversion() -> None:
     for val in vars(_cm).values():
         if isinstance(val, dict) and "red" in val:
             assert isinstance(_mpl_segmentdata_to_stops(val), (list, partial))
+
+
+@pytest.fixture(params=(True, False))
+def with_or_without_PIL(request, monkeypatch):
+    if not request.param:
+        monkeypatch.setitem(sys.modules, "PIL", None)
+    return request.param
+
+
+def test_repr_notebook(with_or_without_PIL) -> None:
+    cm = Colormap("viridis")
+    assert "viridis" in cm._repr_html_()
+    assert isinstance(cm._repr_png_(), bytes)

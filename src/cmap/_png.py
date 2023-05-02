@@ -21,12 +21,12 @@ def encode_png(ary: np.ndarray) -> bytes:
 def _encode_png(image_data: np.ndarray) -> bytes:
     """Super basic PNG encoder. Only supports 3-channel RGB images."""
     # Check image data dimensions
-    if image_data.ndim != 3:
+    if image_data.ndim != 3:  # pragma: no cover
         raise ValueError("Image data must be a 3D numpy array")
     if image_data.shape[2] == 4:
         # throwing away alpha channel
         image_data = image_data[:, :, :3]
-    if image_data.shape[2] != 3:
+    if image_data.shape[2] != 3:  # pragma: no cover
         raise ValueError("Image data must be RGB or RGBA")
 
     image_data = image_data.astype(">u1")

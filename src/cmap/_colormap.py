@@ -409,7 +409,7 @@ class Colormap:
     def __repr__(self) -> str:
         return f"Colormap(name={self.name!r}, <{len(self.color_stops)} colors>)"
 
-    def _repr_png_(self, *, width: int = 512, height: int = 36) -> bytes:
+    def _repr_png_(self, *, width: int = 512, height: int = 48) -> bytes:
         """Generate a PNG representation of the Colormap."""
         from ._png import encode_png
 
