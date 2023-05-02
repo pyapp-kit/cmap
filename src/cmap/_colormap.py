@@ -187,17 +187,25 @@ class Colormap:
         *,
         N: int = 256,
         gamma: float = 1,
+        bytes: bool = False,
     ) -> NDArray[np.float64]:
         ...
 
     @overload
-    def __call__(self, x: float, *, N: int = 256, gamma: float = 1) -> Color:
+    def __call__(
+        self, x: float, *, N: int = 256, gamma: float = 1, bytes: bool = False
+    ) -> Color:
         ...
 
     def __call__(
-        self, x: float | NDArray | Sequence[float], *, N: int = 256, gamma: float = 1
+        self,
+        x: float | NDArray | Sequence[float],
+        *,
+        N: int = 256,
+        gamma: float = 1,
+        bytes: bool = False,
     ) -> Color | NDArray[np.float64]:
-        """Map scalar values in X to an RGBA array.
+        r"""Map scalar values in X to an RGBA array.
 
         This is the primary API for "using" a `cmap.Colormap` to map scalar values to
         colors.
@@ -222,6 +230,10 @@ class Colormap:
             a value of 0.5 in a colormap with an odd number of colors.
         gamma : float
             The gamma value to use when creating the LUT.
+        bytes : bool
+            If False (default), the returned RGBA values will be floats in the
+            interval ``[0, 1]`` otherwise they will be `numpy.uint8`\s in the
+            interval ``[0, 255]``.
 
         Returns
         -------
@@ -242,6 +254,9 @@ class Colormap:
         >>> colored_img = cmap(data)
         """
         lut = self.lut(N=N, gamma=gamma)
+        if bytes:
+            lut = (lut * 255).astype(np.uint8)
+
         xa = np.array(x, copy=True)
         if not xa.dtype.isnative:
             xa = xa.byteswap().newbyteorder()  # Native byteorder is faster.
@@ -392,6 +407,27 @@ class Colormap:
 
     def __repr__(self) -> str:
         return f"Colormap(name={self.name!r}, <{len(self.color_stops)} colors>)"
+
+    def _repr_png_(self, *, width: int = 512, height: int = 36) -> bytes:
+        """Generate a PNG representation of the Colormap."""
+        from ._png import encode_png
+
+        X = np.tile(np.linspace(0, 1, width), (height, 1))
+        return encode_png(self(X, bytes=True))
+
+    def _repr_html_(self) -> str:
+        """Generate an HTML representation of the Colormap."""
+        import base64
+
+        png_base64 = base64.b64encode(self._repr_png_()).decode("ascii")
+
+        return (
+            f'<div style="vertical-align: middle;"><strong>{self.name}</strong></div>'
+            "<div>"
+            f'<img alt="{self.name} colormap" title="{self.name}" '
+            f'style="border: 1px solid #555;" src="data:image/png;base64,{png_base64}">'
+            "</div>"
+        )
 
     # -------------------------- RICH REPR SUPPORT ----------------------------------
 
