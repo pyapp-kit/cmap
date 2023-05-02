@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import warnings
 from functools import partial
 from numbers import Number
@@ -417,8 +418,6 @@ class Colormap:
 
     def _repr_html_(self) -> str:
         """Generate an HTML representation of the Colormap."""
-        import base64
-
         png_base64 = base64.b64encode(self._repr_png_()).decode("ascii")
 
         return (
