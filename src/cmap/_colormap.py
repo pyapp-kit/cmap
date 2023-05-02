@@ -409,11 +409,13 @@ class Colormap:
     def __repr__(self) -> str:
         return f"Colormap(name={self.name!r}, <{len(self.color_stops)} colors>)"
 
-    def _repr_png_(self, *, width: int = 512, height: int = 48) -> bytes:
+    def _repr_png_(
+        self, *, width: int = 512, height: int = 48, img: np.ndarray | None = None
+    ) -> bytes:
         """Generate a PNG representation of the Colormap."""
         from ._png import encode_png
 
-        X = np.tile(np.linspace(0, 1, width), (height, 1))
+        X = img if img is not None else np.tile(np.linspace(0, 1, width), (height, 1))
         return encode_png(self(X, bytes=True))
 
     def _repr_html_(self) -> str:

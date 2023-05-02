@@ -5,6 +5,8 @@ from functools import partial
 from pathlib import Path
 from typing import Any, Sequence
 
+import numpy as np
+
 from cmap import Colormap, _util
 from cmap._catalog import CATALOG
 from cmap._color import NAME_TO_RGB
@@ -25,9 +27,11 @@ def _to_img_tag(
     cm: Colormap,
     height: str = "32px",
     width: str = "100%",
+    img: np.ndarray | None = None,
 ) -> str:
     """Return a base64-encoded <img> tag for the given colormap."""
-    data = base64.b64encode(cm._repr_png_(width=256, height=1)).decode("ascii")
+    _img = cm._repr_png_(width=256, height=1, img=img)
+    data = base64.b64encode(_img).decode("ascii")
     return (
         f'<img style="height: {height}" width="{width}" src="data:image/png;base64,'
         f'{data}" alt="{cm.name} colormap" />'
@@ -73,7 +77,7 @@ def _cmap_sineramp(match: re.Match) -> str:
     # return "[sineramp slow -- disabled in `mkdocs serve`]"
 
     map_name = match[1].strip()
-    return Colormap(map_name).to_img_tag(f"{SINERAMP.shape[0]}px", img=SINERAMP)
+    return _to_img_tag(Colormap(map_name), f"{SINERAMP.shape[0]}px", img=SINERAMP)
 
 
 def _cmap_catalog() -> str:
