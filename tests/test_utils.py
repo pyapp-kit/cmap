@@ -68,14 +68,3 @@ def test_report() -> None:
 
     report2 = _util.report(Colormap("red"))
     assert isinstance(report2, dict)
-
-
-def test_png_bytes() -> None:
-    png = _util._png_bytes(CMAP_INSTANCE)
-    assert isinstance(png, bytes)
-
-
-def test_to_img_tag() -> None:
-    tag = _util._to_img_tag(CMAP_INSTANCE)
-    assert isinstance(tag, str)
-    assert tag.startswith("<img")

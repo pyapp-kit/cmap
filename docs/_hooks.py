@@ -5,8 +5,6 @@ from functools import partial
 from pathlib import Path
 from typing import Any, Sequence
 
-import numpy as np
-
 from cmap import Colormap, _util
 from cmap._catalog import CATALOG
 from cmap._color import NAME_TO_RGB
@@ -23,40 +21,24 @@ DEV_MODE = "serve" in sys.argv
 SINERAMP = _util.sineramp((96, 512))[:, ::-1]
 
 
-class DocCmap(Colormap):
-    def to_img_tag(
-        self,
-        height: str = "32px",
-        width: str = "100%",
-        img: np.ndarray | None = None,
-    ) -> str:
-        """Return a base64-encoded <img> tag for the given colormap.
+def _to_img_tag(
+    cm: Colormap,
+    height: str = "32px",
+    width: str = "100%",
+) -> str:
+    """Return a base64-encoded <img> tag for the given colormap."""
+    data = base64.b64encode(cm._repr_png_(width=256, height=1)).decode("ascii")
+    return (
+        f'<img style="height: {height}" width="{width}" src="data:image/png;base64,'
+        f'{data}" alt="{cm.name} colormap" />'
+    )
 
-        <img style="height: 32px" width="100%" src="data:image/png;base64, ...">
-        """
-        data = base64.b64encode(self._png_bytes(img)).decode("ascii")
-        return (
-            f'<img style="height: {height}" width="{width}" src="data:image/png;base64, '
-            f'{data}" alt="{self.name} colormap" />'
-        )
 
-    def _png_bytes(self, img: np.ndarray | None = None) -> bytes:
-        import io
-
-        from PIL import Image
-
-        if img is None:
-            img = np.linspace(0, 1, 256)[None]
-        ary = (self(img) * 255).astype("uint8")
-        with io.BytesIO() as fp:
-            Image.fromarray(ary).save(fp, format="png")
-            return fp.getvalue()
-
-    def url(self) -> str:
-        name = self.name.lower()
-        if name.endswith("_r"):
-            name = name[:-2]
-        return f"/catalog/{self.category}/{name}/"
+def _cm_url(cm: Colormap) -> str:
+    name = cm.name.lower()
+    if name.endswith("_r"):
+        name = name[:-2]
+    return f"/catalog/{cm.category}/{name}/"
 
 
 def _cmap_div(match: re.Match | str, class_list: Sequence[str] = ()) -> str:
@@ -65,11 +47,11 @@ def _cmap_div(match: re.Match | str, class_list: Sequence[str] = ()) -> str:
     {{ cmap: name }} -> <div class="cmap">
     """
     map_name = match if isinstance(match, str) else match[1].strip()
-    cm = DocCmap(map_name)
+    cm = Colormap(map_name)
     height = (match[2] if isinstance(match, re.Match) else None) or 32
-    img = cm.to_img_tag(height=f"{height}px")
+    img = _to_img_tag(cm, height=f"{height}px")
     return CMAP_LINK.format(
-        name=map_name, img=img, class_list=" ".join(class_list), url=cm.url()
+        name=map_name, img=img, class_list=" ".join(class_list), url=_cm_url(cm)
     )
 
 
@@ -78,8 +60,8 @@ def _cmap_expr(match: re.Match) -> str:
 
     {{ cmap_expr: {0: 'blue', 0.5: 'yellow', 1: 'red'} }} -> <div class="cmap">...
     """
-    cm = DocCmap(eval(match[1].strip()))
-    return CMAP_DIV.format(name="", img=cm.to_img_tag(), class_list="cmap-expr")
+    cm = Colormap(eval(match[1].strip()))
+    return CMAP_DIV.format(name="", img=_to_img_tag(cm), class_list="cmap-expr")
 
 
 def _cmap_sineramp(match: re.Match) -> str:
@@ -91,7 +73,7 @@ def _cmap_sineramp(match: re.Match) -> str:
     # return "[sineramp slow -- disabled in `mkdocs serve`]"
 
     map_name = match[1].strip()
-    return DocCmap(map_name).to_img_tag(f"{SINERAMP.shape[0]}px", img=SINERAMP)
+    return Colormap(map_name).to_img_tag(f"{SINERAMP.shape[0]}px", img=SINERAMP)
 
 
 def _cmap_catalog() -> str:
@@ -198,12 +180,12 @@ def _write_cmap_redirects(site_dir: str) -> None:
     for cmap_name, details in sorted(CATALOG.items(), key=lambda x: x[0].lower()):
         if "alias" in details:
             cmap_name = cmap_name.replace(":", "-")
-            real = DocCmap(details["alias"])  # type: ignore
+            real = Colormap(details["alias"])  # type: ignore
             old_path_abs = (
                 sd / "catalog" / str(real.category) / cmap_name / "index.html"
             )
             old_path_abs.parent.mkdir(parents=True, exist_ok=True)
-            content = REDIRECT_TEMPLATE.format(url=real.url())
+            content = REDIRECT_TEMPLATE.format(url=_cm_url(real))
             with open(old_path_abs, "w", encoding="utf-8") as f:
                 f.write(content)
 

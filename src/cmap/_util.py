@@ -495,35 +495,6 @@ def report(cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS") -> Repo
     # H -> hue composition
 
 
-def _png_bytes(cm: Colormap) -> bytes:
-    """Return a PNG-encoded bytes object for the given colormap."""
-    import io
-
-    from PIL import Image
-
-    colors = cm(np.linspace(0, 1, 256))
-    ary = (colors * 255).astype("uint8")[None]
-    im = Image.fromarray(ary)
-
-    with io.BytesIO() as fp:
-        im.save(fp, format="png")
-        return fp.getvalue()
-
-
-def _to_img_tag(cm: Colormap, height: str = "32px", width: str = "100%") -> str:
-    """Return a base64-encoded <img> tag for the given colormap.
-
-    <img style="height: 32px" width="100%" src="data:image/png;base64, ...">
-    """
-    import base64
-
-    data = base64.b64encode(_png_bytes(cm)).decode("ascii")
-    return (
-        f'<img style="height: {height}" width="{width}" src="data:image/png;base64, '
-        f'{data}" alt="{cm.name} colormap" />'
-    )
-
-
 if __name__ == "__main__":  # pragma: no cover
     import matplotlib.pyplot as plt
 
