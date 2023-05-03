@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/pypi/l/cmap.svg?color=green)](https://github.com/tlambert03/cmap/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/cmap.svg?color=green)](https://pypi.org/project/cmap)
+![Conda](https://img.shields.io/conda/v/conda-forge/cmap)
 [![Python Version](https://img.shields.io/pypi/pyversions/cmap.svg?color=green)](https://python.org)
 [![CI](https://github.com/tlambert03/cmap/actions/workflows/ci.yml/badge.svg)](https://github.com/tlambert03/cmap/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/tlambert03/cmap/branch/main/graph/badge.svg)](https://codecov.io/gh/tlambert03/cmap)
@@ -37,7 +38,19 @@ libraries that use matplotlib colormaps).
 `cmap` is strictly typed and fully tested, with a focus on good developer
 experience.
 
-## API
+## Install
+
+```
+pip install cmap
+```
+
+```
+conda install -c conda-forge cmap
+```
+
+## Usage
+
+See [Documentation](https://cmap-docs.readthedocs.io/) for full details.
 
 ### [`cmap.Color`](https://cmap-docs.readthedocs.io/en/latest/colors/)
 
@@ -72,6 +85,10 @@ array([[1.        , 0.        , 0.        , 1.        ],
        [0.        , 0.24900417, 0.50393701, 1.        ],
        [0.        , 0.        , 1.        , 1.        ]])
 ```
+
+Note that the input array must be normalized from 0-1, so if you're applying a colormap
+to an integer array (like an image) you must apply any contrast limits and rescale to
+0-1 before passing it to a `Colormap`.
 
 ## Third Party Library Support
 
