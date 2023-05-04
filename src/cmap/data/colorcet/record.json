@@ -3,6 +3,66 @@
     "Peter Kovesi"
   ],
   "colormaps": {
+    "C01": {
+      "alias": "colorcet:CET_C1"
+    },
+    "C02": {
+      "alias": "colorcet:CET_C2"
+    },
+    "C03": {
+      "alias": "colorcet:CET_C3"
+    },
+    "C04": {
+      "alias": "colorcet:CET_C4"
+    },
+    "C05": {
+      "alias": "colorcet:CET_C5"
+    },
+    "C06": {
+      "alias": "colorcet:CET_C6"
+    },
+    "C07": {
+      "alias": "colorcet:CET_C7"
+    },
+    "C08": {
+      "alias": "colorcet:CET_C8"
+    },
+    "C09": {
+      "alias": "colorcet:CET_C9"
+    },
+    "C1": {
+      "alias": "colorcet:CET_C1"
+    },
+    "C10": {
+      "alias": "colorcet:CET_C10"
+    },
+    "C11": {
+      "alias": "colorcet:CET_C11"
+    },
+    "C2": {
+      "alias": "colorcet:CET_C2"
+    },
+    "C3": {
+      "alias": "colorcet:CET_C3"
+    },
+    "C4": {
+      "alias": "colorcet:CET_C4"
+    },
+    "C5": {
+      "alias": "colorcet:CET_C5"
+    },
+    "C6": {
+      "alias": "colorcet:CET_C6"
+    },
+    "C7": {
+      "alias": "colorcet:CET_C7"
+    },
+    "C8": {
+      "alias": "colorcet:CET_C8"
+    },
+    "C9": {
+      "alias": "colorcet:CET_C9"
+    },
     "CET_C1": {
       "category": "cyclic",
       "data": "cmap.data.colorcet.CET_C1:data",
@@ -405,6 +465,537 @@
       "category": "miscellaneous",
       "data": "cmap.data.colorcet.CET_R4:data",
       "info": "Rainbow colour map from blue to red.  Note there is a small perceptual blind spot at yellow"
+    },
+    "D01": {
+      "alias": "colorcet:CET_D1"
+    },
+    "D01A": {
+      "alias": "colorcet:CET_D1A"
+    },
+    "D02": {
+      "alias": "colorcet:CET_D2"
+    },
+    "D03": {
+      "alias": "colorcet:CET_D3"
+    },
+    "D04": {
+      "alias": "colorcet:CET_D4"
+    },
+    "D05": {
+      "alias": "colorcet:CET_D5"
+    },
+    "D06": {
+      "alias": "colorcet:CET_D6"
+    },
+    "D07": {
+      "alias": "colorcet:CET_D7"
+    },
+    "D08": {
+      "alias": "colorcet:CET_D8"
+    },
+    "D09": {
+      "alias": "colorcet:CET_D9"
+    },
+    "D1": {
+      "alias": "colorcet:CET_D1"
+    },
+    "D10": {
+      "alias": "colorcet:CET_D10"
+    },
+    "D11": {
+      "alias": "colorcet:CET_D11"
+    },
+    "D12": {
+      "alias": "colorcet:CET_D12"
+    },
+    "D13": {
+      "alias": "colorcet:CET_D13"
+    },
+    "D1A": {
+      "alias": "colorcet:CET_D1A"
+    },
+    "D2": {
+      "alias": "colorcet:CET_D2"
+    },
+    "D3": {
+      "alias": "colorcet:CET_D3"
+    },
+    "D4": {
+      "alias": "colorcet:CET_D4"
+    },
+    "D5": {
+      "alias": "colorcet:CET_D5"
+    },
+    "D6": {
+      "alias": "colorcet:CET_D6"
+    },
+    "D7": {
+      "alias": "colorcet:CET_D7"
+    },
+    "D8": {
+      "alias": "colorcet:CET_D8"
+    },
+    "D9": {
+      "alias": "colorcet:CET_D9"
+    },
+    "I01": {
+      "alias": "colorcet:CET_I1"
+    },
+    "I02": {
+      "alias": "colorcet:CET_I2"
+    },
+    "I03": {
+      "alias": "colorcet:CET_I3"
+    },
+    "I1": {
+      "alias": "colorcet:CET_I1"
+    },
+    "I2": {
+      "alias": "colorcet:CET_I2"
+    },
+    "I3": {
+      "alias": "colorcet:CET_I3"
+    },
+    "L01": {
+      "alias": "colorcet:CET_L1"
+    },
+    "L02": {
+      "alias": "colorcet:CET_L2"
+    },
+    "L03": {
+      "alias": "colorcet:CET_L3"
+    },
+    "L04": {
+      "alias": "colorcet:CET_L4"
+    },
+    "L05": {
+      "alias": "colorcet:CET_L5"
+    },
+    "L06": {
+      "alias": "colorcet:CET_L6"
+    },
+    "L07": {
+      "alias": "colorcet:CET_L7"
+    },
+    "L08": {
+      "alias": "colorcet:CET_L8"
+    },
+    "L09": {
+      "alias": "colorcet:CET_L9"
+    },
+    "L1": {
+      "alias": "colorcet:CET_L1"
+    },
+    "L10": {
+      "alias": "colorcet:CET_L10"
+    },
+    "L11": {
+      "alias": "colorcet:CET_L11"
+    },
+    "L12": {
+      "alias": "colorcet:CET_L12"
+    },
+    "L13": {
+      "alias": "colorcet:CET_L13"
+    },
+    "L14": {
+      "alias": "colorcet:CET_L14"
+    },
+    "L15": {
+      "alias": "colorcet:CET_L15"
+    },
+    "L16": {
+      "alias": "colorcet:CET_L16"
+    },
+    "L17": {
+      "alias": "colorcet:CET_L17"
+    },
+    "L18": {
+      "alias": "colorcet:CET_L18"
+    },
+    "L19": {
+      "alias": "colorcet:CET_L19"
+    },
+    "L2": {
+      "alias": "colorcet:CET_L2"
+    },
+    "L20": {
+      "alias": "colorcet:CET_L20"
+    },
+    "L3": {
+      "alias": "colorcet:CET_L3"
+    },
+    "L4": {
+      "alias": "colorcet:CET_L4"
+    },
+    "L5": {
+      "alias": "colorcet:CET_L5"
+    },
+    "L6": {
+      "alias": "colorcet:CET_L6"
+    },
+    "L7": {
+      "alias": "colorcet:CET_L7"
+    },
+    "L8": {
+      "alias": "colorcet:CET_L8"
+    },
+    "L9": {
+      "alias": "colorcet:CET_L9"
+    },
+    "R01": {
+      "alias": "colorcet:CET_R1"
+    },
+    "R02": {
+      "alias": "colorcet:CET_R2"
+    },
+    "R03": {
+      "alias": "colorcet:CET_R3"
+    },
+    "R04": {
+      "alias": "colorcet:CET_R4"
+    },
+    "R1": {
+      "alias": "colorcet:CET_R1"
+    },
+    "R2": {
+      "alias": "colorcet:CET_R2"
+    },
+    "R3": {
+      "alias": "colorcet:CET_R3"
+    },
+    "R4": {
+      "alias": "colorcet:CET_R4"
+    },
+    "bgyw": {
+      "alias": "colorcet:CET_L9"
+    },
+    "bjr": {
+      "alias": "colorcet:CET_D8"
+    },
+    "bjy": {
+      "alias": "colorcet:CET_D7"
+    },
+    "bkr": {
+      "alias": "colorcet:CET_D4"
+    },
+    "bky": {
+      "alias": "colorcet:CET_D6"
+    },
+    "blueternary": {
+      "alias": "colorcet:CET_L15"
+    },
+    "bmw": {
+      "alias": "colorcet:CET_L7"
+    },
+    "bmy": {
+      "alias": "colorcet:CET_L8"
+    },
+    "bwg": {
+      "alias": "colorcet:CET_D13"
+    },
+    "bwr": {
+      "alias": "colorcet:CET_D1"
+    },
+    "bwra": {
+      "alias": "colorcet:CET_D1A"
+    },
+    "coolwarm": {
+      "alias": "colorcet:CET_D1"
+    },
+    "cyclic-isoluminant colour circle_mgbm_67_c31_n256": {
+      "alias": "colorcet:CET_C10"
+    },
+    "cyclic-protanopic-deuteranopic_bwyk_16-96_c31_n256": {
+      "alias": "colorcet:CET_CBC1"
+    },
+    "cyclic-protanopic-deuteranopic_wywb_55-96_c33_n256": {
+      "alias": "colorcet:CET_CBC2"
+    },
+    "cyclic-tritanopic_cwrk_40-100_c20_n256": {
+      "alias": "colorcet:CET_CBTC1"
+    },
+    "cyclic-tritanopic_wrwc_70-100_c20_n256": {
+      "alias": "colorcet:CET_CBTC2"
+    },
+    "cyclic_bgrmb_35-70_c75_n256": {
+      "alias": "colorcet:CET_C11"
+    },
+    "cyclic_grey_15-85_c0_n256": {
+      "alias": "colorcet:CET_C5"
+    },
+    "cyclic_mrybm_35-75_c68_n256": {
+      "alias": "colorcet:CET_C1"
+    },
+    "cyclic_mybm_20-100_c48_n256": {
+      "alias": "colorcet:CET_C9"
+    },
+    "cyclic_mygbm_30-95_c78_n256": {
+      "alias": "colorcet:CET_C2"
+    },
+    "cyclic_mygbm_50-90_c46_n256": {
+      "alias": "colorcet:CET_C8"
+    },
+    "cyclic_rygcbmr_50-90_c64_n256": {
+      "alias": "colorcet:CET_C6"
+    },
+    "cyclic_wrkbw_10-90_c43_n256": {
+      "alias": "colorcet:CET_C3"
+    },
+    "cyclic_wrwbw_40-90_c42_n256": {
+      "alias": "colorcet:CET_C4"
+    },
+    "cyclic_ymcgy_60-90_c67_n256": {
+      "alias": "colorcet:CET_C7"
+    },
+    "cyclicgrey": {
+      "alias": "colorcet:CET_C5"
+    },
+    "depth": {
+      "alias": "colorcet:CET_L12"
+    },
+    "divbjy": {
+      "alias": "colorcet:CET_D7"
+    },
+    "diverging-isoluminant_cjm_75_c23_n256": {
+      "alias": "colorcet:CET_D12"
+    },
+    "diverging-isoluminant_cjo_70_c25_n256": {
+      "alias": "colorcet:CET_D11"
+    },
+    "diverging-linear-protanopic-deuteranopic_bjy_57-89_c34_n256": {
+      "alias": "colorcet:CET_CBD2"
+    },
+    "diverging-linear_bjr_30-55_c53_n256": {
+      "alias": "colorcet:CET_D8"
+    },
+    "diverging-linear_bjy_30-90_c45_n256": {
+      "alias": "colorcet:CET_D7"
+    },
+    "diverging-protanopic-deuteranopic_bwy_60-95_c32_n256": {
+      "alias": "colorcet:CET_CBD1"
+    },
+    "diverging-rainbow_bgymr_45-85_c67_n256": {
+      "alias": "colorcet:CET_R3"
+    },
+    "diverging-tritanopic_cwr_75-98_c20_n256": {
+      "alias": "colorcet:CET_CBTD1"
+    },
+    "diverging_bkr_55-10_c35_n256": {
+      "alias": "colorcet:CET_D4"
+    },
+    "diverging_bky_60-10_c30_n256": {
+      "alias": "colorcet:CET_D6"
+    },
+    "diverging_bwg_20-95_c41_n256": {
+      "alias": "colorcet:CET_D13"
+    },
+    "diverging_bwr_20-95_c54_n256": {
+      "alias": "colorcet:CET_D1A"
+    },
+    "diverging_bwr_40-95_c42_n256": {
+      "alias": "colorcet:CET_D1"
+    },
+    "diverging_bwr_55-98_c37_n256": {
+      "alias": "colorcet:CET_D9"
+    },
+    "diverging_cwm_80-100_c22_n256": {
+      "alias": "colorcet:CET_D10"
+    },
+    "diverging_gkr_60-10_c40_n256": {
+      "alias": "colorcet:CET_D5"
+    },
+    "diverging_gwr_55-95_c38_n256": {
+      "alias": "colorcet:CET_D3"
+    },
+    "diverging_gwv_55-95_c39_n256": {
+      "alias": "colorcet:CET_D2"
+    },
+    "fire": {
+      "alias": "colorcet:CET_L3"
+    },
+    "geographic": {
+      "alias": "colorcet:CET_L10"
+    },
+    "geographic2": {
+      "alias": "colorcet:CET_L11"
+    },
+    "gkr": {
+      "alias": "colorcet:CET_D5"
+    },
+    "gouldian": {
+      "alias": "colorcet:CET_L20"
+    },
+    "gray": {
+      "alias": "colorcet:CET_L1"
+    },
+    "greenternary": {
+      "alias": "colorcet:CET_L14"
+    },
+    "grey": {
+      "alias": "colorcet:CET_L1"
+    },
+    "gwr": {
+      "alias": "colorcet:CET_D3"
+    },
+    "gwv": {
+      "alias": "colorcet:CET_D2"
+    },
+    "heat": {
+      "alias": "colorcet:CET_L3"
+    },
+    "isoluminant_cgo_70_c39_n256": {
+      "alias": "colorcet:CET_I1"
+    },
+    "isoluminant_cgo_80_c38_n256": {
+      "alias": "colorcet:CET_I2"
+    },
+    "isoluminant_cm_70_c39_n256": {
+      "alias": "colorcet:CET_I3"
+    },
+    "kbc": {
+      "alias": "colorcet:CET_L6"
+    },
+    "kbgyw": {
+      "alias": "colorcet:CET_L16"
+    },
+    "kgy": {
+      "alias": "colorcet:CET_L5"
+    },
+    "kry": {
+      "alias": "colorcet:CET_L4"
+    },
+    "kryw": {
+      "alias": "colorcet:CET_L3"
+    },
+    "linear-protanopic-deuteranopic_kbjyw_5-95_c25_n256": {
+      "alias": "colorcet:CET_CBL1"
+    },
+    "linear-protanopic-deuteranopic_kbw_5-95_c34_n256": {
+      "alias": "colorcet:CET_CBL3"
+    },
+    "linear-protanopic-deuteranopic_kbw_5-98_c40_n256": {
+      "alias": "colorcet:CET_CBL2"
+    },
+    "linear-protanopic-deuteranopic_kyw_5-95_c49_n256": {
+      "alias": "colorcet:CET_CBL4"
+    },
+    "linear-tritanopic_kcw_5-95_c22_n256": {
+      "alias": "colorcet:CET_CBTL3"
+    },
+    "linear-tritanopic_krjcw_5-95_c24_n256": {
+      "alias": "colorcet:CET_CBTL2"
+    },
+    "linear-tritanopic_krjcw_5-98_c46_n256": {
+      "alias": "colorcet:CET_CBTL1"
+    },
+    "linear-tritanopic_krw_5-95_c46_n256": {
+      "alias": "colorcet:CET_CBTL4"
+    },
+    "linear_bgyw_20-98_c66_n256": {
+      "alias": "colorcet:CET_L9"
+    },
+    "linear_blue_95-50_c20_n256": {
+      "alias": "colorcet:CET_L12"
+    },
+    "linear_bmw_5-95_c86_n256": {
+      "alias": "colorcet:CET_L7"
+    },
+    "linear_bmy_10-95_c71_n256": {
+      "alias": "colorcet:CET_L8"
+    },
+    "linear_gow_60-85_c27_n256": {
+      "alias": "colorcet:CET_L10"
+    },
+    "linear_gow_65-90_c35_n256": {
+      "alias": "colorcet:CET_L11"
+    },
+    "linear_grey_0-100_c0_n256": {
+      "alias": "colorcet:CET_L1"
+    },
+    "linear_grey_10-95_c0_n256": {
+      "alias": "colorcet:CET_L2"
+    },
+    "linear_kbc_5-95_c73_n256": {
+      "alias": "colorcet:CET_L6"
+    },
+    "linear_kbgoy_20-95_c57_n256": {
+      "alias": "colorcet:CET_L20"
+    },
+    "linear_kbgyw_10-98_c63_n256": {
+      "alias": "colorcet:CET_L16"
+    },
+    "linear_kgy_5-95_c69_n256": {
+      "alias": "colorcet:CET_L5"
+    },
+    "linear_kry_0-97_c73_n256": {
+      "alias": "colorcet:CET_L4"
+    },
+    "linear_kryw_0-100_c71_n256": {
+      "alias": "colorcet:CET_L3"
+    },
+    "linear_ternary-blue_0-44_c57_n256": {
+      "alias": "colorcet:CET_L15"
+    },
+    "linear_ternary-green_0-46_c42_n256": {
+      "alias": "colorcet:CET_L14"
+    },
+    "linear_ternary-red_0-50_c52_n256": {
+      "alias": "colorcet:CET_L13"
+    },
+    "linear_wcmr_100-45_c42_n256": {
+      "alias": "colorcet:CET_L19"
+    },
+    "linear_worb_100-25_c53_n256": {
+      "alias": "colorcet:CET_L17"
+    },
+    "linear_wyor_100-45_c55_n256": {
+      "alias": "colorcet:CET_L18"
+    },
+    "phase2": {
+      "alias": "colorcet:CET_C4"
+    },
+    "phase4": {
+      "alias": "colorcet:CET_C2"
+    },
+    "rainbow": {
+      "alias": "colorcet:CET_R1"
+    },
+    "rainbow2": {
+      "alias": "colorcet:CET_R2"
+    },
+    "rainbow3": {
+      "alias": "colorcet:CET_R3"
+    },
+    "rainbow4": {
+      "alias": "colorcet:CET_R4"
+    },
+    "rainbow_bgyr_10-90_c83_n256": {
+      "alias": "colorcet:CET_R4"
+    },
+    "rainbow_bgyr_35-85_c72_n256": {
+      "alias": "colorcet:CET_R2"
+    },
+    "rainbow_bgyrm_35-85_c69_n256": {
+      "alias": "colorcet:CET_R1"
+    },
+    "redternary": {
+      "alias": "colorcet:CET_L13"
+    },
+    "reducedgrey": {
+      "alias": "colorcet:CET_L2"
+    },
+    "wcmr": {
+      "alias": "colorcet:CET_L19"
+    },
+    "worb": {
+      "alias": "colorcet:CET_L17"
+    },
+    "wyor": {
+      "alias": "colorcet:CET_L18"
+    },
+    "yellowheat": {
+      "alias": "colorcet:CET_L4"
     }
   },
   "license": "CC-BY-4.0",

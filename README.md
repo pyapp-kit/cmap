@@ -98,7 +98,7 @@ The `cmap.Colormap` object has convenience methods that allow it to be used with
 See [documentation](https://cmap-docs.readthedocs.io/en/latest/colormaps/#usage-with-external-visualization-libraries)
 for details.
 
-If you would like to see support added for a particular library, please open an issue or PR. 
+If you would like to see support added for a particular library, please open an issue or PR.
 
 ## Alternatives
 

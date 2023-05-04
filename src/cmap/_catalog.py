@@ -81,7 +81,8 @@ def _populate_catalog() -> None:
             if name not in CATALOG:
                 CATALOG[name] = {"alias": namespaced, "conflicts": []}
             else:
-                cast("CatalogAlias", CATALOG[name])["conflicts"].append(namespaced)
+                d_ = cast("CatalogAlias", CATALOG[name])
+                d_.setdefault("conflicts", []).append(namespaced)
 
 
 _populate_catalog()
