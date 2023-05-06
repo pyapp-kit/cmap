@@ -174,6 +174,14 @@ def with_or_without_PIL(request, monkeypatch):
     return request.param
 
 
+def test_cmap_info() -> None:
+    cm = Colormap("viridis")
+    assert cm.info
+    assert cm.info.qualified_name == "bids:viridis"
+    assert "matplotlib:viridis" in cm.info.aliases
+    assert "viridis" in cm.info.aliases
+
+
 def test_repr_notebook(with_or_without_PIL) -> None:
     cm = Colormap("viridis")
     assert "viridis" in cm._repr_html_()
