@@ -83,7 +83,7 @@ source = "vcs"
 
 # https://hatch.pypa.io/latest/config/build/#file-selection
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests"]
+include = ["/src", "/tests", "CHANGELOG.md"]
 
 
 # https://github.com/charliermarsh/ruff
