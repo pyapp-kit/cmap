@@ -7,7 +7,10 @@ import numpy as np
 from cmap import Colormap, _catalog
 from cmap._util import report
 
+# TODO: convert to jinja
 TEMPLATE = """# {name}
+
+{aliases}
 
 {info}
 
@@ -87,6 +90,11 @@ def build_catalog(catalog: _catalog.Catalog) -> None:
             license_: str = info.license
         except KeyError as e:
             raise KeyError(f"Missing info for {name}: {e}") from e
+
+        if info.qualified_name.lower() != name.lower():
+            # skip aliases
+            continue
+
         source = info.source
         source = f"[{source}]({source})" if source.startswith("http") else f"`{source}`"
         authors = ", ".join(info.authors)
@@ -101,6 +109,9 @@ def build_catalog(catalog: _catalog.Catalog) -> None:
             if k in INCLUDE_DATA
         }
 
+        _aliases = [x for x in info.aliases if x != info.name]
+        aliases = _make_aliases_md(_aliases) if _aliases else ""
+
         # write the actual markdown file
         with mkdocs_gen_files.open(f"catalog/{category}/{name.lower()}.md", "w") as f:
             f.write(
@@ -110,10 +121,15 @@ def build_catalog(catalog: _catalog.Catalog) -> None:
                     license=license_,
                     authors=authors,
                     source=source,
+                    aliases=aliases,
                     info=info.info,
                     data=json.dumps({name: cmap_data}, separators=(",", ":")),
                 )
             )
+
+
+def _make_aliases_md(aliases: list[str]) -> str:
+    return "**Aliases**:  " + ", ".join(f"`{a}`" for a in aliases)
 
 
 build_catalog(_catalog.catalog)
