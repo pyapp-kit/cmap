@@ -167,9 +167,13 @@ async function makeHSLChart(canvas, data) {
       // If the hue is jumping by more than 90 degrees, insert a null
       // value to break the line
       if (label == "hue" && Math.abs(val - lastval) > 95) {
+        // we just fully skip this point, which does mean a data point is missed
+        // but if we insert a null value, the chartjs hover tooltip will be offset
+        // for all later points
         _data.push({ x: data.x[i], y: null });
+      } else {
+        _data.push({ x: data.x[i], y: val });
       }
-      _data.push({ x: data.x[i], y: val });
       lastval = val;
     }
     datasets.push({
