@@ -182,7 +182,14 @@ def test_cmap_info() -> None:
     assert "viridis" in cm.info.aliases
 
 
-def test_repr_notebook(with_or_without_PIL) -> None:
+@pytest.mark.usefixtures("with_or_without_PIL")
+def test_repr_notebook() -> None:
     cm = Colormap("viridis")
     assert "viridis" in cm._repr_html_()
     assert isinstance(cm._repr_png_(), bytes)
+
+
+def test_cmap_from_cmap() -> None:
+    cm = Colormap(("red", "blue"), name="mymap")
+    cm2 = Colormap(cm)
+    assert cm2.name == "mymap"
