@@ -159,6 +159,7 @@ class Colormap:
             else:
                 stops = _parse_colorstops(info.data)
             stops._interpolation = _norm_interp(interpolation or info.interpolation)
+            interpolation = stops._interpolation
             if rev:
                 stops = stops.reversed()
         elif isinstance(value, Colormap):

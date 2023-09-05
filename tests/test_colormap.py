@@ -177,9 +177,12 @@ def with_or_without_PIL(request, monkeypatch):
 def test_cmap_info() -> None:
     cm = Colormap("viridis")
     assert cm.info
+    assert cm.interpolation == "linear"
     assert cm.info.qualified_name == "bids:viridis"
     assert "matplotlib:viridis" in cm.info.aliases
     assert "viridis" in cm.info.aliases
+
+    assert Colormap("accent").interpolation == "nearest"
 
 
 @pytest.mark.usefixtures("with_or_without_PIL")
