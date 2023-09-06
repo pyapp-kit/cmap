@@ -773,7 +773,7 @@ twilight = [
 twilight_shifted = twilight[len(twilight) // 2 :] + twilight[: len(twilight) // 2]
 twilight_shifted.reverse()
 
-# uknown provenance -----------------------
+# unknown provenance -----------------------
 binary = [(1.0, 1.0, 1.0), (0, 0, 0)]
 
 # original matplotlib post:
@@ -791,7 +791,7 @@ seismic = [
     (0.5, 0.0, 0.0),
 ]
 
-# end: uknown provenance -----------------------
+# end: unknown provenance -----------------------
 
 # appears to have been added to matplotlib from igor in 2009:
 # https://sourceforge.net/p/matplotlib/mailman/message/23330302/

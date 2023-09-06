@@ -83,7 +83,7 @@ class Colormap:
           (e.g. `"viridis"`, `"magma_r"`).
         - An iterable of [ColorLike](/colors#colorlike-objects) values (any object that
           can be cast to a [`Color`][cmap.Color]), or "color-stop-like" tuples (
-          `(float, ColorLike)` where the first element is a scalar value specifiying the
+          `(float, ColorLike)` where the first element is a scalar value specifying the
           position of the color in the gradient. When using color stops, the stop
           position values should be in the range [0, 1]. If no scalar stop positions are
           given, they will be linearly interpolated between any neighboring stops (or

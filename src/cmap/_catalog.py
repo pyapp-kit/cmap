@@ -115,7 +115,7 @@ def _populate_catalog() -> None:
                 entry.setdefault("conflicts", []).append(namespaced)
 
             # lastly, the `aliases` key of a colormap refers to aliases within the
-            # namespace.  These are keys that *must* be accessed using the fullly
+            # namespace.  These are keys that *must* be accessed using the fully
             # namespaced name (with a colon).  We add these to the catalog as well
             # so that they can be
             for alias in v.get("aliases", []):
