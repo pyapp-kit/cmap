@@ -1,4 +1,5 @@
 from itertools import chain
+
 import numpy as np
 import pytest
 
@@ -43,8 +44,8 @@ def test_data_loading() -> None:
 
 
 def test_catalog_names() -> None:
-    assert 'bids:viridis' in catalog.namespacedKeys()
-    assert 'viridis' in catalog.shortKeys()
+    assert "bids:viridis" in catalog.namespacedKeys()
+    assert "viridis" in catalog.shortKeys()
     assert [
         catalog.resolve(x) for x in chain(catalog.shortKeys(), catalog.namespacedKeys())
     ]
