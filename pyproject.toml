@@ -44,16 +44,16 @@ test = [
     "pytest>=6.0",
     "pytest-cov",
     "numba; python_version<'3.11'",
+    "matplotlib",
 ]
 thirdparty = [
     "bokeh",
     "colour",
-    "matplotlib",
     "napari",
     "plotly",
     "pydantic",
     "pygfx",
-    "pyqt5",
+    "pyqt6",
     "pytest-qt",
     "rich",
     "viscm",
