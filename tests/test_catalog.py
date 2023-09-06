@@ -49,3 +49,5 @@ def test_catalog_names() -> None:
     assert [
         catalog.resolve(x) for x in chain(catalog.shortKeys(), catalog.namespacedKeys())
     ]
+    with pytest.raises(KeyError):
+        catalog.resolve("not-a-cmap")
