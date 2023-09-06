@@ -1,9 +1,11 @@
+from itertools import chain
 import numpy as np
 import pytest
 
 from cmap import Colormap
+from cmap._catalog import Catalog
 
-catalog = Colormap.catalog()
+catalog = Catalog()
 
 
 @pytest.mark.filterwarnings("ignore:The name:")
@@ -38,3 +40,11 @@ def test_lower_map() -> None:
 def test_data_loading() -> None:
     for name in catalog._original_names:
         Colormap(name)
+
+
+def test_catalog_names() -> None:
+    assert 'bids:viridis' in catalog.namespacedKeys()
+    assert 'viridis' in catalog.shortKeys()
+    assert [
+        catalog.resolve(x) for x in chain(catalog.shortKeys(), catalog.namespacedKeys())
+    ]
