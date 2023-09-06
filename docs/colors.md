@@ -95,7 +95,7 @@ In detail:
         equivalent to `(0.0, 1.0, 0.0, 0)`.
 
 1. A [`numpy.ndarray`][] with shape `(3,)` or `(4,)`: where integer dtypes are
-   intepreted as 8-bit color values (from 0-255) and float dtypes are intepreted
+   interpreted as 8-bit color values (from 0-255) and float dtypes are interpreted
    as float color values (from 0-1). For colors with alpha, you must use a float
    dtype.
     - `np.array([0, 128, 255])`  (8-bit RGB)
