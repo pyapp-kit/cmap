@@ -30,6 +30,33 @@ if TYPE_CHECKING:
             may have multiple aliases.
             """
 
+        def unique_keys(
+            self, prefer_short_names: bool = True, normalized_names: bool = False
+        ) -> set[str]:
+            """Return names that refer to unique colormap data.
+
+            Parameters
+            ----------
+            prefer_short_names : bool, optional
+                If True (default), short names (without the namespace prefix) will be
+                preferred over fully qualified names. In cases where the same short name
+                is used in multiple namespaces, they will *all* be referred to by their
+                fully qualified (namespaced) name.
+            normalized_names : bool, optional
+                If True, return the normalized names of the colormaps.  If False
+                (default), return the original names of the colormaps (which may include
+                spaces and/or capital letters).
+            """
+
+        def short_keys(self) -> set[str]:
+            """Return a set of available short colormap names, without namespace."""
+
+        def namespaced_keys(self) -> set[str]:
+            """Return a set of available short colormap names, with namespace."""
+
+        def resolve(self, name: str) -> str:
+            """Return the fully qualified, normalized name of a colormap or alias."""
+
 else:
     from ._catalog import Catalog, CatalogItem
 

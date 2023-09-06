@@ -44,10 +44,23 @@ def test_data_loading() -> None:
 
 
 def test_catalog_names() -> None:
-    assert "bids:viridis" in catalog.namespacedKeys()
-    assert "viridis" in catalog.shortKeys()
+    assert "bids:viridis" in catalog.namespaced_keys()
+    assert "viridis" in catalog.short_keys()
     assert [
-        catalog.resolve(x) for x in chain(catalog.shortKeys(), catalog.namespacedKeys())
+        catalog.resolve(x)
+        for x in chain(catalog.short_keys(), catalog.namespaced_keys())
     ]
     with pytest.raises(KeyError):
         catalog.resolve("not-a-cmap")
+
+    unique = catalog.unique_keys(prefer_short_names=True, normalized_names=False)
+    assert "ice" not in unique
+    assert "viridis" in unique
+    assert "cmocean:ice" in unique
+    assert "YlGn" in unique
+    unique = catalog.unique_keys(prefer_short_names=False, normalized_names=True)
+    assert "colorbrewer:ylgn" in unique
+    assert "colorbrewer:YlGn" not in unique
+    assert "viridis" not in unique
+    assert "bids:viridis" in unique
+    assert "matplotlib:viridis" not in unique

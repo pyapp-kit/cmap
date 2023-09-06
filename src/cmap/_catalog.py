@@ -222,21 +222,62 @@ class Catalog(Mapping[str, "CatalogItem"]):
         # _rev_aliases maps fully qualified names to a list of aliases
         self._rev_aliases: dict[str, list[str]] = {}
 
-        for key, val in _build_catalog(sorted(data_root.rglob(record_pattern))).items():
-            normed_name = self._norm_name(key)
-            self._data[normed_name] = val
-            self._original_names[key] = normed_name
-            if alias := val.get("alias"):
+        for name, data in _build_catalog(
+            sorted(data_root.rglob(record_pattern))
+        ).items():
+            normed_name = self._norm_name(name)
+            self._original_names[name] = normed_name
+            self._data[normed_name] = data
+            if alias := data.get("alias"):
                 self._aliases[normed_name] = cast(str, alias)
                 self._rev_aliases.setdefault(self._norm_name(alias), []).append(
                     normed_name
                 )
 
-    def shortKeys(self) -> set[str]:
+    def unique_keys(
+        self, prefer_short_names: bool = True, normalized_names: bool = False
+    ) -> set[str]:
+        """Return names that refer to unique colormap data.
+
+        Parameters
+        ----------
+        prefer_short_names : bool, optional
+            If True (default), short names (without the namespace prefix) will be
+            preferred over fully qualified names. In cases where the same short name is
+            used in multiple namespaces, they will *all* be referred to by their fully
+            qualified (namespaced) name.
+        normalized_names : bool, optional
+            If True, return the normalized names of the colormaps.  If False (default),
+            return the original names of the colormaps (which may include spaces and/or
+            capital letters).
+
+        Returns
+        -------
+        set[str]
+            A set of unique colormap names that can be used to access the colormap data.
+        """
+        keys: set[str] = set()
+        for original_name, normed_name in self._original_names.items():
+            if "alias" in self._data[normed_name]:
+                continue
+            if prefer_short_names:
+                short_name = normed_name.split(NAMESPACE_DELIMITER, 1)[-1]
+                data2 = self._data[short_name]
+                if not data2.get("conflicts") and data2.get("alias") == original_name:
+                    keys.add(
+                        short_name
+                        if normalized_names
+                        else original_name.split(NAMESPACE_DELIMITER, 1)[-1]
+                    )
+                    continue
+            keys.add(normed_name if normalized_names else original_name)
+        return keys
+
+    def short_keys(self) -> set[str]:
         """Return a set of available short colormap names, without namespace."""
         return {n for n in self._original_names if NAMESPACE_DELIMITER not in n}
 
-    def namespacedKeys(self) -> set[str]:
+    def namespaced_keys(self) -> set[str]:
         """Return a set of available short colormap names, with namespace."""
         return {n for n in self._original_names if NAMESPACE_DELIMITER in n}
 
@@ -248,6 +289,10 @@ class Catalog(Mapping[str, "CatalogItem"]):
         if nn in self._data:
             return nn
         raise KeyError(f"Could not find colormap with name {name!r}.")
+
+    def _ipython_key_completions_(self) -> list[str]:
+        """Support ipython tab completion."""
+        return list(self._data)
 
     def __iter__(self) -> Iterator[str]:
         return iter(self._original_names)
@@ -269,16 +314,16 @@ class Catalog(Mapping[str, "CatalogItem"]):
                 self._loaded[key] = self._loaded[name]
         return self._loaded[name]
 
-    def _load(self, key: str) -> CatalogItem:
+    def _load(self, normed_key: str) -> CatalogItem:
         """Get the data for a named colormap."""
-        item = self._data[key]
+        item = self._data[normed_key]
         # aliases are just pointers to other colormaps
         if "alias" in item:
             item = cast("UnloadedCatalogAlias", item)
             namespaced = item["alias"]
             if conflicts := item.get("conflicts"):
                 logger.warning(
-                    f"WARNING: The name {key!r} is an alias for {namespaced!r}, "
+                    f"WARNING: The name {normed_key!r} is an alias for {namespaced!r}, "
                     f"but is also available as: {', '.join(conflicts)!r}.\nTo "
                     "silence this warning, use a fully namespaced name.",
                 )
@@ -293,8 +338,8 @@ class Catalog(Mapping[str, "CatalogItem"]):
             # well tested on internal data though
             mod = __import__(module, fromlist=[attr])
             _item["data"] = getattr(mod, attr)
-        _item["aliases"] = self._rev_aliases.get(key, [])
-        return CatalogItem(name=key.split(NAMESPACE_DELIMITER, 1)[-1], **_item)
+        _item["aliases"] = self._rev_aliases.get(normed_key, [])
+        return CatalogItem(name=normed_key.split(NAMESPACE_DELIMITER, 1)[-1], **_item)
 
     @staticmethod
     def _norm_name(name: Any) -> str:
