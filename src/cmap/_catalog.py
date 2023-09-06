@@ -11,7 +11,15 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Literal, Mapping, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Iterable,
+    Iterator,
+    Literal,
+    Mapping,
+    cast,
+)
 
 import cmap.data
 
@@ -54,6 +62,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger("cmap")
 RECORD_PATTERN = "record.json"
 DATA_ROOT = Path(cmap.data.__file__).parent
+NAMESPACE_DELIMITER = ":"
 
 
 @dataclass
@@ -110,7 +119,7 @@ class CatalogItem:
 
     @property
     def qualified_name(self) -> str:
-        return f"{self.namespace}:{self.name}"
+        return f"{self.namespace}{NAMESPACE_DELIMITER}{self.name}"
 
 
 def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
@@ -127,7 +136,12 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
             data = cast("RecordItem", json.load(f))
         namespace = data["namespace"]
         for name, v in data["colormaps"].items():
-            namespaced = f"{namespace}:{name}"
+            if NAMESPACE_DELIMITER in name:  # pragma: no cover
+                raise ValueError(f"colormap name {name!r} should not have colon.")
+            if NAMESPACE_DELIMITER in namespace:  # pragma: no cover
+                raise ValueError(f"namespace {namespace!r} should not have colon.")
+
+            namespaced = f"{namespace}{NAMESPACE_DELIMITER}{name}"
 
             # if the key "alias" exists, this is a UnloadedCatalogAlias.
             # We just add it to the catalog under both the namespaced name
@@ -135,7 +149,7 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
             # of the alias.
             if "alias" in v:
                 v = cast("UnloadedCatalogAlias", v)
-                if ":" not in v["alias"]:  # pragma: no cover
+                if NAMESPACE_DELIMITER not in v["alias"]:  # pragma: no cover
                     raise ValueError(f"{namespaced!r} alias is not namespaced")
                 ctlg[namespaced] = v
                 ctlg[name] = v  # FIXME
@@ -167,12 +181,12 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
             # namespaced name (with a colon).  We add these to the catalog as well
             # so that they can be
             for alias in v.get("aliases", []):
-                if ":" in alias:  # pragma: no cover
+                if NAMESPACE_DELIMITER in alias:  # pragma: no cover
                     raise ValueError(
                         f"internal alias {alias!r} in namespace {namespace} "
                         "should not have colon."
                     )
-                ctlg[f"{namespace}:{alias}"] = {"alias": namespaced}
+                ctlg[f"{namespace}{NAMESPACE_DELIMITER}{alias}"] = {"alias": namespaced}
 
     return ctlg
 
@@ -189,27 +203,61 @@ class Catalog(Mapping[str, "CatalogItem"]):
     """
 
     def __init__(
-        self, root: Path = DATA_ROOT, record_pattern: str = RECORD_PATTERN
+        self, data_root: Path = DATA_ROOT, record_pattern: str = RECORD_PATTERN
     ) -> None:
-        self._root = root
+        self._data_root = data_root
         self._record_pattern = record_pattern
+
+        # a cache of loaded CatalogItem
         self._loaded: dict[str, CatalogItem] = {}
-        self._data = _build_catalog(sorted(root.rglob(record_pattern)))
-        self._data_lower = {self._norm_name(k): v for k, v in self._data.items()}
-        self._aliases: dict[str, list[str]] = {}
-        for k, v in self._data_lower.items():
-            if alias := v.get("alias"):
-                self._aliases.setdefault(self._norm_name(alias), []).append(k)
+
+        # _data is a mapping of ALL possible (normalized) names to colormap data.
+        # this includes both short names and namespaced names.
+        self._data: CatalogDict = {}
+        # original names maps the original name as it appeared in the record to the
+        # normalized name in _data
+        self._original_names: dict[str, str] = {}
+        # _aliases maps short names to fully namespaced names
+        self._aliases: dict[str, str] = {}
+        # _rev_aliases maps fully qualified names to a list of aliases
+        self._rev_aliases: dict[str, list[str]] = {}
+
+        for key, val in _build_catalog(sorted(data_root.rglob(record_pattern))).items():
+            normed_name = self._norm_name(key)
+            self._data[normed_name] = val
+            self._original_names[key] = normed_name
+            if alias := val.get("alias"):
+                self._aliases[normed_name] = cast(str, alias)
+                self._rev_aliases.setdefault(self._norm_name(alias), []).append(
+                    normed_name
+                )
+
+    def shortKeys(self) -> set[str]:
+        """Return a set of available short colormap names, without namespace."""
+        return {n for n in self._original_names if NAMESPACE_DELIMITER not in n}
+
+    def namespacedKeys(self) -> set[str]:
+        """Return a set of available short colormap names, with namespace."""
+        return {n for n in self._original_names if NAMESPACE_DELIMITER in n}
+
+    def resolve(self, name: str) -> str:
+        """Return the fully qualified, normalized name of a colormap or alias."""
+        nn = self._norm_name(name)
+        if nn in self._aliases:
+            return self._aliases[nn]
+        if nn in self._data:
+            return nn
+        raise KeyError(f"Could not find colormap with name {name!r}.")
 
     def __iter__(self) -> Iterator[str]:
-        return iter(self._data)
+        return iter(self._original_names)
 
     def __len__(self) -> int:
-        return len(self._data)
+        return len(self._original_names)
 
     def __getitem__(self, name: str) -> CatalogItem:
         if name not in self._loaded:
-            if (key := self._norm_name(name)) not in self._data_lower:
+            if (key := self._norm_name(name)) not in self._data:
                 # TODO: print a list of available colormaps or something
                 if name != key:  # pragma: no cover
                     raise ValueError(f"Colormap {name!r} (or {key!r}) not found.")
@@ -223,7 +271,7 @@ class Catalog(Mapping[str, "CatalogItem"]):
 
     def _load(self, key: str) -> CatalogItem:
         """Get the data for a named colormap."""
-        item = self._data_lower[key]
+        item = self._data[key]
         # aliases are just pointers to other colormaps
         if "alias" in item:
             item = cast("UnloadedCatalogAlias", item)
@@ -240,13 +288,13 @@ class Catalog(Mapping[str, "CatalogItem"]):
         # if a string, it is a module:attribute reference to a ColormapLike object
         # load it here.
         if isinstance(_item["data"], str):
-            module, attr = _item["data"].rsplit(":", 1)
+            module, attr = _item["data"].rsplit(NAMESPACE_DELIMITER, 1)
             # not encouraged... but significantly faster than importlib
             # well tested on internal data though
             mod = __import__(module, fromlist=[attr])
             _item["data"] = getattr(mod, attr)
-        _item["aliases"] = self._aliases.get(key, [])
-        return CatalogItem(name=key.split(":", 1)[-1], **_item)
+        _item["aliases"] = self._rev_aliases.get(key, [])
+        return CatalogItem(name=key.split(NAMESPACE_DELIMITER, 1)[-1], **_item)
 
     @staticmethod
     def _norm_name(name: Any) -> str:

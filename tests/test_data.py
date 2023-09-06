@@ -24,7 +24,7 @@ catalog = Colormap.catalog()
 def test_matplotlib_name_parity() -> None:
     if not MPL_CMAPS:
         pytest.skip("matplotlib not installed")
-    if missing := (MPL_CMAPS - set(catalog._data)):
+    if missing := (MPL_CMAPS - set(catalog._original_names)):
         raise AssertionError(f"missing cmap keys from matplotlib: {missing}")
 
 
@@ -43,7 +43,7 @@ def test_napari_name_parity() -> None:
         if not n.endswith(("_r", " r"))
     }
 
-    lower_names = set(catalog._data_lower)
+    lower_names = set(catalog._data)
     if missing := (napari_cmaps - lower_names):
         # NOTE: there are a number of colormap names in vispy that are too specific
         # to be included in the main catalog.

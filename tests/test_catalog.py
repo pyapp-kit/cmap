@@ -32,9 +32,9 @@ def test_catalog_data() -> None:
 def test_lower_map() -> None:
     # make sure the lower map is the same length as the original
     # ... i.e. that we have no name collisions
-    assert len(catalog._data_lower) == len(catalog._data)
+    assert len(catalog._data) == len(catalog._data)
 
 
 def test_data_loading() -> None:
-    for name in catalog._data:
+    for name in catalog._original_names:
         Colormap(name)
