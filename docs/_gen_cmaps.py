@@ -1,10 +1,13 @@
 import json
 from pathlib import Path
+from typing import TYPE_CHECKING, cast
 
 import mkdocs_gen_files
 import numpy as np
 
-from cmap import Colormap, _catalog
+if TYPE_CHECKING:
+    from cmap import _catalog
+from cmap import Colormap
 from cmap._util import report
 
 # TODO: convert to jinja
@@ -80,7 +83,7 @@ INCLUDE_DATA = (
 )
 
 
-def build_catalog(catalog: _catalog.Catalog) -> None:
+def build_catalog(catalog: "_catalog.Catalog") -> None:
     for name in catalog:
         if ":" not in name:
             continue
@@ -132,4 +135,4 @@ def _make_aliases_md(aliases: list[str]) -> str:
     return "**Aliases**:  " + ", ".join(f"`{a}`" for a in aliases)
 
 
-build_catalog(_catalog.catalog)
+build_catalog(cast("_catalog.Catalog", Colormap.catalog()))

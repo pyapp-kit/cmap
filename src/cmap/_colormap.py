@@ -10,6 +10,7 @@ from typing import (
     Callable,
     Iterable,
     Iterator,
+    Mapping,
     NamedTuple,
     Sequence,
     Union,
@@ -21,7 +22,6 @@ import numpy as np
 import numpy.typing as npt
 
 from . import _external
-from ._catalog import catalog
 from ._color import Color
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     from numpy.typing import ArrayLike, NDArray
     from typing_extensions import TypeAlias, TypedDict, TypeGuard
 
-    from ._catalog import LoadedCatalogItem
+    from ._catalog import CatalogItem
     from ._color import ColorLike
 
     Interpolation = Literal["linear", "nearest"]
@@ -128,7 +128,18 @@ class Colormap:
     identifier: str
     category: str | None
     interpolation: Interpolation
-    info: LoadedCatalogItem | None
+    info: CatalogItem | None
+
+    _catalog_instance: Mapping[str, CatalogItem] | None = None
+
+    @classmethod
+    def catalog(cls) -> Mapping[str, CatalogItem]:
+        """Return the global colormaps catalog."""
+        if cls._catalog_instance is None:
+            from ._catalog import Catalog
+
+            cls._catalog_instance = Catalog()
+        return cls._catalog_instance
 
     def __init__(
         self,
@@ -141,7 +152,7 @@ class Colormap:
     ) -> None:
         if isinstance(value, str):
             rev = value.endswith("_r")
-            info = catalog[value[:-2] if rev else value]
+            info = self.catalog()[value[:-2] if rev else value]
             name = name or f"{info.namespace}:{info.name}"
             category = category or info.category
             self.info = info
@@ -1132,7 +1143,7 @@ def _parse_colorstops(
 
     if isinstance(val, str):
         rev = val.endswith("_r")
-        data = catalog[val[:-2] if rev else val]
+        data = Colormap.catalog()[val[:-2] if rev else val]
         stops = _parse_colorstops(data.data, cls=cls)
         stops._interpolation = _norm_interp(data.interpolation)
         return stops.reversed() if rev else stops

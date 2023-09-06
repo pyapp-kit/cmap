@@ -11,12 +11,13 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, Iterator, Literal, Mapping, cast
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, Literal, Mapping, cast
 
 import cmap.data
 
 if TYPE_CHECKING:
-    from typing_extensions import NotRequired, TypeAlias, TypedDict
+    from _typeshed import FileDescriptorOrPath
+    from typing_extensions import NotRequired, Required, TypeAlias, TypedDict
 
     from ._colormap import ColorStopsLike, Interpolation
 
@@ -24,7 +25,7 @@ if TYPE_CHECKING:
         "sequential", "diverging", "cyclic", "qualitative", "miscellaneous"
     ]
 
-    class CatalogItem(TypedDict):
+    class UnloadedCatalogItem(TypedDict):
         data: str
         category: Category
         tags: NotRequired[list[str]]
@@ -32,21 +33,69 @@ if TYPE_CHECKING:
         info: NotRequired[str]
         aliases: NotRequired[list[str]]
 
-    class CatalogAlias(TypedDict):
+    class UnloadedCatalogAlias(TypedDict):
         alias: str
         conflicts: NotRequired[list[str]]
 
-    CatalogDict: TypeAlias = dict[str, CatalogItem]
+    CatalogDict: TypeAlias = dict[str, UnloadedCatalogItem | UnloadedCatalogAlias]
+
+    class RecordItem(TypedDict):
+        """Json schema for a single colormap record file."""
+
+        namespace: Required[str]
+        colormaps: Required[CatalogDict]
+        # globals that override colormap values if present
+        license: str
+        source: str
+        authors: list[str]
+        category: Category
+
 
 logger = logging.getLogger("cmap")
-
-
-def _norm_name(name: str) -> str:
-    return name.lower().replace(" ", "_").replace("-", "_")
+RECORD_PATTERN = "record.json"
+DATA_ROOT = Path(cmap.data.__file__).parent
 
 
 @dataclass
-class LoadedCatalogItem:
+class CatalogItem:
+    """A loaded catalog item.
+
+    Attributes
+    ----------
+    data: ColorStopsLike
+        Any object that can be passed to `Colormap` to create a colormap.
+        https://cmap-docs.readthedocs.io/en/latest/colormaps/#colormaplike-objects
+    name: str
+        The (short) name of the colormap, e.g. "viridis".
+    category: str
+        The category of the colormap. One of {"sequential", "diverging", "cyclic",
+        "qualitative", "miscellaneous"}.
+    license: str
+        The license of the colormap.
+    source: str
+        The source of the colormap (usually a URL).
+    info: str
+        A description of the colormap. Will be displayed on the colormap page in the
+        documentation.
+    namespace: str
+        The namespace of the colormap. This is a cmap-specific namespace for organizing
+        colormaps into collections.  (e.g. "matplotlib", "cmocean", "colorcet", etc.)
+    authors: list[str]
+        A list of authors of the colormap.
+    interpolation: bool | Interpolation
+        The interpolation method to use when sampling the colormap.  One of
+        {False, True, "linear", "nearest"}, where False is equivalent to "nearest"
+        and True is equivalent to "linear".
+    tags: list[str]
+        A list of tags for the colormap. These are displayed in the documentation.
+    aliases: list[str]
+        A list of aliases for the colormap. These are alternative names that can be
+        used to access the colormap. Currently, they must be accessed using the
+        fully qualified name (`namespace:alias`).
+    qualified_name: str
+        The fully qualified name of the colormap, e.g. "matplotlib:viridis".
+    """
+
     data: ColorStopsLike
     name: str
     category: Category
@@ -64,54 +113,53 @@ class LoadedCatalogItem:
         return f"{self.namespace}:{self.name}"
 
 
-CATALOG: dict[str, CatalogItem | CatalogAlias] = {}
-
-
-def _populate_catalog() -> None:
+def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
     """Populate the catalog with data from the data directory."""
     # FIXME: if a new collection is added, it has the potential to break
     # existing code that uses the old name without a namespace.  One way
     # to avoid this would be to explicitly list the collections here.
     # but then new collections would need to be added here to be
     # available.
-    for r in sorted(Path(cmap.data.__file__).parent.rglob("record.json")):
-        with open(r) as f:
-            data = json.load(f)
+    ctlg: CatalogDict = {}
+
+    for record_file in records:
+        with open(record_file) as f:
+            data = cast("RecordItem", json.load(f))
         namespace = data["namespace"]
         for name, v in data["colormaps"].items():
             namespaced = f"{namespace}:{name}"
 
-            # if the key "alias" exists, this is a CatalogAlias.
+            # if the key "alias" exists, this is a UnloadedCatalogAlias.
             # We just add it to the catalog under both the namespaced name
             # and the short name.  The Catalog._load method will handle the resolution
             # of the alias.
             if "alias" in v:
-                v = cast("CatalogAlias", v)
+                v = cast("UnloadedCatalogAlias", v)
                 if ":" not in v["alias"]:  # pragma: no cover
                     raise ValueError(f"{namespaced!r} alias is not namespaced")
-                CATALOG[namespaced] = v
-                CATALOG[name] = v  # FIXME
+                ctlg[namespaced] = v
+                ctlg[name] = v  # FIXME
                 continue
 
             # otherwise we have a CatalogItem
-            v = cast("CatalogItem", v)
+            v = cast("UnloadedCatalogItem", v)
 
             # here we add any global keys to the colormap that are not already there.
             for k in ("license", "namespace", "source", "authors", "category"):
                 if k in data:
-                    v.setdefault(k, data[k])
+                    v.setdefault(k, data[k])  # type: ignore
 
             # add the fully namespaced colormap to the catalog
-            CATALOG[namespaced] = v
+            ctlg[namespaced] = v
 
             # if the short name is not already in the catalog, add it as a pointer
             # to the fully namespaced colormap.
-            if name not in CATALOG:
-                CATALOG[name] = {"alias": namespaced, "conflicts": []}
+            if name not in ctlg:
+                ctlg[name] = {"alias": namespaced, "conflicts": []}
             else:
                 # if the short name is already in the catalog, we have a conflict.
                 # add the fully namespaced name to the conflicts list.
-                entry = cast("CatalogAlias", CATALOG[name])
+                entry = cast("UnloadedCatalogAlias", ctlg[name])
                 entry.setdefault("conflicts", []).append(namespaced)
 
             # lastly, the `aliases` key of a colormap refers to aliases within the
@@ -124,29 +172,44 @@ def _populate_catalog() -> None:
                         f"internal alias {alias!r} in namespace {namespace} "
                         "should not have colon."
                     )
-                CATALOG[f"{namespace}:{alias}"] = {"alias": namespaced}
+                ctlg[f"{namespace}:{alias}"] = {"alias": namespaced}
+
+    return ctlg
 
 
-_populate_catalog()
-_CATALOG_LOWER = {_norm_name(k): v for k, v in CATALOG.items()}
-_ALIASES: dict[str, list[str]] = {}
-for k, v in _CATALOG_LOWER.items():
-    if alias := v.get("alias"):
-        _ALIASES.setdefault(_norm_name(alias), []).append(k)  # type: ignore
+class Catalog(Mapping[str, "CatalogItem"]):
+    """Catalog of available colormaps.
 
+    Parameters
+    ----------
+    root : Path, optional
+        Path to the root of the data directory, by default uses the `cmap.data` folder.
+    record_pattern : str, optional
+        Glob pattern to use to find record files, by default "record.json".
+    """
 
-class Catalog(Mapping[str, "LoadedCatalogItem"]):
-    _loaded: dict[str, LoadedCatalogItem] = {}
+    def __init__(
+        self, root: Path = DATA_ROOT, record_pattern: str = RECORD_PATTERN
+    ) -> None:
+        self._root = root
+        self._record_pattern = record_pattern
+        self._loaded: dict[str, CatalogItem] = {}
+        self._data = _build_catalog(sorted(root.rglob(record_pattern)))
+        self._data_lower = {self._norm_name(k): v for k, v in self._data.items()}
+        self._aliases: dict[str, list[str]] = {}
+        for k, v in self._data_lower.items():
+            if alias := v.get("alias"):
+                self._aliases.setdefault(self._norm_name(alias), []).append(k)
 
     def __iter__(self) -> Iterator[str]:
-        return iter(CATALOG)
+        return iter(self._data)
 
     def __len__(self) -> int:
-        return len(CATALOG)
+        return len(self._data)
 
-    def __getitem__(self, name: str) -> LoadedCatalogItem:
+    def __getitem__(self, name: str) -> CatalogItem:
         if name not in self._loaded:
-            if (key := _norm_name(name)) not in _CATALOG_LOWER:
+            if (key := self._norm_name(name)) not in self._data_lower:
                 # TODO: print a list of available colormaps or something
                 if name != key:  # pragma: no cover
                     raise ValueError(f"Colormap {name!r} (or {key!r}) not found.")
@@ -158,12 +221,12 @@ class Catalog(Mapping[str, "LoadedCatalogItem"]):
                 self._loaded[key] = self._loaded[name]
         return self._loaded[name]
 
-    def _load(self, key: str) -> LoadedCatalogItem:
+    def _load(self, key: str) -> CatalogItem:
         """Get the data for a named colormap."""
-        item = _CATALOG_LOWER[key]
+        item = self._data_lower[key]
         # aliases are just pointers to other colormaps
         if "alias" in item:
-            item = cast("CatalogAlias", item)
+            item = cast("UnloadedCatalogAlias", item)
             namespaced = item["alias"]
             if conflicts := item.get("conflicts"):
                 logger.warning(
@@ -173,7 +236,7 @@ class Catalog(Mapping[str, "LoadedCatalogItem"]):
                 )
             return self[namespaced]
 
-        _item = cast("CatalogItem", item.copy())
+        _item = cast("UnloadedCatalogItem", item.copy())
         # if a string, it is a module:attribute reference to a ColormapLike object
         # load it here.
         if isinstance(_item["data"], str):
@@ -182,8 +245,9 @@ class Catalog(Mapping[str, "LoadedCatalogItem"]):
             # well tested on internal data though
             mod = __import__(module, fromlist=[attr])
             _item["data"] = getattr(mod, attr)
-        _item["aliases"] = _ALIASES.get(key, [])
-        return LoadedCatalogItem(name=key.split(":", 1)[-1], **_item)
+        _item["aliases"] = self._aliases.get(key, [])
+        return CatalogItem(name=key.split(":", 1)[-1], **_item)
 
-
-catalog = Catalog()
+    @staticmethod
+    def _norm_name(name: Any) -> str:
+        return str(name).lower().replace(" ", "_").replace("-", "_")

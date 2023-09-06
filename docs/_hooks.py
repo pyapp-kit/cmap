@@ -3,13 +3,17 @@ import re
 import sys
 from functools import partial
 from pathlib import Path
-from typing import Any, Sequence
+from typing import TYPE_CHECKING, Any, Sequence, cast
 
 import numpy as np
 
 from cmap import Colormap, _util
-from cmap._catalog import CATALOG
+
+if TYPE_CHECKING:
+    from cmap._catalog import CatalogDict
 from cmap._color import NAME_TO_RGB
+
+CATALOG = cast("CatalogDict", Colormap.catalog()._data)  # type: ignore
 
 # the template for a single colormap
 CMAP_DIV = """
@@ -64,7 +68,7 @@ def _cmap_expr(match: re.Match) -> str:
 
     {{ cmap_expr: {0: 'blue', 0.5: 'yellow', 1: 'red'} }} -> <div class="cmap">...
     """
-    cm = Colormap(eval(match[1].strip()))
+    cm = Colormap(eval(match[1].strip()))  # noqa: S307
     return CMAP_DIV.format(name="", img=_to_img_tag(cm), class_list="cmap-expr")
 
 
@@ -92,7 +96,7 @@ def _cmap_catalog() -> str:
             continue
         category = details.get("category") or "Uncategorized"
         categories.add(category)
-        classes = ["filterDiv"] + [category.lower()]
+        classes = ["filterDiv", category.lower()]
         lines.append(_cmap_div(cmap_name, classes))
 
     btns = [

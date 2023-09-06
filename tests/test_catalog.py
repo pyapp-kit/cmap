@@ -2,7 +2,8 @@ import numpy as np
 import pytest
 
 from cmap import Colormap
-from cmap._catalog import catalog
+
+catalog = Colormap.catalog()
 
 
 @pytest.mark.filterwarnings("ignore:The name:")
@@ -26,3 +27,14 @@ def test_catalog_data() -> None:
         Colormap(name)  # smoke test
 
     assert len(catalog) > 100
+
+
+def test_lower_map() -> None:
+    # make sure the lower map is the same length as the original
+    # ... i.e. that we have no name collisions
+    assert len(catalog._data_lower) == len(catalog._data)
+
+
+def test_data_loading() -> None:
+    for name in catalog._data:
+        Colormap(name)
