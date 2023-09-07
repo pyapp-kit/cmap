@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
+    Container,
     Iterable,
     Iterator,
     Literal,
@@ -94,7 +95,7 @@ class CatalogItem:
     interpolation: bool | Interpolation
         The interpolation method to use when sampling the colormap.  One of
         {False, True, "linear", "nearest"}, where False is equivalent to "nearest"
-        and True is equivalent to "linear".
+        and True is equivalent to "linear".  If not provided, defaults to "linear".
     tags: list[str]
         A list of tags for the colormap. These are displayed in the documentation.
     aliases: list[str]
@@ -235,7 +236,11 @@ class Catalog(Mapping[str, "CatalogItem"]):
                 )
 
     def unique_keys(
-        self, prefer_short_names: bool = True, normalized_names: bool = False
+        self,
+        prefer_short_names: bool = True,
+        normalized_names: bool = False,
+        categories: Container[Category] = (),
+        interpolation: Interpolation | None = None,
     ) -> set[str]:
         """Return names that refer to unique colormap data.
 
@@ -250,6 +255,10 @@ class Catalog(Mapping[str, "CatalogItem"]):
             If True, return the normalized names of the colormaps.  If False (default),
             return the original names of the colormaps (which may include spaces and/or
             capital letters).
+        categories : Container[Category], optional
+            If provided, only return colormaps in the given categories.
+        interpolation : Interpolation, optional
+            If provided, only return colormaps with the given interpolation method.
 
         Returns
         -------
@@ -258,8 +267,18 @@ class Catalog(Mapping[str, "CatalogItem"]):
         """
         keys: set[str] = set()
         for original_name, normed_name in self._original_names.items():
-            if "alias" in self._data[normed_name]:
+            data = self._data[normed_name]
+            if "alias" in data:
                 continue
+            if categories and data["category"] not in categories:
+                continue
+            if interpolation is not None:
+                interp = data.get("interpolation", "linear")
+                if isinstance(interp, bool):
+                    interp = "linear" if interp else "nearest"
+                if interp != interpolation:
+                    continue
+
             if prefer_short_names:
                 short_name = normed_name.split(NAMESPACE_DELIMITER, 1)[-1]
                 data2 = self._data[short_name]

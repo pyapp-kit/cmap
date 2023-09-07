@@ -64,3 +64,8 @@ def test_catalog_names() -> None:
     assert "viridis" not in unique
     assert "bids:viridis" in unique
     assert "matplotlib:viridis" not in unique
+
+    assert "viridis" not in catalog.unique_keys(categories=("cyclic",))
+    assert "viridis" in catalog.unique_keys(categories=("sequential",))
+    assert "viridis" not in catalog.unique_keys(interpolation="nearest")
+    assert "viridis" in catalog.unique_keys(interpolation="linear")

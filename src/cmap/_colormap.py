@@ -4,28 +4,17 @@ import base64
 import warnings
 from functools import partial
 from numbers import Number
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Iterable,
-    Iterator,
-    Mapping,
-    NamedTuple,
-    Sequence,
-    Union,
-    cast,
-    overload,
-)
+from typing import TYPE_CHECKING, NamedTuple, Sequence, cast, overload
 
 import numpy as np
 import numpy.typing as npt
 
 from . import _external
+from ._catalog import Catalog
 from ._color import Color
 
 if TYPE_CHECKING:
-    from typing import Literal
+    from typing import Any, Callable, Iterable, Iterator, Literal, Union
 
     import bokeh.models
     import matplotlib.colors
@@ -130,14 +119,12 @@ class Colormap:
     interpolation: Interpolation
     info: CatalogItem | None
 
-    _catalog_instance: Mapping[str, CatalogItem] | None = None
+    _catalog_instance: Catalog | None = None
 
     @classmethod
-    def catalog(cls) -> Mapping[str, CatalogItem]:
+    def catalog(cls) -> Catalog:
         """Return the global colormaps catalog."""
         if cls._catalog_instance is None:
-            from ._catalog import Catalog
-
             cls._catalog_instance = Catalog()
         return cls._catalog_instance
 
