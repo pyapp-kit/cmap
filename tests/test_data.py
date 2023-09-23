@@ -4,7 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
-from cmap import Colormap, _catalog
+from cmap import Colormap
 
 try:
     import matplotlib as mpl
@@ -18,22 +18,13 @@ _GRADIENT = np.linspace(0, 1, 256)
 if TYPE_CHECKING:
     from matplotlib.colors import Colormap as MPLColormap
 
-
-def test_lower_map() -> None:
-    # make sure the lower map is the same length as the original
-    # ... i.e. that we have no name collisions
-    assert len(_catalog._CATALOG_LOWER) == len(_catalog.CATALOG)
-
-
-def test_data_loading() -> None:
-    for name in _catalog.CATALOG:
-        Colormap(name)
+catalog = Colormap.catalog()
 
 
 def test_matplotlib_name_parity() -> None:
     if not MPL_CMAPS:
         pytest.skip("matplotlib not installed")
-    if missing := (MPL_CMAPS - set(_catalog.CATALOG)):
+    if missing := (MPL_CMAPS - set(catalog._original_names)):
         raise AssertionError(f"missing cmap keys from matplotlib: {missing}")
 
 
@@ -52,14 +43,14 @@ def test_napari_name_parity() -> None:
         if not n.endswith(("_r", " r"))
     }
 
-    catalog = set(_catalog._CATALOG_LOWER)
-    if missing := (napari_cmaps - catalog):
+    lower_names = set(catalog._data)
+    if missing := (napari_cmaps - lower_names):
         # NOTE: there are a number of colormap names in vispy that are too specific
         # to be included in the main catalog.
         # They are added under the `vispy_` prefix.  none of these are "publicly" used
         # by napari, but we make sure they're available as vispy+name here.
         for m in list(missing):
-            if f"vispy_{m}" in catalog:
+            if f"vispy_{m}" in lower_names:
                 missing.remove(m)
     if missing:
         raise AssertionError(f"missing cmap keys from napari: {missing}")

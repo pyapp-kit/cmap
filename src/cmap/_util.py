@@ -271,7 +271,7 @@ def sineramp(
     shape : tuple, optional
         [rows cols] specifying size of test image.  If a single value is supplied
         the image is square. Defaults to [256 512];  Note the number of columns is
-        nominal and will be ajusted so that there are an integer number of sine wave
+        nominal and will be adjusted so that there are an integer number of sine wave
         cycles across the image.
     amp : float, optional
         Amplitude of sine wave. Defaults to 12.5

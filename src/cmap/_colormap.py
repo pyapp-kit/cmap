@@ -4,28 +4,17 @@ import base64
 import warnings
 from functools import partial
 from numbers import Number
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Iterable,
-    Iterator,
-    NamedTuple,
-    Sequence,
-    Union,
-    cast,
-    overload,
-)
+from typing import TYPE_CHECKING, NamedTuple, Sequence, cast, overload
 
 import numpy as np
 import numpy.typing as npt
 
 from . import _external
-from ._catalog import catalog
+from ._catalog import Catalog
 from ._color import Color
 
 if TYPE_CHECKING:
-    from typing import Literal
+    from typing import Any, Callable, Iterable, Iterator, Literal, Union
 
     import bokeh.models
     import matplotlib.colors
@@ -36,7 +25,7 @@ if TYPE_CHECKING:
     from numpy.typing import ArrayLike, NDArray
     from typing_extensions import TypeAlias, TypedDict, TypeGuard
 
-    from ._catalog import LoadedCatalogItem
+    from ._catalog import CatalogItem
     from ._color import ColorLike
 
     Interpolation = Literal["linear", "nearest"]
@@ -83,7 +72,7 @@ class Colormap:
           (e.g. `"viridis"`, `"magma_r"`).
         - An iterable of [ColorLike](/colors#colorlike-objects) values (any object that
           can be cast to a [`Color`][cmap.Color]), or "color-stop-like" tuples (
-          `(float, ColorLike)` where the first element is a scalar value specifiying the
+          `(float, ColorLike)` where the first element is a scalar value specifying the
           position of the color in the gradient. When using color stops, the stop
           position values should be in the range [0, 1]. If no scalar stop positions are
           given, they will be linearly interpolated between any neighboring stops (or
@@ -128,7 +117,16 @@ class Colormap:
     identifier: str
     category: str | None
     interpolation: Interpolation
-    info: LoadedCatalogItem | None
+    info: CatalogItem | None
+
+    _catalog_instance: Catalog | None = None
+
+    @classmethod
+    def catalog(cls) -> Catalog:
+        """Return the global colormaps catalog."""
+        if cls._catalog_instance is None:
+            cls._catalog_instance = Catalog()
+        return cls._catalog_instance
 
     def __init__(
         self,
@@ -141,7 +139,7 @@ class Colormap:
     ) -> None:
         if isinstance(value, str):
             rev = value.endswith("_r")
-            info = catalog[value[:-2] if rev else value]
+            info = self.catalog()[value[:-2] if rev else value]
             name = name or f"{info.namespace}:{info.name}"
             category = category or info.category
             self.info = info
@@ -1141,7 +1139,7 @@ def _parse_colorstops(
 
     if isinstance(val, str):
         rev = val.endswith("_r")
-        data = catalog[val[:-2] if rev else val]
+        data = Colormap.catalog()[val[:-2] if rev else val]
         stops = _parse_colorstops(data.data, cls=cls)
         stops._interpolation = _norm_interp(data.interpolation)
         return stops.reversed() if rev else stops

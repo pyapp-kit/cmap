@@ -1,8 +1,37 @@
 # Changelog
 
-## [0.0.3](https://github.com/tlambert03/cmap/tree/0.0.3) (2023-05-06)
+## [v0.1.1](https://github.com/tlambert03/cmap/tree/v0.1.1) (2023-09-07)
 
-[Full Changelog](https://github.com/tlambert03/cmap/compare/v0.0.2...0.0.3)
+[Full Changelog](https://github.com/tlambert03/cmap/compare/v0.1.0...v0.1.1)
+
+**Implemented enhancements:**
+
+- feat: select unique names by category [\#25](https://github.com/tlambert03/cmap/pull/25) ([tlambert03](https://github.com/tlambert03))
+
+## [v0.1.0](https://github.com/tlambert03/cmap/tree/v0.1.0) (2023-09-06)
+
+[Full Changelog](https://github.com/tlambert03/cmap/compare/v0.0.3...v0.1.0)
+
+**Implemented enhancements:**
+
+- feat: expose catalog as Colormap classmethod [\#22](https://github.com/tlambert03/cmap/pull/22) ([tlambert03](https://github.com/tlambert03))
+
+**Fixed bugs:**
+
+- fix: fix creating a cmap from existing cmap [\#21](https://github.com/tlambert03/cmap/pull/21) ([tlambert03](https://github.com/tlambert03))
+- fix: change bwr to diverging [\#16](https://github.com/tlambert03/cmap/pull/16) ([tlambert03](https://github.com/tlambert03))
+
+**Documentation:**
+
+- docs: fix typos [\#23](https://github.com/tlambert03/cmap/pull/23) ([tlambert03](https://github.com/tlambert03))
+
+**Merged pull requests:**
+
+- ci\(dependabot\): bump actions/checkout from 3 to 4 [\#20](https://github.com/tlambert03/cmap/pull/20) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+## [v0.0.3](https://github.com/tlambert03/cmap/tree/v0.0.3) (2023-05-06)
+
+[Full Changelog](https://github.com/tlambert03/cmap/compare/v0.0.2...v0.0.3)
 
 **Implemented enhancements:**
 

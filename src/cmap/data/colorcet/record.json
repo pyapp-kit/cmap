@@ -9,7 +9,7 @@
       ],
       "category": "cyclic",
       "data": "cmap.data.colorcet.CET_C1:data",
-      "info": "Cyclic: magenta - red - yellow - blue. Alows four orientations/phase angles to be visulaised."
+      "info": "Cyclic: magenta - red - yellow - blue. Allows four orientations/phase angles to be visulaised."
     },
     "CET_C10": {
       "aliases": [
@@ -34,7 +34,7 @@
       ],
       "category": "cyclic",
       "data": "cmap.data.colorcet.CET_C2:data",
-      "info": "Cyclic: magenta - yellow - green - blue. Alows four orientations/phase angles to be visualised."
+      "info": "Cyclic: magenta - yellow - green - blue. Allows four orientations/phase angles to be visualised."
     },
     "CET_C3": {
       "aliases": [

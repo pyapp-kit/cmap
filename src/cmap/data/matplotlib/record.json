@@ -13,7 +13,7 @@
     "Wistia": {
       "category": "sequential",
       "data": "cmap.data.matplotlib._wistia:Wistia",
-      "info": "Colorblind-friendly heatmap palette that relies on a green-to-red spectrum, which typically implies intensity or activity. For the red/green colorblind, these hues are particularly difficult to distinguish bewteen. Most colorblind-friendly solutions rely on a different set of hues altogether (usually yellows and purples) to solve this problem, but this palette maintains the red/green symbolism while achieving deuteranopic legibility by varying the perceived brightness of the hues. To read more about its development and see examples, visit [Wistia's blog post about it](http://wistia.com/blog/heatmaps-for-colorblindness).",
+      "info": "Colorblind-friendly heatmap palette that relies on a green-to-red spectrum, which typically implies intensity or activity. For the red/green colorblind, these hues are particularly difficult to distinguish between. Most colorblind-friendly solutions rely on a different set of hues altogether (usually yellows and purples) to solve this problem, but this palette maintains the red/green symbolism while achieving deuteranopic legibility by varying the perceived brightness of the hues. To read more about its development and see examples, visit [Wistia's blog post about it](http://wistia.com/blog/heatmaps-for-colorblindness).",
       "license": "MIT",
       "source": "https://github.com/wistia/heatmap-palette"
     },

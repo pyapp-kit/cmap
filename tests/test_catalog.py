@@ -1,8 +1,12 @@
+from itertools import chain
+
 import numpy as np
 import pytest
 
 from cmap import Colormap
-from cmap._catalog import catalog
+from cmap._catalog import Catalog
+
+catalog = Catalog()
 
 
 @pytest.mark.filterwarnings("ignore:The name:")
@@ -26,3 +30,42 @@ def test_catalog_data() -> None:
         Colormap(name)  # smoke test
 
     assert len(catalog) > 100
+
+
+def test_lower_map() -> None:
+    # make sure the lower map is the same length as the original
+    # ... i.e. that we have no name collisions
+    assert len(catalog._data) == len(catalog._data)
+
+
+def test_data_loading() -> None:
+    for name in catalog._original_names:
+        Colormap(name)
+
+
+def test_catalog_names() -> None:
+    assert "bids:viridis" in catalog.namespaced_keys()
+    assert "viridis" in catalog.short_keys()
+    assert [
+        catalog.resolve(x)
+        for x in chain(catalog.short_keys(), catalog.namespaced_keys())
+    ]
+    with pytest.raises(KeyError):
+        catalog.resolve("not-a-cmap")
+
+    unique = catalog.unique_keys(prefer_short_names=True, normalized_names=False)
+    assert "ice" not in unique
+    assert "viridis" in unique
+    assert "cmocean:ice" in unique
+    assert "YlGn" in unique
+    unique = catalog.unique_keys(prefer_short_names=False, normalized_names=True)
+    assert "colorbrewer:ylgn" in unique
+    assert "colorbrewer:YlGn" not in unique
+    assert "viridis" not in unique
+    assert "bids:viridis" in unique
+    assert "matplotlib:viridis" not in unique
+
+    assert "viridis" not in catalog.unique_keys(categories=("cyclic",))
+    assert "viridis" in catalog.unique_keys(categories=("sequential",))
+    assert "viridis" not in catalog.unique_keys(interpolation="nearest")
+    assert "viridis" in catalog.unique_keys(interpolation="linear")
