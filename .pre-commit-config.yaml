@@ -15,14 +15,14 @@ repos:
       - id: pretty-format-json
         args: [--autofix]
 
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.263
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.292
     hooks:
       - id: ruff
         args: [--fix]
 
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 23.9.1
     hooks:
       - id: black
 
@@ -34,7 +34,7 @@ repos:
   #     - id: validate-pyproject
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.2.0
+    rev: v1.5.1
     hooks:
       - id: mypy
         files: "^src/"
