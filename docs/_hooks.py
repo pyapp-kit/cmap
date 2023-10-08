@@ -68,7 +68,7 @@ def _cmap_expr(match: re.Match) -> str:
 
     {{ cmap_expr: {0: 'blue', 0.5: 'yellow', 1: 'red'} }} -> <div class="cmap">...
     """
-    cm = Colormap(eval(match[1].strip()))
+    cm = Colormap(eval(match[1].strip()))  # noqa: S307
     return CMAP_DIV.format(name="", img=_to_img_tag(cm), class_list="cmap-expr")
 
 
