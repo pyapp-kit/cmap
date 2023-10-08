@@ -25,10 +25,6 @@
       "category": "sequential",
       "data": "cmap.data.matlab:gray"
     },
-    "grays": {
-      "category": "sequential",
-      "data": "cmap.data.matlab:gray"
-    },
     "hot": {
       "category": "sequential",
       "data": "cmap.data.matlab:hot"
