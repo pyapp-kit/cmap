@@ -1,4 +1,5 @@
 import os
+from typing import ClassVar
 
 import numpy as np
 import pytest
@@ -26,7 +27,7 @@ def test_pydantic_validate() -> None:
 
         class Config:
             # since json.dump is not extendable, this just needs to be documented.
-            json_encoders = {Color: str, Colormap: Colormap.as_dict}
+            json_encoders: ClassVar[dict] = {Color: str, Colormap: Colormap.as_dict}
 
     obj = MyModel(color=np.array([1.0, 0, 0]), colormap=["r", (0.7, "b"), "w"])
     assert obj.color is Color("red")

@@ -173,8 +173,7 @@ def hsv_to_rgb(hsv: ArrayLike) -> NDArray:
     # check length of the last dimension, should be _some_ sort of rgb
     if hsv.shape[-1] != 3:
         raise ValueError(
-            "Last dimension of input array must be 3; "
-            "shape {shp} was found.".format(shp=hsv.shape)
+            f"Last dimension of input array must be 3; shape {hsv.shape} was found."
         )
 
     in_shape = hsv.shape
