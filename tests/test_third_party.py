@@ -50,7 +50,7 @@ def test_matplotlib() -> None:
     plt.imshow(IMG, cmap=CMAP.to_mpl())
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 11), reason="napari not working on py3.11")
+@pytest.mark.skipif(sys.version_info >= (3, 12), reason="napari not working on py3.12")
 def test_napari(qapp: "QApplication") -> None:
     napari = pytest.importorskip("napari")
 
