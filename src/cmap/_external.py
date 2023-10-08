@@ -27,9 +27,22 @@ def to_mpl(
 
     if cm.interpolation == "nearest":
         return mplc.ListedColormap(colors=cm.color_stops.color_array, name=cm.name)
-    return mplc.LinearSegmentedColormap.from_list(
-        cm.name, cm.color_stops, N=N, gamma=gamma
-    )
+
+    try:
+        return mplc.LinearSegmentedColormap.from_list(
+            cm.name, cm.color_stops, N=N, gamma=gamma
+        )
+    except ValueError as e:
+        from matplotlib import __version__
+
+        # broken in matplotlib 3.8.0, fixed by
+        # https://github.com/matplotlib/matplotlib/pull/26952
+        if len(cm.color_stops) == 2 and __version__ == "3.8.0":
+            raise ValueError(
+                "matplotlib 3.8.0 has a bug that prevents creating a colormap "
+                "from only two colors.  Please upgrade or downgrade matplotlib."
+            ) from e
+        raise
 
 
 def to_vispy(cm: Colormap) -> VispyColormap:

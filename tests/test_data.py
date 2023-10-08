@@ -62,7 +62,12 @@ def test_matplotlib_image_parity(name: str) -> None:
     interp = not isinstance(mpl_map, mpl.colors.ListedColormap)
     interp = not isinstance(mpl_map, mpl.colors.ListedColormap)
     our_map = Colormap(name, interpolation=interp)
-    our_map_to_mpl = our_map.to_mpl()
+    try:
+        our_map_to_mpl = our_map.to_mpl()
+    except ValueError as e:
+        if "3.8.0" in str(e):
+            # allow fails on a couple colormaps that are broken in matplotlib 3.8.0
+            return
     img1 = mpl_map(_GRADIENT)
     img2 = our_map_to_mpl(_GRADIENT)
     img3 = our_map(_GRADIENT)
