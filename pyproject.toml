@@ -132,7 +132,7 @@ filterwarnings = [
     "error",
     "ignore:distutils Version classes are deprecated",
     "ignore:`np.bool8` is a deprecated:DeprecationWarning",
-    "ignore:datetime.datetime.utcfromtimestamp:DeprecationWarning:dateutil",
+    "ignore:datetime.datetime.utcfromtimestamp:DeprecationWarning",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
