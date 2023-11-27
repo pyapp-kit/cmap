@@ -4,7 +4,6 @@ import colorsys
 import contextlib
 import re
 import sys
-from collections.abc import Iterator
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -22,6 +21,7 @@ import numpy as np
 from . import _external
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator
     from typing import Union
 
     import numpy.typing as npt
