@@ -54,7 +54,6 @@ thirdparty = [
     "plotly",
     "pydantic",
     "pygfx",
-    "pyside6",
     "pytest-qt",
     "rich",
     "viscm",
