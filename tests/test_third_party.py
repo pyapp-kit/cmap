@@ -79,19 +79,20 @@ def test_plotly() -> None:
     px.imshow(IMG, color_continuous_scale=CMAP.to_plotly())
 
 
-@pytest.mark.skipif(bool(os.getenv("CI")), reason="segfaults")
+# @pytest.mark.skipif(bool(os.getenv("CI")), reason="segfaults")
 def test_pygfx(qapp: "QApplication") -> None:
     from qtpy.QtWidgets import QWidget
 
-    gfx = pytest.importorskip("pygfx")
+    pytest.importorskip("pygfx")
     auto = pytest.importorskip("wgpu.gui.auto")
+    import pygfx as gfx
 
     canvas = auto.WgpuCanvas(size=IMG.shape)
     renderer = gfx.renderers.WgpuRenderer(canvas)
     camera = gfx.OrthographicCamera(*IMG.shape)
-    camera.position.y = IMG.shape[0] / 2
-    camera.position.x = IMG.shape[1] / 2
-    camera.scale.y = -1
+    # camera.position.y = IMG.shape[0] / 2
+    # camera.position.x = IMG.shape[1] / 2
+    # camera.scale.y = -1
 
     scene = gfx.Scene()
     scene.add(

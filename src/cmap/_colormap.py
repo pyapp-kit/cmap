@@ -482,15 +482,15 @@ class Colormap:
     def to_pygfx(self, N: int = ..., *, as_view: Literal[False]) -> pygfx.Texture:
         ...
 
-    def to_pygfx(
-        self, N: int = 256, *, as_view: bool = True
-    ) -> pygfx.TextureView | pygfx.Texture:
-        """Return a pygfx TextureView, or Texture if as_view is False.
-
-        If you want to customize the TextureView, use `as_view == False` and then
-        call `get_view()` on the returned Texture, providing the desired arguments.
-        """
-        return _external.to_pygfx(self, N=N, as_view=as_view)
+    def to_pygfx(self, N: int = 256, *, as_view: bool | None = None) -> pygfx.Texture:
+        """Return a pygfx Texture."""
+        if as_view is not None:
+            warnings.warn(
+                "as_view argument is deprecated and does nothing",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        return _external.to_pygfx(self, N=N)
 
     def to_napari(self) -> napari.utils.colormaps.Colormap:
         """Return a napari colormap.

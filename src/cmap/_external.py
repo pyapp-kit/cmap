@@ -52,22 +52,15 @@ def to_vispy(cm: Colormap) -> VispyColormap:
     return Colormap(colors=cm.color_stops.color_array, controls=cm.color_stops.stops)
 
 
-def to_pygfx(
-    cm: Colormap, N: int = 256, *, as_view: bool = True
-) -> pygfx.TextureView | pygfx.Texture:
-    """Return a pygfx TextureView, or Texture if as_view is False.
-
-    If you want to customize the TextureView, use `as_view == False` and then
-    call `get_view()` on the returned Texture, providing the desired arguments.
-    """
+def to_pygfx(cm: Colormap, N: int = 256) -> pygfx.Texture:
+    """Return a pygfx Texture."""
     import pygfx
 
     # TODO: check whether pygfx has it's own stop-aware interpolation,
     # and if so, use that instead of .lut()
     # (get_view has a filter argument... but I don't know whether it will take
     # care of the stops)
-    tex = pygfx.Texture(cm.lut(N).astype(np.float32), dim=1)
-    return tex.get_view() if as_view else tex
+    return pygfx.Texture(cm.lut(N).astype(np.float32), dim=1)
 
 
 def to_plotly(cm: Colormap) -> list[list[float | str]]:
