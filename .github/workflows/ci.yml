@@ -58,7 +58,7 @@ jobs:
         if: matrix.platform == 'ubuntu-latest'
         run: |
           sudo apt-get update -y -qq
-          sudo apt install -y libegl1-mesa libgl1-mesa-dri
+          sudo apt install -y libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
       # FIXME: use better strategy
       - name: Install Windows OpenGL
