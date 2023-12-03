@@ -18,7 +18,7 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
 "`ColormapLike`".  Briefly, valid arguments are of type:
 
 - [⬇️ `str`](#str)
-- [⬇️ `Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](../colors/#colorlike-objects))*
+- [⬇️ `Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](colors.md#colorlike-objects))*
 - [⬇️ `numpy.ndarray`](#numpyndarray)
 - [⬇️ `dict`](#dict)
 - [⬇️ `Callable[[ArrayLike], ArrayLike]`](#callable)
@@ -42,7 +42,7 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
 
 ### `Iterable[ColorLike | tuple]`
 
-- An [`Iterable`][typing.Iterable] of [`ColorLike`](./colors/#colorlike-objects) objects:
+- An [`Iterable`][typing.Iterable] of [`ColorLike`](colors.md#colorlike-objects) objects:
 
     - `Colormap(['blue', 'yellow', 'red'])` {{ cmap_expr: ['blue', 'yellow', 'red'] }}
     - `Colormap([(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"])` {{ cmap_expr: [(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"] }}
