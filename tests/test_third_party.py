@@ -79,7 +79,7 @@ def test_plotly() -> None:
     px.imshow(IMG, color_continuous_scale=CMAP.to_plotly())
 
 
-# @pytest.mark.skipif(bool(os.getenv("CI")), reason="segfaults")
+@pytest.mark.skipif(bool(os.getenv("CI")), reason="need to fix drivers")
 def test_pygfx(qapp: "QApplication") -> None:
     from qtpy.QtWidgets import QWidget
 

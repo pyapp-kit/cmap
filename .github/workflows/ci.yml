@@ -54,11 +54,6 @@ jobs:
           cache: "pip"
 
       - uses: tlambert03/setup-qt-libs@v1
-      - name: Install llvmpipe and lavapipe for offscreen canvas
-        if: matrix.platform == 'ubuntu-latest'
-        run: |
-          sudo apt-get update -y -qq
-          sudo apt install -y libegl1-mesa libgl1-mesa-dri libxcb-xfixes0-dev mesa-vulkan-drivers
 
       # FIXME: use better strategy
       - name: Install Windows OpenGL
