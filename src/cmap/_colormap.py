@@ -472,16 +472,6 @@ class Colormap:
         """Return a vispy colormap."""
         return _external.to_vispy(self)
 
-    @overload
-    def to_pygfx(
-        self, N: int = ..., *, as_view: Literal[True] = ...
-    ) -> pygfx.TextureView:
-        ...
-
-    @overload
-    def to_pygfx(self, N: int = ..., *, as_view: Literal[False]) -> pygfx.Texture:
-        ...
-
     def to_pygfx(self, N: int = 256, *, as_view: bool | None = None) -> pygfx.Texture:
         """Return a pygfx Texture."""
         if as_view is not None:

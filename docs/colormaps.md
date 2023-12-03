@@ -199,8 +199,7 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
     Colormap("viridis").to_pygfx()
     ```
 
-    Returns an instance of `pygfx.TextureView` (unless `as_view` is `False`, in which case
-    a `pygfx.Texture` is returned).
+    Returns an instance of `pygfx.Texture`.
 
 - [plotly](https://plotly.com/python/)
 
