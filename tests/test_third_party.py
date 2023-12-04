@@ -19,6 +19,8 @@ if not (os.getenv("CI") or os.getenv("THIRD")):
 
 CMAP = Colormap(["black", (0, 1, 0), "00FFFF33", "w"])
 IMG = np.random.rand(10, 10).astype("float32")
+CI = bool(os.getenv("CI"))
+LINUX = sys.platform.startswith("linux")
 
 
 def test_colour_support() -> None:
@@ -79,7 +81,7 @@ def test_plotly() -> None:
     px.imshow(IMG, color_continuous_scale=CMAP.to_plotly())
 
 
-@pytest.mark.skipif(bool(os.getenv("CI")), reason="need to fix drivers")
+@pytest.mark.skipif(CI and LINUX, reason="need to fix drivers")
 def test_pygfx(qapp: "QApplication") -> None:
     from qtpy.QtWidgets import QWidget
 
