@@ -66,7 +66,7 @@ jobs:
         run: |
           python -m pip install -U pip
           python -m pip install -e .[test,thirdparty] ${{ github.event_name == 'schedule' && '--pre' || ''  }}
-          python -m pip install pyside2
+          python -m pip install pyqt6
 
       - name: Run test
         uses: aganders3/headless-gui@v1.2
