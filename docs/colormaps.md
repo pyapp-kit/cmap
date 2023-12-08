@@ -234,6 +234,15 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
 
     Returns a list of hexadecimal color strings.
 
+- [pyqtgraph](https://pyqtgraph.org/)
+
+    ```python
+    Colormap("viridis").to_pyqtgraph()
+    ```
+
+    Returns an instance of
+    [`pyqtgraph.ColorMap`](https://pyqtgraph.readthedocs.io/en/latest/api_reference/colormap.html#pyqtgraph.ColorMap)
+
 ## Usage with pydantic
 
 `Colormap` can be used as a field type in

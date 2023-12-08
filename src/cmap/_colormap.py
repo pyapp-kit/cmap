@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     import matplotlib.figure
     import napari.utils.colormaps
     import pygfx
+    import pyqtgraph
     import vispy.color
     from numpy.typing import ArrayLike, NDArray
     from typing_extensions import TypeAlias, TypedDict, TypeGuard
@@ -533,6 +534,10 @@ class Colormap:
             The figure object containing the plot.
         """
         return _external.viscm_plot(self, dpi, dest)
+
+    def to_pyqtgraph(self) -> pyqtgraph.ColorMap:
+        """Return a `pyqtgraph.ColorMap`."""
+        return _external.to_pyqtgraph(self)
 
 
 class ColorStop(NamedTuple):

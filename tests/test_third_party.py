@@ -140,6 +140,16 @@ def test_viscm(tmp_path: Path) -> None:
     assert out.is_file()
 
 
+def test_pyqtgraph() -> None:
+    pytest.importorskip("pyqtgraph")
+    cmap1 = Colormap(["red", "green", "blue"])
+    cm = cmap1.to_pyqtgraph()
+
+    cm.getGradient()
+    cm.linearize()
+    cm.reverse()
+
+
 # def microvis_imshow(img_data: np.ndarray, cmap: cmap.Colormap) -> None:
 #     from microvis import _util, imshow
 

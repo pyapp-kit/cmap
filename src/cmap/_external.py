@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from matplotlib.colors import LinearSegmentedColormap as MplLinearSegmentedColormap
     from matplotlib.figure import Figure as MplFigure
     from napari.utils.colormaps import Colormap as NapariColormap
+    from pyqtgraph import ColorMap as PyqtgraphColorMap
     from vispy.color import Colormap as VispyColormap
 
     from ._color import Color
@@ -94,6 +95,17 @@ def to_altair(cm: Colormap, N: int = 256) -> list[str]:
     Suitable for passing to the range parameter of altair.Scale.
     """
     return [color.hex for color in cm.iter_colors(N)]
+
+
+def to_pyqtgraph(cm: Colormap) -> PyqtgraphColorMap:
+    """Return a `pyqtgraph.Colormap`."""
+    from pyqtgraph import ColorMap
+
+    colors = (cm.color_stops.color_array * 255).astype(np.uint8)
+    return ColorMap(cm.color_stops.stops, colors, name=cm.name)
+
+
+# ==========================================
 
 
 def viscm_plot(

@@ -92,8 +92,17 @@ to an integer array (like an image) you must apply any contrast limits and resca
 
 ## Third Party Library Support
 
-The `cmap.Colormap` object has convenience methods that allow it to be used with a number of third-party colormap objects (like
-`matplotlib`, `vispy`, `napari`, `plotly`, etc...).
+The `cmap.Colormap` object has convenience methods that export it to a number of known
+third-party colormap objects, including:
+
+- [matplotlib](https://matplotlib.org/)
+- [napari](https://napari.org/)
+- [vispy](https://vispy.org/)
+- [pygfx](https://pygfx.readthedocs.io/en/latest/) (& [fastplotlib](https://github.com/fastplotlib/fastplotlib))
+- [plotly](https://plotly.com/python/)
+- [bokeh](https://docs.bokeh.org/en/latest/)
+- [altair](https://altair-viz.github.io/)
+- [pyqtgraph](https://www.pyqtgraph.org/)
 
 See [documentation](https://cmap-docs.readthedocs.io/en/latest/colormaps/#usage-with-external-visualization-libraries)
 for details.
@@ -103,7 +112,6 @@ If you would like to see support added for a particular library, please open an 
 ## Alternatives
 
 Other libraries providing colormaps:
-
 
 - [matplotlib](https://matplotlib.org/stable/tutorials/colors/colormaps.html)
 - [seaborn](https://seaborn.pydata.org/tutorial/color_palettes.html)  (subclasses matplotlib)
@@ -128,4 +136,4 @@ Other libraries providing colormaps:
 - [Color Map Advice for Scientific Visualization](https://www.kennethmoreland.com/color-advice/)
 - <https://colorcet.com/>, Peter Kovesi
 - [Kovesi: Good Colour Maps: How to Design Them.](https://arxiv.org/abs/1509.03700)
-- https://www.fabiocrameri.ch/colourmaps/
+- <https://www.fabiocrameri.ch/colourmaps/>
