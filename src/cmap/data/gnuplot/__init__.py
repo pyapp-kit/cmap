@@ -51,6 +51,7 @@ https://gnuplot.sourceforge.net
 #   33: |2*x - 0.5|    34: 2*x            35: 2*x - 0.5
 #   36: 2*x - 1
 """
+
 from functools import partial
 from typing import TYPE_CHECKING, Sequence
 

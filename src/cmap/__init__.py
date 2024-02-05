@@ -1,4 +1,5 @@
 """Scientific colormaps for python, without dependencies."""
+
 from importlib.metadata import PackageNotFoundError, version
 from typing import TYPE_CHECKING, Iterator, Mapping
 

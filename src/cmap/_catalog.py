@@ -5,6 +5,7 @@ in the data directory.
 
 TODO: this needs to be cleaned up, and documented better.
 """
+
 from __future__ import annotations
 
 import json
