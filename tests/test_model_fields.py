@@ -6,16 +6,20 @@ import pytest
 
 try:
     import pydantic
-    import pydantic.color
 except ImportError:
     pytest.skip("pydantic not installed", allow_module_level=True)
+
+try:
+    import pydantic_extra_types.color as pydantic_color
+except ImportError:
+    import pydantic.color as pydantic_color
 
 from cmap import Color, Colormap
 from cmap._colormap import ColorStops
 
 
 def test_pydantic_casting() -> None:
-    assert Color(pydantic.color.Color("red")) is Color("red")
+    assert Color(pydantic_color.Color("red")) is Color("red")
 
 
 # we're interested in testing serializeability...

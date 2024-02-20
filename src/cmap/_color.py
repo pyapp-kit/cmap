@@ -337,10 +337,12 @@ def parse_rgba(value: Any) -> RGBA:
         return RGBA8(r, g, b).to_float()
 
     # support for pydantic.color.Color
-    pydantic_color = sys.modules.get("pydantic.color")
-    if pydantic_color and isinstance(value, pydantic_color.Color):
-        r, g, b, *alpha = value.as_rgb_tuple()
-        return RGBA(r / 255, g / 255, b / 255, alpha[0] if alpha else 1)
+    for mod in ("pydantic", "pydantic_extra_types"):
+        if (pydantic_color := sys.modules.get(f"{mod}.color")) and isinstance(
+            value, pydantic_color.Color
+        ):
+            r, g, b, *alpha = value.as_rgb_tuple()
+            return RGBA(r / 255, g / 255, b / 255, alpha[0] if alpha else 1)
 
     # support for colour.Color
     colour_color = sys.modules.get("colour")
