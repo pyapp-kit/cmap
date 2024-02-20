@@ -53,6 +53,7 @@ thirdparty = [
     "napari",
     "plotly",
     "pydantic",
+    "pydantic-extra-types",
     "pygfx",
     "pytest-qt",
     "rich",
