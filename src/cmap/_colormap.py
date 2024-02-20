@@ -4,7 +4,7 @@ import base64
 import warnings
 from functools import partial
 from numbers import Number
-from typing import TYPE_CHECKING, NamedTuple, Sequence, cast, overload
+from typing import TYPE_CHECKING, Any, NamedTuple, Sequence, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -14,7 +14,7 @@ from ._catalog import Catalog
 from ._color import Color
 
 if TYPE_CHECKING:
-    from typing import Any, Callable, Iterable, Iterator, Literal, Union
+    from typing import Callable, Iterable, Iterator, Literal, Union
 
     import bokeh.models
     import matplotlib.colors
@@ -23,6 +23,8 @@ if TYPE_CHECKING:
     import pygfx
     import vispy.color
     from numpy.typing import ArrayLike, NDArray
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import CoreSchema
     from typing_extensions import TypeAlias, TypedDict, TypeGuard
 
     from ._catalog import CatalogItem
@@ -196,12 +198,14 @@ class Colormap:
         N: int = 256,
         gamma: float = 1,
         bytes: bool = False,
-    ) -> NDArray[np.float64]: ...
+    ) -> NDArray[np.float64]:
+        ...
 
     @overload
     def __call__(
         self, x: float, *, N: int = 256, gamma: float = 1, bytes: bool = False
-    ) -> Color: ...
+    ) -> Color:
+        ...
 
     def __call__(
         self,
@@ -441,6 +445,15 @@ class Colormap:
         return _external.rich_print_colormap(self)  # side effect
 
     # -------------------------- PYDANTIC SUPPORT -----------------------------------
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        from pydantic_core import core_schema
+
+        schema = handler(Any)
+        return core_schema.no_info_after_validator_function(cls._validate, schema)
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:
@@ -691,13 +704,16 @@ class ColorStops(Sequence[ColorStop]):
         return len(self._stops)
 
     @overload
-    def __getitem__(self, key: int) -> ColorStop: ...
+    def __getitem__(self, key: int) -> ColorStop:
+        ...
 
     @overload
-    def __getitem__(self, key: slice) -> ColorStops: ...
+    def __getitem__(self, key: slice) -> ColorStops:
+        ...
 
     @overload
-    def __getitem__(self, key: tuple) -> np.ndarray: ...
+    def __getitem__(self, key: tuple) -> np.ndarray:
+        ...
 
     def __getitem__(
         self, key: int | slice | tuple
@@ -855,6 +871,15 @@ class ColorStops(Sequence[ColorStop]):
         rev_stops = self._stops[::-1]
         rev_stops[:, 0] = 1 - rev_stops[:, 0]
         return type(self)(rev_stops)
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        from pydantic_core import core_schema
+
+        schema = handler(Any)
+        return core_schema.no_info_after_validator_function(cls.parse, schema)
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:

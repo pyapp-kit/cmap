@@ -25,6 +25,8 @@ if TYPE_CHECKING:
     from typing import Union
 
     import numpy.typing as npt
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import CoreSchema
     from typing_extensions import TypeAlias
 
     # not used internally... but available for typing
@@ -477,6 +479,15 @@ class Color:
     def __rich_repr__(self) -> Any:
         """Provide a rich representation of the color, with color swatch."""
         return _external.rich_print_color(self)
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        from pydantic_core import core_schema
+
+        schema = handler(Any)
+        return core_schema.no_info_after_validator_function(cls, schema)
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:

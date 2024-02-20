@@ -3,9 +3,15 @@ from typing import ClassVar
 
 import numpy as np
 import pytest
+from pydantic_compat import BaseModel
+
+from cmap import Color, Colormap
+from cmap._colormap import ColorStops
 
 try:
     import pydantic
+
+    V2 = int(pydantic.__version__.split(".")[0]) >= 2
 except ImportError:
     pytest.skip("pydantic not installed", allow_module_level=True)
 
@@ -14,9 +20,6 @@ try:
 except ImportError:
     import pydantic.color as pydantic_color
 
-from cmap import Color, Colormap
-from cmap._colormap import ColorStops
-
 
 def test_pydantic_casting() -> None:
     assert Color(pydantic_color.Color("red")) is Color("red")
@@ -24,8 +27,9 @@ def test_pydantic_casting() -> None:
 
 # we're interested in testing serializeability...
 # Color can serialized with `str`, and Colormap can be serialized with `as_dict`
+@pytest.mark.filterwarnings("ignore:`json_encoders` is deprecated")
 def test_pydantic_validate() -> None:
-    class MyModel(pydantic.BaseModel):
+    class MyModel(BaseModel):
         color: Color
         colormap: Colormap
 
@@ -64,4 +68,6 @@ def test_psygnal_serialization() -> None:
     obj = MyModel(
         color=np.array([1, 0, 0]), colormap=["r", (0.7, "b"), "w"], stops="green_r"
     )
-    assert MyModel.parse_raw(obj.json()) == obj
+
+    data = obj.model_dump_json() if V2 else obj.json()
+    assert MyModel.parse_raw(data) == obj
