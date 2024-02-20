@@ -18,6 +18,11 @@ from typing import (
 
 import numpy as np
 
+try:
+    from pydantic import model_serializer
+except ImportError:
+    model_serializer = lambda x: x  # noqa: E731
+
 from . import _external
 
 if TYPE_CHECKING:
@@ -25,6 +30,8 @@ if TYPE_CHECKING:
     from typing import Union
 
     import numpy.typing as npt
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import CoreSchema
     from typing_extensions import TypeAlias
 
     # not used internally... but available for typing
@@ -337,10 +344,12 @@ def parse_rgba(value: Any) -> RGBA:
         return RGBA8(r, g, b).to_float()
 
     # support for pydantic.color.Color
-    pydantic_color = sys.modules.get("pydantic.color")
-    if pydantic_color and isinstance(value, pydantic_color.Color):
-        r, g, b, *alpha = value.as_rgb_tuple()
-        return RGBA(r / 255, g / 255, b / 255, alpha[0] if alpha else 1)
+    for mod in ("pydantic", "pydantic_extra_types"):
+        if (pydantic_color := sys.modules.get(f"{mod}.color")) and isinstance(
+            value, pydantic_color.Color
+        ):
+            r, g, b, *alpha = value.as_rgb_tuple()
+            return RGBA(r / 255, g / 255, b / 255, alpha[0] if alpha else 1)
 
     # support for colour.Color
     colour_color = sys.modules.get("colour")
@@ -475,6 +484,20 @@ class Color:
     def __rich_repr__(self) -> Any:
         """Provide a rich representation of the color, with color swatch."""
         return _external.rich_print_color(self)
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        from pydantic_core import core_schema
+
+        schema = handler(Any)
+
+        return core_schema.no_info_after_validator_function(
+            cls,
+            schema,
+            serialization=core_schema.plain_serializer_function_ser_schema(str),
+        )
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:

@@ -4,7 +4,7 @@ import base64
 import warnings
 from functools import partial
 from numbers import Number
-from typing import TYPE_CHECKING, NamedTuple, Sequence, cast, overload
+from typing import TYPE_CHECKING, Any, NamedTuple, Sequence, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -14,7 +14,7 @@ from ._catalog import Catalog
 from ._color import Color
 
 if TYPE_CHECKING:
-    from typing import Any, Callable, Iterable, Iterator, Literal, Union
+    from typing import Callable, Iterable, Iterator, Literal, Union
 
     import bokeh.models
     import matplotlib.colors
@@ -24,6 +24,8 @@ if TYPE_CHECKING:
     import pyqtgraph
     import vispy.color
     from numpy.typing import ArrayLike, NDArray
+    from pydantic import GetCoreSchemaHandler
+    from pydantic_core import CoreSchema
     from typing_extensions import TypeAlias, TypedDict, TypeGuard
 
     from ._catalog import CatalogItem
@@ -444,6 +446,18 @@ class Colormap:
     # -------------------------- PYDANTIC SUPPORT -----------------------------------
 
     @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        from pydantic_core import core_schema
+
+        schema = handler(Any)
+        ser = core_schema.plain_serializer_function_ser_schema(lambda x: x.as_dict())
+        return core_schema.no_info_after_validator_function(
+            cls._validate, schema, serialization=ser
+        )
+
+    @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:
         yield cls._validate  # pydantic validator
 
@@ -860,6 +874,20 @@ class ColorStops(Sequence[ColorStop]):
         rev_stops = self._stops[::-1]
         rev_stops[:, 0] = 1 - rev_stops[:, 0]
         return type(self)(rev_stops)
+
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: Any, handler: GetCoreSchemaHandler
+    ) -> CoreSchema:
+        from pydantic_core import core_schema
+
+        schema = handler(Any)
+        ser = core_schema.plain_serializer_function_ser_schema(
+            lambda x: [(p, list(c)) for p, c in x]
+        )
+        return core_schema.no_info_after_validator_function(
+            cls.parse, schema, serialization=ser
+        )
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:
