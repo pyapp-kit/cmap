@@ -74,7 +74,7 @@ jobs:
           run: pytest -v --cov=cmap --cov-report=xml --cov-report=term-missing
 
       - name: Coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
 
   deploy:
     name: Deploy
