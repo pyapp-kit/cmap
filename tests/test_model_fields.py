@@ -33,9 +33,11 @@ def test_pydantic_validate() -> None:
         color: Color
         colormap: Colormap
 
-        class Config:
-            # since json.dump is not extendable, this just needs to be documented.
-            json_encoders: ClassVar[dict] = {Color: str, Colormap: Colormap.as_dict}
+        if V2:
+
+            class Config:
+                # since json.dump is not extendable, this just needs to be documented.
+                json_encoders: ClassVar[dict] = {Color: str, Colormap: Colormap.as_dict}
 
     obj = MyModel(color=np.array([1.0, 0, 0]), colormap=["r", (0.7, "b"), "w"])
     assert obj.color is Color("red")
@@ -53,7 +55,10 @@ def test_pydantic_validate() -> None:
             "[1.0, [1.0, 1.0, 1.0, 1]]]}"
             "}"
         )
-    assert MyModel.parse_raw(serialized) == obj
+    if hasattr(MyModel, "model_validate_json"):
+        assert MyModel.model_validate_json(serialized) == obj
+    else:
+        assert MyModel.parse_raw(serialized) == obj
 
 
 def test_psygnal_serialization() -> None:
@@ -70,4 +75,8 @@ def test_psygnal_serialization() -> None:
     )
 
     data = obj.model_dump_json() if V2 else obj.json()
-    assert MyModel.parse_raw(data) == obj
+
+    if hasattr(MyModel, "model_validate_json"):
+        assert MyModel.model_validate_json(data) == obj
+    else:
+        assert MyModel.parse_raw(data) == obj

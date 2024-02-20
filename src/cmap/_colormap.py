@@ -453,7 +453,10 @@ class Colormap:
         from pydantic_core import core_schema
 
         schema = handler(Any)
-        return core_schema.no_info_after_validator_function(cls._validate, schema)
+        ser = core_schema.plain_serializer_function_ser_schema(lambda x: x.as_dict())
+        return core_schema.no_info_after_validator_function(
+            cls._validate, schema, serialization=ser
+        )
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:
@@ -879,7 +882,12 @@ class ColorStops(Sequence[ColorStop]):
         from pydantic_core import core_schema
 
         schema = handler(Any)
-        return core_schema.no_info_after_validator_function(cls.parse, schema)
+        ser = core_schema.plain_serializer_function_ser_schema(
+            lambda x: [(p, list(c)) for p, c in x]
+        )
+        return core_schema.no_info_after_validator_function(
+            cls.parse, schema, serialization=ser
+        )
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:

@@ -18,6 +18,11 @@ from typing import (
 
 import numpy as np
 
+try:
+    from pydantic import model_serializer
+except ImportError:
+    model_serializer = lambda x: x  # noqa: E731
+
 from . import _external
 
 if TYPE_CHECKING:
@@ -487,7 +492,12 @@ class Color:
         from pydantic_core import core_schema
 
         schema = handler(Any)
-        return core_schema.no_info_after_validator_function(cls, schema)
+
+        return core_schema.no_info_after_validator_function(
+            cls,
+            schema,
+            serialization=core_schema.plain_serializer_function_ser_schema(str),
+        )
 
     @classmethod
     def __get_validators__(cls) -> Iterator[Callable]:
