@@ -69,7 +69,7 @@ jobs:
           python -m pip install pyqt6
 
       - name: Run test
-        uses: aganders3/headless-gui@v2.1
+        uses: aganders3/headless-gui@v2.2
         with:
           run: pytest -v --cov=cmap --cov-report=xml --cov-report=term-missing
 
