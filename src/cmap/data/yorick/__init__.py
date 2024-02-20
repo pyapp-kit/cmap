@@ -53,6 +53,7 @@ Numerical Recipes.  A small amount of code in Gist was adapted from
 the X11R4 release, copyright M.I.T. -- the complete copyright notice
 may be found in the (unused) file Gist/host.c.
 """
+
 import numpy as np
 
 # https://github.com/LLNL/yorick/blob/fda4a1ed1e2441e30de88e01b251b822f3604b1f/g/earth.gp

@@ -2,6 +2,7 @@
 
 https://github.com/vispy/vispy/blob/356800a784f0dcb7428aa2ade3c9025a8bc2d5cc/vispy/color/colormap.py
 """
+
 from typing import TYPE_CHECKING
 
 import numpy as np

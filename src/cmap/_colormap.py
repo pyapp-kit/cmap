@@ -197,14 +197,12 @@ class Colormap:
         N: int = 256,
         gamma: float = 1,
         bytes: bool = False,
-    ) -> NDArray[np.float64]:
-        ...
+    ) -> NDArray[np.float64]: ...
 
     @overload
     def __call__(
         self, x: float, *, N: int = 256, gamma: float = 1, bytes: bool = False
-    ) -> Color:
-        ...
+    ) -> Color: ...
 
     def __call__(
         self,
@@ -698,16 +696,13 @@ class ColorStops(Sequence[ColorStop]):
         return len(self._stops)
 
     @overload
-    def __getitem__(self, key: int) -> ColorStop:
-        ...
+    def __getitem__(self, key: int) -> ColorStop: ...
 
     @overload
-    def __getitem__(self, key: slice) -> ColorStops:
-        ...
+    def __getitem__(self, key: slice) -> ColorStops: ...
 
     @overload
-    def __getitem__(self, key: tuple) -> np.ndarray:
-        ...
+    def __getitem__(self, key: tuple) -> np.ndarray: ...
 
     def __getitem__(
         self, key: int | slice | tuple
