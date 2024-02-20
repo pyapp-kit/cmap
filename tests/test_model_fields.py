@@ -3,13 +3,13 @@ from typing import ClassVar
 
 import numpy as np
 import pytest
-from pydantic_compat import BaseModel
 
 from cmap import Color, Colormap
 from cmap._colormap import ColorStops
 
 try:
     import pydantic
+    from pydantic_compat import BaseModel
 
     V2 = int(pydantic.__version__.split(".")[0]) >= 2
 except ImportError:

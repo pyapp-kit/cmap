@@ -30,6 +30,7 @@ def test_matplotlib_name_parity() -> None:
 
 def test_napari_name_parity() -> None:
     # might need to importorskip later
+    pytest.importorskip("napari")
     import napari.utils.colormaps.colormap_utils as ncm
 
     napari_cmaps: Set[str] = set(ncm.AVAILABLE_COLORMAPS)
