@@ -136,6 +136,7 @@ filterwarnings = [
     "ignore:`np.bool8` is a deprecated:DeprecationWarning",
     "ignore:datetime.datetime.utcfromtimestamp:DeprecationWarning",
     "ignore::DeprecationWarning:docstring_parser",
+    "ignore:Pyarrow will become a required dependency of pandas"
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
