@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install -U pip
-          python -m pip install -e .[test,thirdparty] ${{ github.event_name == 'schedule' && '--pre' || ''  }}
+          python -m pip install -e .[ci,thirdparty] ${{ github.event_name == 'schedule' && '--pre' || ''  }}
           python -m pip install pyqt6
 
       - name: Run test

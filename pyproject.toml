@@ -43,9 +43,13 @@ docs = [
 ]
 test = [
     "pytest>=6.0",
-    "pytest-cov",
     "numba; python_version<'3.11'",
     "matplotlib",
+    "colorspacious",
+]
+ci = [
+    "cmap[test]",
+    "pytest-cov",
 ]
 thirdparty = [
     "bokeh",
