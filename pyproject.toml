@@ -62,6 +62,7 @@ test_thirdparty = [
     "pyqtgraph",
 ]
 dev = [
+    "cmap[test_thirdparty]",
     "black",
     "ipython",
     "mypy",

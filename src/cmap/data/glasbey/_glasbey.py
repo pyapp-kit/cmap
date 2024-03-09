@@ -112,11 +112,11 @@ def create_palette(
         -- consumable by most plotting libraries.
     """
     try:
-        import colorspacious  # type: ignore
-    except ImportError:  # pragma: no cover
+        import colorspacious  # noqa: F401
+    except ImportError as e:  # pragma: no cover
         raise ImportError(
             "The colorspacious package is required to run glasbey.create_palette"
-        )
+        ) from e
 
     if grid_space.lower() == "jch":
         colors = jch_grid(
