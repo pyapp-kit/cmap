@@ -9,6 +9,11 @@ import pytest
 
 from cmap import Color, Colormap
 
+try:
+    import pytestqt
+except ImportError:
+    pytestqt = None
+
 if TYPE_CHECKING:
     from qtpy.QtWidgets import QApplication
 
@@ -52,6 +57,7 @@ def test_matplotlib() -> None:
     plt.imshow(IMG, cmap=CMAP.to_mpl())
 
 
+@pytest.mark.skipif(pytestqt is None, reason="pytest-qt not installed")
 @pytest.mark.filterwarnings("ignore")
 def test_napari(qapp: "QApplication") -> None:
     napari = pytest.importorskip("napari")
@@ -60,6 +66,7 @@ def test_napari(qapp: "QApplication") -> None:
     v.close()
 
 
+@pytest.mark.skipif(pytestqt is None, reason="pytest-qt not installed")
 def test_vispy(qapp: "QApplication") -> None:
     scene = pytest.importorskip("vispy.scene")
 
@@ -74,6 +81,7 @@ def test_vispy(qapp: "QApplication") -> None:
     canvas.close()
 
 
+@pytest.mark.skipif(pytestqt is None, reason="pytest-qt not installed")
 @pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
 def test_plotly() -> None:
     px = pytest.importorskip("plotly.express")
@@ -81,6 +89,7 @@ def test_plotly() -> None:
     px.imshow(IMG, color_continuous_scale=CMAP.to_plotly())
 
 
+@pytest.mark.skipif(pytestqt is None, reason="pytest-qt not installed")
 @pytest.mark.skipif(CI and LINUX, reason="need to fix drivers")
 def test_pygfx(qapp: "QApplication") -> None:
     from qtpy.QtWidgets import QWidget
@@ -132,6 +141,7 @@ def test_altair() -> None:
 
 
 def test_viscm(tmp_path: Path) -> None:
+    pytest.importorskip("viscm")
     # NOT using importorskip here because there IS an error import viscm
     # in the current release
     cmap1 = Colormap(["red", "green", "blue"])
