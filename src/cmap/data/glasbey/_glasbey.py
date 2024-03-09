@@ -111,6 +111,13 @@ def create_palette(
         The palette created, either as hex colors, or an array of floats of RGB values
         -- consumable by most plotting libraries.
     """
+    try:
+        import colorspacious  # type: ignore
+    except ImportError:  # pragma: no cover
+        raise ImportError(
+            "The colorspacious package is required to run glasbey.create_palette"
+        )
+
     if grid_space.lower() == "jch":
         colors = jch_grid(
             grid_size=grid_size,

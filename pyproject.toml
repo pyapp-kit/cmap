@@ -41,13 +41,17 @@ docs = [
     'imageio',
     'colorcet',
 ]
-test = [
+test_min = [
     "pytest>=6.0",
+]
+test = [
+    "cmap[test_min]",
     "pytest-cov",
-    "numba; python_version<'3.11'",
-    "matplotlib",
+    "numba; python_version<'3.13'",
 ]
 thirdparty = [
+    "matplotlib",
+    "colorspacious",
     "bokeh",
     "colour",
     "napari",

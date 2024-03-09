@@ -1,6 +1,10 @@
 import numpy as np
 import pytest
-from matplotlib.figure import Figure as MplFigure
+
+try:
+    from matplotlib.figure import Figure as MplFigure
+except ImportError:
+    MplFigure = None
 
 from cmap import Colormap, _util
 
@@ -14,23 +18,27 @@ def test_ensure_cmap() -> None:
     cm2 = _util._ensure_cmap(cm)
     assert cm is cm2
 
-
+@pytest.mark.skipif(MplFigure is None, reason="matplotlib not installed")
 def test_plot() -> None:
     fig = _util.plot_color_gradients([CMAP_NAME], compare=True)
     assert isinstance(fig, MplFigure)
 
 
+@pytest.mark.skipif(MplFigure is None, reason="matplotlib not installed")
 def test_plot_rgb() -> None:
     fig = _util.plot_rgb(CMAP_NAME)
     assert isinstance(fig, MplFigure)
 
 
 def test_calc_lightness() -> None:
+    pytest.importorskip("colorspacious")
     lightness = _util.calc_lightness(CMAP_NAME)
     assert isinstance(lightness, np.ndarray)
 
 
+@pytest.mark.skipif(MplFigure is None, reason="matplotlib not installed")
 def test_plot_lightness() -> None:
+    pytest.importorskip("colorspacious")
     fig = _util.plot_lightness(CMAP_NAME)
     assert isinstance(fig, MplFigure)
 
@@ -63,6 +71,7 @@ def test_circlesineramp() -> None:
 
 
 def test_report() -> None:
+    pytest.importorskip("colorspacious")
     report = _util.report(CMAP_INSTANCE)
     assert isinstance(report, dict)
 

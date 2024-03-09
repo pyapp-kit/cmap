@@ -21,9 +21,8 @@ if TYPE_CHECKING:
 catalog = Colormap.catalog()
 
 
+@pytest.mark.skipif(not MPL_CMAPS, reason="matplotlib not installed")
 def test_matplotlib_name_parity() -> None:
-    if not MPL_CMAPS:
-        pytest.skip("matplotlib not installed")
     if missing := (MPL_CMAPS - set(catalog._original_names)):
         raise AssertionError(f"missing cmap keys from matplotlib: {missing}")
 

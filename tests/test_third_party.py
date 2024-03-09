@@ -53,7 +53,6 @@ def test_matplotlib() -> None:
 
 
 @pytest.mark.filterwarnings("ignore")
-@pytest.mark.skipif(sys.version_info >= (3, 12), reason="napari not working on py3.12")
 def test_napari(qapp: "QApplication") -> None:
     napari = pytest.importorskip("napari")
 

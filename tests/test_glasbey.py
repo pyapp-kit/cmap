@@ -28,6 +28,7 @@ def test_glasbey_create_palette(
     grid_size: int | tuple[int, int, int],
     cvd_severity: float | None,
 ) -> None:
+    pytest.importorskip("colorspacious")
     with nullcontext() if use_numba else pytest.warns(UserWarning):
         from cmap.data.glasbey import create_palette
 
