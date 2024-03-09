@@ -63,12 +63,10 @@ test_thirdparty = [
 ]
 dev = [
     "cmap[test_thirdparty]",
-    "black",
     "ipython",
     "mypy",
     "pdbpp",
     "pre-commit",
-    "pytest-cov",
     "pytest",
     "rich",
     "ruff",
@@ -93,12 +91,15 @@ include = ["/src", "/tests", "CHANGELOG.md"]
 [tool.ruff]
 line-length = 88
 target-version = "py38"
-fix = true
 src = ["src"]
+
+[tool.ruff.lint]
+pydocstyle = { convention = "numpy" }
 select = [
     "E",   # style errors
     "F",   # flakes
     "D",   # pydocstyle
+    "D417", # Missing argument descriptions in Docstrings
     "I",   # isort
     "UP",  # pyupgrade
     "S",   # bandit
@@ -110,18 +111,13 @@ select = [
     "TCH", # flake8-type-checking
     "TID", # flake8-tidy-imports
 ]
-[tool.ruff.lint]
-pydocstyle = { convention = "numpy" }
-extend-select = [
-    "D417", # Missing argument descriptions in Docstrings
-]
-extend-ignore = [
+ignore = [
     "D100", # Missing docstring in public module
     "D104", # Missing docstring in public module
     "D401", # First line should be in imperative mood (remove to opt in)
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/*.py" = ["D", "S101"]
 "src/cmap/data/**/*.py" = ["E501"]
 "docs/*.py" = ["E501"]
