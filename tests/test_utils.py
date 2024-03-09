@@ -18,6 +18,7 @@ def test_ensure_cmap() -> None:
     cm2 = _util._ensure_cmap(cm)
     assert cm is cm2
 
+
 @pytest.mark.skipif(MplFigure is None, reason="matplotlib not installed")
 def test_plot() -> None:
     fig = _util.plot_color_gradients([CMAP_NAME], compare=True)
