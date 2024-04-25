@@ -159,8 +159,8 @@ class Colormap:
                     )
             else:
                 stops = _parse_colorstops(info.data)
-            stops._interpolation = _norm_interp(interpolation or info.interpolation)
-            interpolation = stops._interpolation
+            if interpolation is None:
+                interpolation = info.interpolation
             if rev:
                 stops = stops.reversed()
         elif isinstance(value, Colormap):
@@ -168,7 +168,8 @@ class Colormap:
             identifier = identifier or value.identifier
             self.info = value.info
             category = category or value.category
-            interpolation = interpolation or value.interpolation
+            if interpolation is None:
+                interpolation = value.interpolation
             stops = value.color_stops
             self.info = None
         else:
@@ -179,13 +180,11 @@ class Colormap:
         if not name:
             name = value if isinstance(value, str) else "custom colormap"
 
+        stops._interpolation = self.interpolation = _norm_interp(interpolation)
         self.color_stops = stops
         self.name = name
         self.identifier = _make_identifier(identifier or name)
         self.category = category
-        # TODO: this just clobbers the interpolation from the user...
-        # need to unify with the catalog
-        self.interpolation = _norm_interp(interpolation)
 
         self._lut_cache: dict[tuple[int, float], np.ndarray] = {}
         self._initialized = True
@@ -562,7 +561,7 @@ class ColorStop(NamedTuple):
 def _norm_interp(interp: Interpolation | bool | str | None) -> Interpolation:
     if isinstance(interp, bool):
         return "linear" if interp else "nearest"
-    elif not interp:
+    if interp is None:
         return "linear"
     if interp not in {"linear", "nearest"}:
         raise ValueError(

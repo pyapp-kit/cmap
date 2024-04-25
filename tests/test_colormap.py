@@ -196,3 +196,11 @@ def test_cmap_from_cmap() -> None:
     cm = Colormap(("red", "blue"), name="mymap")
     cm2 = Colormap(cm)
     assert cm2.name == "mymap"
+
+
+def test_interp_arg_passed_to_stops() -> None:
+    cm = Colormap(["#364B9A", "#4A7BB7", "#6EA6CD", "#98CAE1"], interpolation=False)
+    assert cm.color_stops._interpolation == "nearest"
+
+    cm = Colormap(["#364B9A", "#4A7BB7", "#6EA6CD", "#98CAE1"])
+    assert cm.color_stops._interpolation == "linear"
