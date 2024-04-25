@@ -73,7 +73,7 @@ jobs:
       - name: Install third-party dependencies
         run: |
           python -m pip install -e .[test_thirdparty] ${{ github.event_name == 'schedule' && '--pre' || ''  }}
-          python -m pip install pyqt6
+          python -m pip install pyside6
 
       - name: Run test
         uses: aganders3/headless-gui@v2.2
