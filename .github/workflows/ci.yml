@@ -58,15 +58,8 @@ jobs:
 
       - uses: tlambert03/setup-qt-libs@v1
 
-      # FIXME: use better strategy
-      - name: Install Windows OpenGL
-        if: runner.os == 'Windows'
-        run: |
-          git clone --depth 1 https://github.com/pyvista/gl-ci-helpers.git
-          powershell gl-ci-helpers/appveyor/install_opengl.ps1
-          if (Test-Path -Path "C:\Windows\system32\opengl32.dll" -PathType Leaf) {Exit 0} else {Exit 1}
-
       - name: Install dependencies
+
         run: |
           python -m pip install -U pip
           python -m pip install -e .[test_min]
@@ -75,16 +68,19 @@ jobs:
         run: pytest -v
 
       - name: Install third-party dependencies
+        if: runner.os != 'Windows'
         run: |
           python -m pip install -e .[test_thirdparty] ${{ github.event_name == 'schedule' && '--pre' || ''  }}
           python -m pip install PyQt6==6.5.3
 
       - name: Run test
+        if: runner.os != 'Windows'
         uses: aganders3/headless-gui@v2.2
         with:
           run: pytest -v --cov=cmap --cov-report=xml --cov-report=term-missing
 
       - name: Coverage
+        if: runner.os != 'Windows'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
