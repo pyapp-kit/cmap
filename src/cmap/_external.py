@@ -36,7 +36,7 @@ def to_mpl(
             mpl_cm = mplc.LinearSegmentedColormap.from_list(
                 cm.name, cm.color_stops, N=N, gamma=gamma
             )
-        except ValueError as e:
+        except ValueError as e:  # pragma: no cover
             from matplotlib import __version__
 
             # broken in matplotlib 3.8.0, fixed by
@@ -49,7 +49,9 @@ def to_mpl(
             raise
 
     return mpl_cm.with_extremes(
-        bad=cm.bad_color, over=cm.over_color, under=cm.under_color
+        bad=cm.bad_color,  # type: ignore
+        over=cm.over_color,  # type: ignore
+        under=cm.under_color,  # type: ignore
     )
 
 

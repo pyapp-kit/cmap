@@ -42,6 +42,9 @@ if TYPE_CHECKING:
         interpolation: NotRequired[bool]
         info: NotRequired[str]
         aliases: NotRequired[list[str]]
+        over: NotRequired[str]
+        under: NotRequired[str]
+        bad: NotRequired[str]
 
     class UnloadedCatalogAlias(TypedDict):
         alias: str
@@ -105,6 +108,12 @@ class CatalogItem:
         fully qualified name (`namespace:alias`).
     qualified_name: str
         The fully qualified name of the colormap, e.g. "matplotlib:viridis".
+    under: str | None
+        The color to use for under-range values.
+    over: str | None
+        The color to use for over-range values.
+    bad: str | None
+        The color to use for bad values.
     """
 
     data: ColorStopsLike
@@ -118,6 +127,9 @@ class CatalogItem:
     interpolation: bool | Interpolation = "linear"
     tags: list[str] = field(default_factory=list)
     aliases: list[str] = field(default_factory=list)
+    under: str | None = None
+    over: str | None = None
+    bad: str | None = None
 
     @property
     def qualified_name(self) -> str:

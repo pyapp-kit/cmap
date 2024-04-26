@@ -155,15 +155,15 @@ class Colormap:
         bad: ColorLike | None = None,
     ) -> None:
         self.info: CatalogItem | None = None
-        self.under_color = None if under is None else Color(under)
-        self.over_color = None if over is None else Color(over)
-        self.bad_color = None if bad is None else Color(bad)
 
         if isinstance(value, str):
             rev = value.endswith("_r")
             info = self.catalog()[value[:-2] if rev else value]
             name = name or f"{info.namespace}:{info.name}"
             category = category or info.category
+            over = info.over if over is None else over
+            under = info.under if under is None else under
+            bad = info.bad if bad is None else bad
             self.info = info
             if isinstance(info.data, list):
                 ld = len(info.data[0])
@@ -203,6 +203,10 @@ class Colormap:
         self.name: str = name
         self.identifier: str = _make_identifier(identifier or name)
         self.category: str | None = category
+
+        self.under_color = None if under is None else Color(under)
+        self.over_color = None if over is None else Color(over)
+        self.bad_color = None if bad is None else Color(bad)
 
         self._lut_cache: dict[LutCacheKey, np.ndarray] = {}
         self._initialized = True
@@ -523,13 +527,13 @@ class Colormap:
                 "max-width: 514px; "
                 'display: flex; justify-content: space-between;">'
                 '<div style="float: left;">'
-                f"{_html_color_patch(self.under_color or self(0))} under"
+                f"{_html_color_patch(self.under_color)} under"
                 "</div>"
                 '<div style="margin: 0 auto; display: inline-block;">'
                 f"bad {_html_color_patch(self.bad_color or Color(BAD_COLOR))}"
                 "</div>"
                 '<div style="float: right;">'
-                f"over {_html_color_patch(self.over_color or self(1))}"
+                f"over {_html_color_patch(self.over_color)}"
                 "</div>"
             )
 
@@ -1301,7 +1305,9 @@ def _parse_colorstops(
     return cls(zip(_stops, _colors))
 
 
-def _html_color_patch(color: Color) -> str:
+def _html_color_patch(color: Color | None) -> str:
+    if color is None:
+        return ""
     return (
         f'<div title="{color.hex}" '
         'style="display: inline-block; '

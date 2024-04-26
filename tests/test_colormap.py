@@ -212,3 +212,6 @@ def test_with_extremes() -> None:
         under="green", over="yellow", bad="black"
     )
     assert cm == cm2
+
+    assert cm2.under_color == cm.under_color == Color("green")
+    assert "under" in cm2._repr_html_()
