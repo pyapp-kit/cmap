@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
 import mkdocs_gen_files
+import natsort
 import numpy as np
 
 if TYPE_CHECKING:
@@ -84,7 +85,7 @@ INCLUDE_DATA = (
 
 
 def build_catalog(catalog: "_catalog.Catalog") -> None:
-    for name in catalog:
+    for name in natsort.natsorted(catalog, alg=natsort.ns.IGNORECASE):
         if ":" not in name:
             continue
         try:

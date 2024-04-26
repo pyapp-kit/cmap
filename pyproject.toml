@@ -31,15 +31,16 @@ globs = ["LICENSE/*"]
 # https://peps.python.org/pep-0621/#dependencies-optional-dependencies
 [project.optional-dependencies]
 docs = [
-    'mkdocs',
-    'mkdocs-material',
-    'mkdocstrings-python',
-    'mkdocs-minify-plugin',
-    'mkdocs-literate-nav',
-    'mkdocs-gen-files',
+    'colorcet',
     'colorspacious',
     'imageio',
-    'colorcet',
+    'mkdocs-gen-files',
+    'mkdocs-literate-nav',
+    'mkdocs-material',
+    'mkdocs-minify-plugin',
+    'mkdocs',
+    'mkdocstrings-python',
+    'natsort',
 ]
 test_min = ["pytest>=6.0"]
 test = ["cmap[test_min]", "pytest-cov"]
@@ -96,20 +97,20 @@ src = ["src"]
 [tool.ruff.lint]
 pydocstyle = { convention = "numpy" }
 select = [
-    "E",   # style errors
-    "F",   # flakes
-    "D",   # pydocstyle
+    "E",    # style errors
+    "F",    # flakes
+    "D",    # pydocstyle
     "D417", # Missing argument descriptions in Docstrings
-    "I",   # isort
-    "UP",  # pyupgrade
-    "S",   # bandit
-    "C4",  # flake8-comprehensions
-    "B",   # flake8-bugbear
-    "ISC", # implicit-str-concat
-    "TID", # tidy-imports
-    "RUF", # ruff-specific rules
-    "TCH", # flake8-type-checking
-    "TID", # flake8-tidy-imports
+    "I",    # isort
+    "UP",   # pyupgrade
+    "S",    # bandit
+    "C4",   # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "ISC",  # implicit-str-concat
+    "TID",  # tidy-imports
+    "RUF",  # ruff-specific rules
+    "TCH",  # flake8-type-checking
+    "TID",  # flake8-tidy-imports
 ]
 ignore = [
     "D100", # Missing docstring in public module

@@ -5,6 +5,7 @@ from functools import partial
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Sequence, cast
 
+import natsort
 import numpy as np
 
 from cmap import Colormap, _util
@@ -91,7 +92,9 @@ def _cmap_catalog() -> str:
     """
     categories = set()
     lines = []
-    for cmap_name, details in sorted(CATALOG.items(), key=lambda x: x[0].lower()):
+    for cmap_name, details in natsort.natsorted(
+        CATALOG.items(), key=lambda x: x[0].lower()
+    ):
         if "alias" in details:
             continue
         category = details.get("category") or "Uncategorized"
@@ -185,7 +188,9 @@ Redirecting...
 
 def _write_cmap_redirects(site_dir: str) -> None:
     sd = Path(site_dir)
-    for cmap_name, details in sorted(CATALOG.items(), key=lambda x: x[0].lower()):
+    for cmap_name, details in natsort.natsorted(
+        CATALOG.items(), key=lambda x: x[0].lower()
+    ):
         if "alias" in details:
             cmap_name = cmap_name.replace(":", "-")
             real = Colormap(details["alias"])  # type: ignore
