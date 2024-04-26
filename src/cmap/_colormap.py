@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from ._catalog import CatalogItem
     from ._color import ColorLike
 
-    LutCacheKey = tuple[int, float, tuple | None, tuple | None, tuple | None]
+    LutCacheKey = tuple[int, float, bool]
     Interpolation = Literal["linear", "nearest"]
     LutCallable: TypeAlias = Callable[[NDArray], NDArray]
     ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], np.ndarray]
@@ -57,6 +57,9 @@ if TYPE_CHECKING:
         identifier: str
         category: str | None
         value: list[tuple[float, list[float]]]
+
+
+BAD_COLOR = (0.0, 0.0, 0.0, 0.0)
 
 
 class Colormap:
@@ -100,31 +103,35 @@ class Colormap:
     category : str | None
         An optional category of the colormap (e.g. `"diverging"`, `"sequential"`).
         Not used internally.
+    interpolation : str | bool | None
+        The interpolation mode to use when mapping scalar values to colors. Can be
+        `"linear"` (default) or `"nearest"`. If `True`, will use `"linear"`, if `False`,
+        will use `"nearest"`.  Providing this value will override any interpolation
+        from a catalog entry.
+    under : ColorLike | None
+        The color to use for values below the colormap's range.
+    over : ColorLike | None
+        The color to use for values above the colormap's range.
+    bad : ColorLike | None
+        The color to use for bad (NaN, inf) values.
     """
 
     __slots__ = (
-        "color_stops",
-        "name",
-        "identifier",
+        "bad_color",
         "category",
+        "color_stops",
+        "identifier",
         "info",
-        "_lut_cache",
         "interpolation",
+        "name",
+        "over_color",
+        "under_color",
         "_initialized",
-        "_rgba_under",
-        "_rgba_over",
-        "_rgba_bad",
+        "_lut_cache",
         "__weakref__",
     )
 
     #: ColorStops dett
-    color_stops: ColorStops
-
-    name: str
-    identifier: str
-    category: str | None
-    interpolation: Interpolation
-    info: CatalogItem | None
 
     _catalog_instance: Catalog | None = None
 
@@ -147,6 +154,11 @@ class Colormap:
         over: ColorLike | None = None,
         bad: ColorLike | None = None,
     ) -> None:
+        self.info: CatalogItem | None = None
+        self.under_color = None if under is None else Color(under)
+        self.over_color = None if over is None else Color(over)
+        self.bad_color = None if bad is None else Color(bad)
+
         if isinstance(value, str):
             rev = value.endswith("_r")
             info = self.catalog()[value[:-2] if rev else value]
@@ -178,47 +190,44 @@ class Colormap:
             if interpolation is None:
                 interpolation = value.interpolation
             stops = value.color_stops
-            self.info = None
         else:
             stops = _parse_colorstops(value)
-            self.info = None
 
         name = name or identifier
         if not name:
             name = value if isinstance(value, str) else "custom colormap"
 
-        stops._interpolation = self.interpolation = _norm_interp(interpolation)
-        self.color_stops = stops
-        self.name = name
-        self.identifier = _make_identifier(identifier or name)
-        self.category = category
-
-        self._rgba_under = None if under is None else Color(under).rgba
-        self._rgba_over = None if over is None else Color(over).rgba
-        self._rgba_bad = None if bad is None else Color(bad).rgba
+        self.interpolation: Interpolation = _norm_interp(interpolation)
+        stops._interpolation = self.interpolation
+        self.color_stops: ColorStops = stops
+        self.name: str = name
+        self.identifier: str = _make_identifier(identifier or name)
+        self.category: str | None = category
 
         self._lut_cache: dict[LutCacheKey, np.ndarray] = {}
         self._initialized = True
 
     @overload
     def __call__(
-        # would prefer to make this Arraylike, but that overlaps with float
         self,
-        x: NDArray | Sequence[float],
+        x: NDArray | Iterable[float],
         *,
         N: int = 256,
         gamma: float = 1,
         bytes: bool = False,
     ) -> NDArray[np.float64]: ...
-
     @overload
     def __call__(
-        self, x: float, *, N: int = 256, gamma: float = 1, bytes: bool = False
+        self,
+        x: float,
+        *,
+        N: int = 256,
+        gamma: float = 1,
+        bytes: bool = False,
     ) -> Color: ...
-
     def __call__(
         self,
-        x: float | NDArray | Sequence[float],
+        x: float | NDArray | Iterable[float],
         *,
         N: int = 256,
         gamma: float = 1,
@@ -261,7 +270,6 @@ class Colormap:
             array-like, an array of RGBA colors will be returned with shape
             `x.shape + (4,)`
 
-
         Examples
         --------
         >>> from cmap import Colormap
@@ -272,9 +280,10 @@ class Colormap:
         >>> data = data / data.max()  # normalize to 0-1
         >>> colored_img = cmap(data)
         """
-        lut = self.lut(N=N, gamma=gamma)
+        lut = self.lut(N=N, gamma=gamma, with_over_under=True)
         if bytes:
             lut = (lut * 255).astype(np.uint8)
+        # the lut wil have three additional colors at the end for under, over, and bad
         N = len(lut) - 3
 
         xa = np.array(x, copy=True)
@@ -285,8 +294,6 @@ class Colormap:
             # xa == 1 (== N after multiplication) is not out of range.
             xa[xa == N] = N - 1
 
-        # Pre-compute the masks before casting to int (which can truncate
-        # negative values to zero or wrap large floats to negative ints).
         mask_under = xa < 0
         mask_over = xa >= N
         # If input was masked, get the bad mask from it; else mask out nans.
@@ -299,9 +306,6 @@ class Colormap:
         xa[mask_under] = N
         xa[mask_over] = N + 1
         xa[mask_bad] = N + 2
-
-        # # Avoid converting large positive values to negative integers.
-        # np.clip(xa, -1, N, out=xa)
 
         rgba = lut.take(xa, axis=0, mode="clip")
         return rgba if np.iterable(x) else Color(rgba)
@@ -336,12 +340,18 @@ class Colormap:
             "value": [(p, list(c)) for p, c in self.color_stops],
         }
 
-    def lut(self, N: int = 256, gamma: float = 1) -> np.ndarray:
+    def lut(
+        self, N: int = 256, gamma: float = 1, *, with_over_under: bool = False
+    ) -> np.ndarray:
         """Return a lookup table (LUT) for the colormap.
 
         The returned LUT is a numpy array of RGBA values, with shape (N, 4), where N is
-        the number of requested colors in the LUT. The LUT can be used to map scalar
-        values (that have been normalized to 0-1) to colors.
+        the number of requested colors in the LUT. If `with_over_under`
+        is `True` the returned shape will be (N + 3, 4), where index N is the under
+        color, index N + 1 is the over color, and index N + 2 is the bad (NaN) color.
+
+        The LUT can be used to map scalar values (that have been normalized to 0-1) to
+        colors, using fancy indexing or `np.take`.
 
         The output of this function is used by the `__call__` method, but may also
         be used directly by users.
@@ -354,17 +364,25 @@ class Colormap:
             The number of colors in the LUT.
         gamma : float
             The gamma value to use for the LUT.
+        with_over_under : bool
+            If True, the LUT will include the under, over, and bad colors as the
+            last three colors in the LUT.  If False, the LUT will only include the
+            colors defined by the color_stops.
         """
-        key = (N, gamma, self._rgba_under, self._rgba_over, self._rgba_bad)
+        key = (N, gamma, with_over_under)
         if key not in self._lut_cache:
-            _lut = self.color_stops.to_lut(N, gamma)
-            # expand (N, 4) lut to (N+3, 4) to include under, over, and bad colors
-            lut = np.vstack((_lut, np.zeros((3, 4))))
-            under = _lut[0] if self._rgba_under is None else self._rgba_under
-            lut[N] = under
-            over = _lut[-1] if self._rgba_over is None else self._rgba_over
-            lut[N + 1] = over
-            lut[N + 2] = self._rgba_bad
+            lut = self.color_stops.to_lut(N, gamma)
+
+            if with_over_under:
+                under = lut[0] if self.under_color is None else self.under_color.rgba
+                over = lut[-1] if self.over_color is None else self.over_color.rgba
+                bad = BAD_COLOR if self.bad_color is None else self.bad_color.rgba
+                # expand (N, 4) lut to (N+3, 4) to include under, over, and bad colors
+                lut = np.vstack((lut, np.zeros((3, 4))))
+                lut[-3] = under
+                lut[-2] = over
+                lut[-1] = bad
+
             self._lut_cache[key] = lut
 
         return self._lut_cache[key]
@@ -460,7 +478,14 @@ class Colormap:
                 other = Colormap(other)  # type: ignore
             except Exception:
                 return NotImplemented
-        return self.color_stops == other.color_stops
+
+        return (
+            self.color_stops == other.color_stops
+            and self.under_color == other.under_color
+            and self.over_color == other.over_color
+            and self.bad_color == other.bad_color
+            and self.interpolation == other.interpolation
+        )
 
     # -------------------------- reprs ----------------------------------
 
@@ -480,13 +505,35 @@ class Colormap:
         """Generate an HTML representation of the Colormap."""
         png_base64 = base64.b64encode(self._repr_png_()).decode("ascii")
 
-        return (
-            f'<div style="vertical-align: middle;"><strong>{self.name}</strong></div>'
-            "<div>"
-            f'<img alt="{self.name} colormap" title="{self.name}" '
-            f'style="border: 1px solid #555;" src="data:image/png;base64,{png_base64}">'
+        html = (
+            '<div style="vertical-align: middle;">'
+            f"<strong>{self.name}</strong> "
             "</div>"
+            '<div class="cmap"><img '
+            f'alt="{self.name} colormap" '
+            f'title="{self.name}" '
+            'style="border: 1px solid #555;" '
+            f'src="data:image/png;base64,{png_base64}"></div>'
         )
+        if any(
+            x is not None for x in (self.under_color, self.over_color, self.bad_color)
+        ):
+            html += (
+                '<div style="vertical-align: middle; '
+                "max-width: 514px; "
+                'display: flex; justify-content: space-between;">'
+                '<div style="float: left;">'
+                f"{_html_color_patch(self.under_color or self(0))} under"
+                "</div>"
+                '<div style="margin: 0 auto; display: inline-block;">'
+                f"bad {_html_color_patch(self.bad_color or Color(BAD_COLOR))}"
+                "</div>"
+                '<div style="float: right;">'
+                f"over {_html_color_patch(self.over_color or self(1))}"
+                "</div>"
+            )
+
+        return html
 
     def __rich_repr__(self) -> Any:
         return _external.rich_print_colormap(self)  # side effect
@@ -759,13 +806,10 @@ class ColorStops(Sequence[ColorStop]):
 
     @overload
     def __getitem__(self, key: int) -> ColorStop: ...
-
     @overload
     def __getitem__(self, key: slice) -> ColorStops: ...
-
     @overload
     def __getitem__(self, key: tuple) -> np.ndarray: ...
-
     def __getitem__(
         self, key: int | slice | tuple
     ) -> ColorStop | ColorStops | np.ndarray:
@@ -1255,3 +1299,15 @@ def _parse_colorstops(
 
     _stops = _fill_stops(_positions, "neighboring")  # TODO: expose fill_mode?
     return cls(zip(_stops, _colors))
+
+
+def _html_color_patch(color: Color) -> str:
+    return (
+        f'<div title="{color.hex}" '
+        'style="display: inline-block; '
+        "width: 1em; height: 1em; "
+        "margin: 0; "
+        "vertical-align: middle; "
+        "border: 1px solid #555; "
+        f'background-color: {color.hex};"></div>'
+    )

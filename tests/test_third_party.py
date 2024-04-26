@@ -22,7 +22,9 @@ if TYPE_CHECKING:
 if not (os.getenv("CI") or os.getenv("THIRD")):
     pytest.skip("Skipping third party tests", allow_module_level=True)
 
-CMAP = Colormap(["black", (0, 1, 0), "00FFFF33", "w"])
+OVER = "red"
+UNDER = "blue"
+CMAP = Colormap(["black", (0, 1, 0), "00FFFF33", "w"], over=OVER, under=UNDER)
 IMG = np.random.rand(10, 10).astype("float32")
 CI = bool(os.getenv("CI"))
 LINUX = sys.platform.startswith("linux")
@@ -54,7 +56,11 @@ def test_rich_color_repr() -> None:
 
 def test_matplotlib() -> None:
     plt = pytest.importorskip("matplotlib.pyplot")
-    plt.imshow(IMG, cmap=CMAP.to_mpl())
+    mpl_cmap = CMAP.to_mpl()
+    plt.imshow(IMG, cmap=mpl_cmap)
+    assert tuple(mpl_cmap.get_bad()) == (0, 0, 0, 0)
+    assert tuple(mpl_cmap.get_over()) == Color(OVER).rgba
+    assert tuple(mpl_cmap.get_under()) == Color(UNDER).rgba
 
 
 @pytest.mark.filterwarnings("ignore")
