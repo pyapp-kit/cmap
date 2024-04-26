@@ -25,7 +25,7 @@ CMAP_DIV = """
 """
 CMAP_LINK = '<a href="{url}">' + CMAP_DIV + "</a>"
 DEV_MODE = "serve" in sys.argv
-SINERAMP = _util.sineramp((96, 512))[:, ::-1]
+SINERAMP = _util.sineramp((96, 826))[:, ::-1]
 
 
 def _to_img_tag(
@@ -35,7 +35,7 @@ def _to_img_tag(
     img: np.ndarray | None = None,
 ) -> str:
     """Return a base64-encoded <img> tag for the given colormap."""
-    _img = cm._repr_png_(width=256, height=1, img=img)
+    _img = cm._repr_png_(width=826, height=1, img=img)
     data = base64.b64encode(_img).decode("ascii")
     return (
         f'<img style="height: {height}" width="{width}" src="data:image/png;base64,'
@@ -203,6 +203,6 @@ def _write_cmap_redirects(site_dir: str) -> None:
                 f.write(content)
 
 
-def on_post_build(config, **kwargs: Any) -> None:
+def on_post_build(config: dict, **kwargs: Any) -> None:
     """Copy the extra javascripts to the output directory."""
     _write_cmap_redirects(config["site_dir"])

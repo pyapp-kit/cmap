@@ -85,6 +85,9 @@ INCLUDE_DATA = (
 
 
 def build_catalog(catalog: "_catalog.Catalog") -> None:
+    nav = mkdocs_gen_files.Nav()
+    nav["Colormap Catalog"] = "index.md"
+
     for name in natsort.natsorted(catalog, alg=natsort.ns.IGNORECASE):
         if ":" not in name:
             continue
@@ -117,7 +120,9 @@ def build_catalog(catalog: "_catalog.Catalog") -> None:
         aliases = _make_aliases_md(_aliases) if _aliases else ""
 
         # write the actual markdown file
-        with mkdocs_gen_files.open(f"catalog/{category}/{name.lower()}.md", "w") as f:
+        doc_path = f"{category}/{name.lower()}.md"
+        nav[(category.title(), name)] = doc_path
+        with mkdocs_gen_files.open(f"catalog/{doc_path}", "w") as f:
             f.write(
                 TEMPLATE.format(
                     name=name,
@@ -130,6 +135,11 @@ def build_catalog(catalog: "_catalog.Catalog") -> None:
                     data=json.dumps({name: cmap_data}, separators=(",", ":")),
                 )
             )
+
+    # sort categories alphabetically
+    nav._data = dict(sorted(nav._data.items(), key=lambda x: x[0][0]))
+    with mkdocs_gen_files.open("catalog/SUMMARY.md", "w") as nav_file:
+        nav_file.writelines(nav.build_literate_nav())
 
 
 def _make_aliases_md(aliases: list[str]) -> str:
