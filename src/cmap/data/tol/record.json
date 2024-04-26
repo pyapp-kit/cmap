@@ -1,238 +1,238 @@
 {
-    "authors": [
-      "Paul Tol"
-    ],
-    "colormaps": {
-      "sunset_discrete": {
-        "category": "diverging",
-        "interpolation": false,
-        "data": "cmap.data.tol:sunset_discrete"
-      },
-      "sunset": {
-        "category": "diverging",
-        "data": "cmap.data.tol:sunset"
-      },
-      "nightfall_discrete": {
-        "category": "diverging",
-        "interpolation": false,
-        "data": "cmap.data.tol:nightfall_discrete"
-      },
-      "nightfall": {
-        "category": "diverging",
-        "data": "cmap.data.tol:nightfall"
-      },
-      "BuRd_discrete": {
-        "category": "diverging",
-        "interpolation": false,
-        "data": "cmap.data.tol:BuRd_discrete"
-      },
-      "BuRd": {
-        "category": "diverging",
-        "data": "cmap.data.tol:BuRd"
-      },
-      "PRGn_discrete": {
-        "category": "diverging",
-        "interpolation": false,
-        "data": "cmap.data.tol:PRGn_discrete"
-      },
-      "PRGn": {
-        "category": "diverging",
-        "data": "cmap.data.tol:PRGn"
-      },
-      "YlOrBr_discrete": {
-        "category": "sequential",
-        "interpolation": false,
-        "data": "cmap.data.tol:YlOrBr_discrete"
-      },
-      "YlOrBr": {
-        "category": "sequential",
-        "data": "cmap.data.tol:YlOrBr"
-      },
-      "WhOrBr": {
-        "category": "sequential",
-        "data": "cmap.data.tol:WhOrBr"
-      },
-      "iridescent": {
-        "category": "sequential",
-        "data": "cmap.data.tol:iridescent"
-      },
-      "incandescent": {
-        "category": "sequential",
-        "data": "cmap.data.tol:incandescent"
-      },
-      "rainbow_PuRd": {
-        "category": "miscellaneous",
-        "data": "cmap.data.tol:rainbow_PuRd"
-      },
-      "rainbow_PuBr": {
-        "category": "miscellaneous",
-        "data": "cmap.data.tol:rainbow_PuBr"
-      },
-      "rainbow_WhRd": {
-        "category": "miscellaneous",
-        "data": "cmap.data.tol:rainbow_WhRd"
-      },
-      "rainbow_WhBr": {
-        "category": "miscellaneous",
-        "data": "cmap.data.tol:rainbow_WhBr"
-      },
-      "rainbow_discrete_1": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_1"
-      },
-      "rainbow_discrete_2": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_2"
-      },
-      "rainbow_discrete_3": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_3"
-      },
-      "rainbow_discrete_4": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_4"
-      },
-      "rainbow_discrete_5": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_5"
-      },
-      "rainbow_discrete_6": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_6"
-      },
-      "rainbow_discrete_7": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_7"
-      },
-      "rainbow_discrete_8": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_8"
-      },
-      "rainbow_discrete_9": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_9"
-      },
-      "rainbow_discrete_10": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_10"
-      },
-      "rainbow_discrete_11": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_11"
-      },
-      "rainbow_discrete_12": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_12"
-      },
-      "rainbow_discrete_13": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_13"
-      },
-      "rainbow_discrete_14": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_14"
-      },
-      "rainbow_discrete_15": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_15"
-      },
-      "rainbow_discrete_16": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_16"
-      },
-      "rainbow_discrete_17": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_17"
-      },
-      "rainbow_discrete_18": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_18"
-      },
-      "rainbow_discrete_19": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_19"
-      },
-      "rainbow_discrete_20": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_20"
-      },
-      "rainbow_discrete_21": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_21"
-      },
-      "rainbow_discrete_22": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_22"
-      },
-      "rainbow_discrete_23": {
-        "category": "miscellaneous",
-        "interpolation": false,
-        "data": "cmap.data.tol:rainbow_discrete_23"
-      },
-      "bright": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:bright"
-      },
-      "high-contrast": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:high_contrast"
-      },
-      "vibrant": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:vibrant"
-      },
-      "muted": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:muted"
-      },
-      "medium-contrast": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:medium_contrast"
-      },
-      "pale": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:pale"
-      },
-      "dark": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:dark"
-      },
-      "light": {
-        "category": "qualitative",
-        "interpolation": false,
-        "data": "cmap.data.tol:light"
-      }
+  "authors": [
+    "Paul Tol"
+  ],
+  "colormaps": {
+    "BuRd": {
+      "category": "diverging",
+      "data": "cmap.data.tol:BuRd"
     },
-    "license": "BSD-3-Clause",
-    "namespace": "tol",
-    "source": "https://personal.sron.nl/~pault/"
-  }
+    "BuRd_discrete": {
+      "category": "diverging",
+      "data": "cmap.data.tol:BuRd_discrete",
+      "interpolation": false
+    },
+    "PRGn": {
+      "category": "diverging",
+      "data": "cmap.data.tol:PRGn"
+    },
+    "PRGn_discrete": {
+      "category": "diverging",
+      "data": "cmap.data.tol:PRGn_discrete",
+      "interpolation": false
+    },
+    "WhOrBr": {
+      "category": "sequential",
+      "data": "cmap.data.tol:WhOrBr"
+    },
+    "YlOrBr": {
+      "category": "sequential",
+      "data": "cmap.data.tol:YlOrBr"
+    },
+    "YlOrBr_discrete": {
+      "category": "sequential",
+      "data": "cmap.data.tol:YlOrBr_discrete",
+      "interpolation": false
+    },
+    "bright": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:bright",
+      "interpolation": false
+    },
+    "dark": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:dark",
+      "interpolation": false
+    },
+    "high-contrast": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:high_contrast",
+      "interpolation": false
+    },
+    "incandescent": {
+      "category": "sequential",
+      "data": "cmap.data.tol:incandescent"
+    },
+    "iridescent": {
+      "category": "sequential",
+      "data": "cmap.data.tol:iridescent"
+    },
+    "light": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:light",
+      "interpolation": false
+    },
+    "medium-contrast": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:medium_contrast",
+      "interpolation": false
+    },
+    "muted": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:muted",
+      "interpolation": false
+    },
+    "nightfall": {
+      "category": "diverging",
+      "data": "cmap.data.tol:nightfall"
+    },
+    "nightfall_discrete": {
+      "category": "diverging",
+      "data": "cmap.data.tol:nightfall_discrete",
+      "interpolation": false
+    },
+    "pale": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:pale",
+      "interpolation": false
+    },
+    "rainbow_PuBr": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_PuBr"
+    },
+    "rainbow_PuRd": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_PuRd"
+    },
+    "rainbow_WhBr": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_WhBr"
+    },
+    "rainbow_WhRd": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_WhRd"
+    },
+    "rainbow_discrete_1": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_1",
+      "interpolation": false
+    },
+    "rainbow_discrete_10": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_10",
+      "interpolation": false
+    },
+    "rainbow_discrete_11": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_11",
+      "interpolation": false
+    },
+    "rainbow_discrete_12": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_12",
+      "interpolation": false
+    },
+    "rainbow_discrete_13": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_13",
+      "interpolation": false
+    },
+    "rainbow_discrete_14": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_14",
+      "interpolation": false
+    },
+    "rainbow_discrete_15": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_15",
+      "interpolation": false
+    },
+    "rainbow_discrete_16": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_16",
+      "interpolation": false
+    },
+    "rainbow_discrete_17": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_17",
+      "interpolation": false
+    },
+    "rainbow_discrete_18": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_18",
+      "interpolation": false
+    },
+    "rainbow_discrete_19": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_19",
+      "interpolation": false
+    },
+    "rainbow_discrete_2": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_2",
+      "interpolation": false
+    },
+    "rainbow_discrete_20": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_20",
+      "interpolation": false
+    },
+    "rainbow_discrete_21": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_21",
+      "interpolation": false
+    },
+    "rainbow_discrete_22": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_22",
+      "interpolation": false
+    },
+    "rainbow_discrete_23": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_23",
+      "interpolation": false
+    },
+    "rainbow_discrete_3": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_3",
+      "interpolation": false
+    },
+    "rainbow_discrete_4": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_4",
+      "interpolation": false
+    },
+    "rainbow_discrete_5": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_5",
+      "interpolation": false
+    },
+    "rainbow_discrete_6": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_6",
+      "interpolation": false
+    },
+    "rainbow_discrete_7": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_7",
+      "interpolation": false
+    },
+    "rainbow_discrete_8": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_8",
+      "interpolation": false
+    },
+    "rainbow_discrete_9": {
+      "category": "miscellaneous",
+      "data": "cmap.data.tol:rainbow_discrete_9",
+      "interpolation": false
+    },
+    "sunset": {
+      "category": "diverging",
+      "data": "cmap.data.tol:sunset"
+    },
+    "sunset_discrete": {
+      "category": "diverging",
+      "data": "cmap.data.tol:sunset_discrete",
+      "interpolation": false
+    },
+    "vibrant": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:vibrant",
+      "interpolation": false
+    }
+  },
+  "license": "BSD-3-Clause",
+  "namespace": "tol",
+  "source": "https://personal.sron.nl/~pault/"
+}

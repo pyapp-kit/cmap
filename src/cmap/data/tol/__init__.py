@@ -1,6 +1,6 @@
-"""These palettes are from Paul Tol's Notes on Colour schemes and templates. 
+"""These palettes are from Paul Tol's Notes on Colour schemes and templates.
 
-Paul Tol is a Dutch instrument scientist with a PhD in atomic physics, 
+Paul Tol is a Dutch instrument scientist with a PhD in atomic physics,
 working on the TROPOMI, SPEXone and TANGO projects in the Earth programme of SRON.
 
 https://personal.sron.nl/~pault/
@@ -14,7 +14,6 @@ All rights reserved.
 
 License:  Standard 3-clause BSD
 """
-
 
 sunset_discrete = (
     "#364B9A",
