@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from bokeh.models import LinearColorMapper as BokehLinearColorMapper
     from matplotlib.colors import Colormap as MplColormap
     from matplotlib.colors import LinearSegmentedColormap as MplLinearSegmentedColormap
+    from matplotlib.colors import ListedColormap as MplListedColormap
     from matplotlib.figure import Figure as MplFigure
     from napari.utils.colormaps import Colormap as NapariColormap
     from pyqtgraph import ColorMap as PyqtgraphColorMap
@@ -23,28 +24,35 @@ if TYPE_CHECKING:
 
 def to_mpl(
     cm: Colormap, N: int = 256, gamma: float = 1.0
-) -> MplLinearSegmentedColormap:
+) -> MplLinearSegmentedColormap | MplListedColormap:
     """Return a matplotlib colormap."""
     import matplotlib.colors as mplc
 
+    mpl_cm: mplc.Colormap
     if cm.interpolation == "nearest":
-        return mplc.ListedColormap(colors=cm.color_stops.color_array, name=cm.name)
+        mpl_cm = mplc.ListedColormap(colors=cm.color_stops.color_array, name=cm.name)
+    else:
+        try:
+            mpl_cm = mplc.LinearSegmentedColormap.from_list(
+                cm.name, cm.color_stops, N=N, gamma=gamma
+            )
+        except ValueError as e:  # pragma: no cover
+            from matplotlib import __version__
 
-    try:
-        return mplc.LinearSegmentedColormap.from_list(
-            cm.name, cm.color_stops, N=N, gamma=gamma
-        )
-    except ValueError as e:
-        from matplotlib import __version__
+            # broken in matplotlib 3.8.0, fixed by
+            # https://github.com/matplotlib/matplotlib/pull/26952
+            if len(cm.color_stops) == 2 and __version__ == "3.8.0":
+                raise ValueError(
+                    "matplotlib 3.8.0 has a bug that prevents creating a colormap "
+                    "from only two colors.  Please upgrade or downgrade matplotlib."
+                ) from e
+            raise
 
-        # broken in matplotlib 3.8.0, fixed by
-        # https://github.com/matplotlib/matplotlib/pull/26952
-        if len(cm.color_stops) == 2 and __version__ == "3.8.0":
-            raise ValueError(
-                "matplotlib 3.8.0 has a bug that prevents creating a colormap "
-                "from only two colors.  Please upgrade or downgrade matplotlib."
-            ) from e
-        raise
+    return mpl_cm.with_extremes(
+        bad=cm.bad_color,  # type: ignore
+        over=cm.over_color,  # type: ignore
+        under=cm.under_color,  # type: ignore
+    )
 
 
 def to_vispy(cm: Colormap) -> VispyColormap:

@@ -204,3 +204,14 @@ def test_interp_arg_passed_to_stops() -> None:
 
     cm = Colormap(["#364B9A", "#4A7BB7", "#6EA6CD", "#98CAE1"])
     assert cm.color_stops._interpolation == "linear"
+
+
+def test_with_extremes() -> None:
+    cm = Colormap(["red", "blue"], under="green", over="yellow", bad="black")
+    cm2 = Colormap(["red", "blue"]).with_extremes(
+        under="green", over="yellow", bad="black"
+    )
+    assert cm == cm2
+
+    assert cm2.under_color == cm.under_color == Color("green")
+    assert "under" in cm2._repr_html_()
