@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import mkdocs_gen_files
 import natsort
@@ -86,8 +86,6 @@ INCLUDE_DATA = (
 
 def build_catalog(catalog: "_catalog.Catalog") -> None:
     nav = mkdocs_gen_files.Nav()
-    nav["Colormap Catalog"] = "index.md"
-
     for name in natsort.natsorted(catalog, alg=natsort.ns.IGNORECASE):
         if ":" not in name:
             continue
@@ -139,6 +137,7 @@ def build_catalog(catalog: "_catalog.Catalog") -> None:
     # sort categories alphabetically
     nav._data = dict(sorted(nav._data.items(), key=lambda x: x[0][0]))
     with mkdocs_gen_files.open("catalog/SUMMARY.md", "w") as nav_file:
+        nav_file.writelines(["# SUMMARY { data-search-exclude }\n"])
         nav_file.writelines(nav.build_literate_nav())
 
 
@@ -146,4 +145,4 @@ def _make_aliases_md(aliases: list[str]) -> str:
     return "**Aliases**:  " + ", ".join(f"`{a}`" for a in aliases)
 
 
-build_catalog(cast("_catalog.Catalog", Colormap.catalog()))
+build_catalog(Colormap.catalog())

@@ -70,6 +70,7 @@ plugins:
       separator: '[\s\-\_,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
   - autorefs
   - literate-nav:
+      implicit_index: true
       nav_file: SUMMARY.md
   - gen-files:
       scripts:
