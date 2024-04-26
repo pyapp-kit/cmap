@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from ._catalog import CatalogItem
     from ._color import ColorLike
 
+    LutCacheKey = tuple[int, float, tuple | None, tuple | None, tuple | None]
     Interpolation = Literal["linear", "nearest"]
     LutCallable: TypeAlias = Callable[[NDArray], NDArray]
     ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], np.ndarray]
@@ -110,6 +111,9 @@ class Colormap:
         "_lut_cache",
         "interpolation",
         "_initialized",
+        "_rgba_under",
+        "_rgba_over",
+        "_rgba_bad",
         "__weakref__",
     )
 
@@ -139,6 +143,9 @@ class Colormap:
         identifier: str | None = None,
         category: str | None = None,
         interpolation: Interpolation | bool | None = None,
+        under: ColorLike | None = None,
+        over: ColorLike | None = None,
+        bad: ColorLike | None = None,
     ) -> None:
         if isinstance(value, str):
             rev = value.endswith("_r")
@@ -186,7 +193,11 @@ class Colormap:
         self.identifier = _make_identifier(identifier or name)
         self.category = category
 
-        self._lut_cache: dict[tuple[int, float], np.ndarray] = {}
+        self._rgba_under = None if under is None else Color(under).rgba
+        self._rgba_over = None if over is None else Color(over).rgba
+        self._rgba_bad = None if bad is None else Color(bad).rgba
+
+        self._lut_cache: dict[LutCacheKey, np.ndarray] = {}
         self._initialized = True
 
     @overload
@@ -264,25 +275,53 @@ class Colormap:
         lut = self.lut(N=N, gamma=gamma)
         if bytes:
             lut = (lut * 255).astype(np.uint8)
+        N = len(lut) - 3
 
         xa = np.array(x, copy=True)
         if not xa.dtype.isnative:
             xa = xa.byteswap().newbyteorder()  # Native byteorder is faster.
         if xa.dtype.kind == "f":
-            N = len(lut)
-            with np.errstate(invalid="ignore"):
-                xa *= N
-                # Negative values are out of range, but astype(int) would
-                # truncate them towards zero.
-                xa[xa < 0] = -1
-                # xa == 1 (== N after multiplication) is not out of range.
-                xa[xa == N] = N - 1
-                # Avoid converting large positive values to negative integers.
-                np.clip(xa, -1, N, out=xa)
-                xa = xa.astype(int)
+            xa *= N
+            # xa == 1 (== N after multiplication) is not out of range.
+            xa[xa == N] = N - 1
 
-        result = lut.take(xa, axis=0, mode="clip")
-        return result if np.iterable(x) else Color(result)
+        # Pre-compute the masks before casting to int (which can truncate
+        # negative values to zero or wrap large floats to negative ints).
+        mask_under = xa < 0
+        mask_over = xa >= N
+        # If input was masked, get the bad mask from it; else mask out nans.
+        mask_bad = x.mask if np.ma.is_masked(x) else np.isnan(xa)  # type: ignore
+
+        with np.errstate(invalid="ignore"):
+            # We need this cast for unsigned ints as well as floats
+            xa = xa.astype(int)
+
+        xa[mask_under] = N
+        xa[mask_over] = N + 1
+        xa[mask_bad] = N + 2
+
+        # # Avoid converting large positive values to negative integers.
+        # np.clip(xa, -1, N, out=xa)
+
+        rgba = lut.take(xa, axis=0, mode="clip")
+        return rgba if np.iterable(x) else Color(rgba)
+
+    def with_extremes(
+        self,
+        *,
+        bad: ColorLike | None = None,
+        under: ColorLike | None = None,
+        over: ColorLike | None = None,
+    ) -> Colormap:
+        """Return a copy of the colormap with new extreme values."""
+        return type(self)(
+            self.color_stops,
+            name=self.name,
+            category=self.category,
+            bad=bad,
+            under=under,
+            over=over,
+        )
 
     def as_dict(self) -> ColormapDict:
         """Return a dictionary representation of the colormap.
@@ -316,9 +355,19 @@ class Colormap:
         gamma : float
             The gamma value to use for the LUT.
         """
-        if (N, gamma) not in self._lut_cache:
-            self._lut_cache[(N, gamma)] = self.color_stops.to_lut(N, gamma)
-        return self._lut_cache[(N, gamma)]
+        key = (N, gamma, self._rgba_under, self._rgba_over, self._rgba_bad)
+        if key not in self._lut_cache:
+            _lut = self.color_stops.to_lut(N, gamma)
+            # expand (N, 4) lut to (N+3, 4) to include under, over, and bad colors
+            lut = np.vstack((_lut, np.zeros((3, 4))))
+            under = _lut[0] if self._rgba_under is None else self._rgba_under
+            lut[N] = under
+            over = _lut[-1] if self._rgba_over is None else self._rgba_over
+            lut[N + 1] = over
+            lut[N + 2] = self._rgba_bad
+            self._lut_cache[key] = lut
+
+        return self._lut_cache[key]
 
     def iter_colors(self, N: Iterable[float] | int | None = None) -> Iterator[Color]:
         """Return a list of N color objects sampled evenly over the range of the LUT.
@@ -413,6 +462,8 @@ class Colormap:
                 return NotImplemented
         return self.color_stops == other.color_stops
 
+    # -------------------------- reprs ----------------------------------
+
     def __repr__(self) -> str:
         return f"Colormap(name={self.name!r}, <{len(self.color_stops)} colors>)"
 
@@ -436,8 +487,6 @@ class Colormap:
             f'style="border: 1px solid #555;" src="data:image/png;base64,{png_base64}">'
             "</div>"
         )
-
-    # -------------------------- RICH REPR SUPPORT ----------------------------------
 
     def __rich_repr__(self) -> Any:
         return _external.rich_print_colormap(self)  # side effect
