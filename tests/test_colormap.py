@@ -215,3 +215,9 @@ def test_with_extremes() -> None:
 
     assert cm2.under_color == cm.under_color == Color("green")
     assert "under" in cm2._repr_html_()
+
+
+def test_shifted() -> None:
+    cm = Colormap(["red", "blue", "green", "yellow"])
+    assert "shifted0.3" in cm.shifted(0.3).name
+    assert cm.shifted().shifted() == cm
