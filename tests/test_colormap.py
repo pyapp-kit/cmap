@@ -219,5 +219,13 @@ def test_with_extremes() -> None:
 
 def test_shifted() -> None:
     cm = Colormap(["red", "blue", "green", "yellow"])
+    assert cm.shifted(1) == cm
     assert "shifted0.3" in cm.shifted(0.3).name
+    # two shifts of 0.5 should give the original array
+    assert cm.shifted().shifted() == cm
+
+    cm = Colormap("viridis")
+    # forward and backward shifts should cancel out
+    assert cm.shifted(0.5).shifted(-0.5) == cm
+    # two shifts of 0.5 should give the original array
     assert cm.shifted().shifted() == cm

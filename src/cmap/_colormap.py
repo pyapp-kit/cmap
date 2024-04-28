@@ -1030,31 +1030,15 @@ class ColorStops(Sequence[ColorStop]):
             If 'clip', the colormap will be shifted and the colors at the ends will be
             clipped and/or repeated as necessary.
         """
-        if mode not in {"wrap", "clip"}:
+        if mode not in {"wrap", "clip"}:  # pragma: no cover
             raise ValueError("mode must be 'wrap' or 'clip'")
 
-        stops = self._stops.copy()
-        stops[:, 0] += shift
         if mode == "wrap":
-            if shift > 0:
-                idx = np.argmax(stops[:, 0] > 1)
-            else:
-                idx = np.argmin(stops[:, 0] < 0)
-            stops = np.concatenate([stops[idx:], stops[:idx]])
-            stops[stops[:, 0] != 1.0, 0] %= 1
-
-            # these are two special cases that can occur when shifting twice:
-            # the first and last stops can end up at the same position
-            # so we wrap around the ends to make sure they are back at 0 and 1
-            # this makes it so that most colormaps will be the same after
-            # `colormap.shifted().shifted()`
-            if tuple(stops[-2:, 0]) == (1.0, 1.0):
-                stops = np.roll(stops, shift=1, axis=0)
-                stops[0, 0] = 0.0
-            if tuple(stops[:2, 0]) == (0.0, 0.0):
-                stops = np.roll(stops, shift=-1, axis=0)
-                stops[0, 0] = 1.0
+            stops = _wrap_shift_color_stops(self._stops, shift)
         else:
+            stops = self._stops.copy()
+            stops[:, 0] += shift
+            # throw away stops that are out of bounds
             stops = stops[(stops[:, 0] >= 0) & (stops[:, 0] <= 1)]
         return type(self)(stops, interpolation=self._interpolation)
 
@@ -1404,3 +1388,16 @@ def _html_color_patch(color: Color | None) -> str:
         "border: 1px solid #555; "
         f'background-color: {color.hex};"></div>'
     )
+
+
+def _wrap_shift_color_stops(data: np.ndarray, shift_amount: float) -> np.ndarray:
+    """Shift (N, 5) array of color stops by `shift_amount` and wrap around."""
+    out = np.array(data, copy=True)
+    # ensure that 0 <= data < 1
+    # this is important for dealing with wraparound when shifting
+    out[:, 0][out[:, 0] == 1] = 1 - np.finfo(float).eps
+    out[:, 0] += shift_amount
+    out[:, 0] %= 1
+    # sort the array by the first column
+    out = out[out[:, 0].argsort()]
+    return out
