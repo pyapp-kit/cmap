@@ -218,11 +218,16 @@ def test_with_extremes() -> None:
 
 
 def test_shifted() -> None:
-    cm = Colormap(["red", "blue", "green", "yellow"])
+    cm = Colormap(["red", "blue", "yellow"])
     assert cm.shifted(1) == cm
     assert "shifted0.3" in cm.shifted(0.3).name
     # two shifts of 0.5 should give the original array
     assert cm.shifted().shifted() == cm
+
+    wrapped = cm.shifted(0.2, mode="wrap")
+    assert wrapped == Colormap([(0.2, "yellow"), (0.2, "red"), (0.7, "blue")])
+    clipped = cm.shifted(0.5, mode="clip")
+    assert clipped == Colormap([(0.5, "red"), (1, "blue")])
 
     cm = Colormap("viridis")
     # forward and backward shifts should cancel out
