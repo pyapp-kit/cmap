@@ -65,6 +65,10 @@ BAD_COLOR = (0.0, 0.0, 0.0, 0.0)
 class Colormap:
     """A colormap is a mapping from scalar values to RGB(A) colors.
 
+    The primary way to apply a colormap to data is to call the colormap object with
+    scalar values, which will return an array of RGBA colors.  See
+    [`Colormap.__call__`][cmap.Colormap.__call__] for details.
+
     Parameters
     ----------
     value : Color | ColorStop | Iterable[Color | ColorStop] | dict[float, Color]
@@ -131,7 +135,65 @@ class Colormap:
         "__weakref__",
     )
 
-    #: ColorStops dett
+    color_stops: ColorStops
+    """The color stops in the colormap.
+
+    This object is a sequence of color stops: a color
+    (RGBA) and a scalar position (0-1) in the gradient.  This is the primary data
+    structure used to represent the colormap. See [`ColorStops`][cmap.ColorStops]
+    docstring for more information.
+    """
+
+    name: str
+    """A display name for the colormap.
+
+    If not provided explicitly, and if the colormap is a catalog colormap, this
+    will be set to `"namespace:name"`.  If not a catalog colormap, it will be set
+    to the `identifier`, or fallback to `"custom colormap"`.
+    """
+
+    identifier: str
+    """An identifier for the colormaps.
+
+    If not provided, it will be generated from `name` by discarding any
+    characters that are not alphanumeric, spaces, dashes, or underscores, converting
+    to lowercase, replacing spaces and dashes with underscores, and prefacing with
+    `"_"` if the first character is a digit.
+    """
+
+    category: str | None
+    """An optional category for the colormap.
+
+    If not provided, and if the colormap is a catalog colormap, this will be set to
+    the category of the colormap.
+    """
+
+    interpolation: Interpolation
+    """The interpolation mode to use when mapping scalar values to colors.
+
+    Either `"linear"` or `"nearest"`, where `"linear"` is the default.
+    """
+
+    under_color: Color | None
+    """A color to use for values below 0 when converting scalars to colors.
+
+    If provided, and `Colormap.lut` is called with `with_over_under=True`, `under_color`
+    will be the third-to-last color in the LUT (`lut[-3]`).
+    """
+
+    over_color: Color | None
+    """A color to use for values above 1 when converting scalars to colors.
+
+    If provided, and `Colormap.lut` is called with `with_over_under=True`, `over_color`
+    will be the second-to-last color in the LUT (`lut[-2]`).
+    """
+
+    bad_color: Color | None
+    """A color to use for missing/bad values when converting scalars to colors.
+
+    If provided, and `Colormap.lut` is called with `with_over_under=True`, `bad_color`
+    will be the last color in the LUT (`lut[-1]`).
+    """
 
     _catalog_instance: Catalog | None = None
 
@@ -197,12 +259,12 @@ class Colormap:
         if not name:
             name = value if isinstance(value, str) else "custom colormap"
 
-        self.interpolation: Interpolation = _norm_interp(interpolation)
+        self.interpolation = _norm_interp(interpolation)
         stops._interpolation = self.interpolation
-        self.color_stops: ColorStops = stops
-        self.name: str = name
-        self.identifier: str = _make_identifier(identifier or name)
-        self.category: str | None = category
+        self.color_stops = stops
+        self.name = name
+        self.identifier = _make_identifier(identifier or name)
+        self.category = category
 
         self.under_color = None if under is None else Color(under)
         self.over_color = None if over is None else Color(over)
@@ -695,7 +757,10 @@ class Colormap:
 
 
 class ColorStop(NamedTuple):
-    """A color stop in a color gradient."""
+    """A color stop in a color gradient.
+
+    Just a named tuple with a `position` (`float`) and a `color` (`cmap.Color`).
+    """
 
     position: float
     color: Color
@@ -789,8 +854,15 @@ class ColorStops(Sequence[ColorStop]):
     def parse(cls, colors: ColorStopsLike) -> ColorStops:
         """Parse any colorstops-like object into a ColorStops object.
 
-        This is the more flexible constructor.
-        see `_parse_colorstops` docstring for details.
+        Each item in `colors` can be a color, or a 2-tuple of (position, color), where
+        position (the "stop" along a color gradient) is a float between 0 and 1.  Where
+        not provided, color positions will be evenly distributed between neighboring
+        specified positions (if `fill_mode` is 'neighboring') or will be replaced with
+        `index / (len(colors)-1)` (if `fill_mode` is 'fractional').
+
+        Colors can be expressed as anything that can be converted to a Color, including
+        a string, or 3/4-sequence of RGB(A) values.
+
 
         Parameters
         ----------

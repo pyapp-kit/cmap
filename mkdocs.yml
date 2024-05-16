@@ -102,6 +102,8 @@ plugins:
             annotations_path: "source" # default is 'brief'
             show_bases: false # default is true
             show_source: false # default is true
+            docstring_section_style: list
+            merge_init_into_class: true
 
 extra_css:
   - stylesheets/extra.css

@@ -49,9 +49,9 @@ def to_mpl(
             raise
 
     return mpl_cm.with_extremes(
-        bad=cm.bad_color,  # type: ignore
-        over=cm.over_color,  # type: ignore
-        under=cm.under_color,  # type: ignore
+        bad=cm.bad_color,
+        over=cm.over_color,
+        under=cm.under_color,
     )
 
 
