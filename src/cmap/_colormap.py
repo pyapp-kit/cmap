@@ -411,7 +411,7 @@ class Colormap:
             Color objects.
         """
         if N is None:
-            N = len(self.color_stops)
+            N = self.num_colors
         nums = np.linspace(0, 1, N) if isinstance(N, int) else np.asarray(N)
         for c in self(nums, N=len(nums)):
             yield Color(c)
@@ -510,6 +510,11 @@ class Colormap:
             max_stops=max_stops, angle=angle, radial=radial, as_hex=as_hex
         )
 
+    @property
+    def num_colors(self) -> int:
+        """The number of colors in this colormap."""
+        return len(self.color_stops)
+
     def __setattr__(self, _name: str, _value: Any) -> None:
         if getattr(self, "_initialized", False):
             raise AttributeError("Colormap is immutable")
@@ -537,7 +542,7 @@ class Colormap:
     # -------------------------- reprs ----------------------------------
 
     def __repr__(self) -> str:
-        return f"Colormap(name={self.name!r}, <{len(self.color_stops)} colors>)"
+        return f"Colormap(name={self.name!r}, <{self.num_colors} colors>)"
 
     def _repr_png_(
         self, *, width: int = 512, height: int = 48, img: np.ndarray | None = None
