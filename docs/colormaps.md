@@ -151,10 +151,6 @@ A [`numpy.ndarray`][], in one of the following formats:
 
 ## Usage
 
-### Useful properties
-
- ... TODO
-
 ### Using qualitative colormaps
 
 Consider a ColorBrewer qualitative colormap from the default catalog with eight color stops
@@ -194,6 +190,7 @@ Color((0.2157, 0.4941, 0.7216))
 even though the position is in between the second and third color stops.
 
 However, qualitative colormaps are often used to map integer valued or categorical values to colors.
+The behavior of calling a `Colormap` depends on the type of the input.
 Calling a `Colormap` with an integer
 
 ```python
@@ -208,7 +205,7 @@ Color((0.2157, 0.4941, 0.7216))
 
 which is often a more natural operation.
 
-#### Cycling through qualitative colors
+#### Cycling through colors
 
 When using qualitative colormaps to map integer values, sometimes the input domain
 may be larger than the number of colors in the colormap.
@@ -253,6 +250,44 @@ which now maps to the first color
 ```python
 Color((0.8941, 0.102, 0.1098))
 ```
+
+This also works well when using an array as input
+
+```python
+c(np.arange(16 % c.num_colors))
+```
+
+which returns the cycled RGBA color values in an array output
+
+```python
+array([[0.89411765, 0.10196078, 0.10980392, 1.        ],
+       [0.21568627, 0.49411765, 0.72156863, 1.        ],
+       [0.30196078, 0.68627451, 0.29019608, 1.        ],
+       [0.59607843, 0.30588235, 0.63921569, 1.        ],
+       [1.        , 0.49803922, 0.        , 1.        ],
+       [1.        , 1.        , 0.2       , 1.        ],
+       [0.65098039, 0.3372549 , 0.15686275, 1.        ],
+       [0.96862745, 0.50588235, 0.74901961, 1.        ],
+       [0.89411765, 0.10196078, 0.10980392, 1.        ],
+       [0.21568627, 0.49411765, 0.72156863, 1.        ],
+       [0.30196078, 0.68627451, 0.29019608, 1.        ],
+       [0.59607843, 0.30588235, 0.63921569, 1.        ],
+       [1.        , 0.49803922, 0.        , 1.        ],
+       [1.        , 1.        , 0.2       , 1.        ],
+       [0.65098039, 0.3372549 , 0.15686275, 1.        ],
+       [0.96862745, 0.50588235, 0.74901961, 1.        ]])
+```
+
+The behavior of calling a `Colormap` with an array depends on its `dtype`.
+With a floating point `dtype`, it expects the values to be [0, 1], so the
+equivalent call to the above is
+
+```python
+c(np.linspace(0, 2, 16, endpoint=False) % 1)
+```
+
+which returns the same output array values.
+
 
 ## Immutability
 
