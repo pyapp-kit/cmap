@@ -476,7 +476,7 @@ class Color:
         if self.name:
             arg: str | tuple = self.name
         else:
-            arg = tuple(round(x, 4) for x in tuple(self._rgba))
+            arg = tuple(round(float(x), 4) for x in tuple(self._rgba))
             if self._rgba.a == 1:
                 arg = arg[:3]
         return f"{self.__class__.__name__}({arg!r})"
