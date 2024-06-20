@@ -35,4 +35,4 @@ repos:
       - id: mypy
         files: "^src/"
         additional_dependencies:
-          - numpy
+          - numpy>=2

@@ -354,7 +354,9 @@ class Colormap:
 
         xa = np.array(x, copy=True)
         if not xa.dtype.isnative:
-            xa = xa.byteswap().newbyteorder()  # Native byteorder is faster.
+            # Native byteorder is faster.
+            native: Literal[">", "<"] = ">" if xa.dtype.byteorder in ("<", "=") else "<"
+            xa = xa.view(xa.dtype.newbyteorder(native))
         if xa.dtype.kind == "f":
             xa *= N
             # xa == 1 (== N after multiplication) is not out of range.
@@ -974,7 +976,7 @@ class ColorStops(Sequence[ColorStop]):
                 rev = " <reversed>"
             name = f"{f.__module__}{f.__qualname__}"
             return f"ColorStops(lut_func={name!r}{rev})"
-        m = ",\n  ".join(repr((pos, Color(rgba))) for pos, *rgba in self._stops)
+        m = ",\n  ".join(repr((pos.item(), Color(rgba))) for pos, *rgba in self._stops)
         return f"ColorStops(\n  {m}\n)"
 
     def __eq__(self, __o: object) -> bool:

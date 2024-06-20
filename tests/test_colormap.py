@@ -130,7 +130,9 @@ def test_colormap_apply() -> None:
     img = np.zeros((10, 10))
     assert cmap1(img).shape == (10, 10, 4)
     # non-native byte order
-    assert cmap1(img.byteswap().newbyteorder()).shape == (10, 10, 4)
+    new_order = ">" if sys.byteorder == "little" else "<"
+    swapped = img.view(img.dtype.newbyteorder(new_order))
+    assert cmap1(swapped).shape == (10, 10, 4)
 
 
 def test_fill_stops() -> None:

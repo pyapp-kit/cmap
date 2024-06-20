@@ -51,7 +51,7 @@ test_thirdparty = [
     "colorspacious",
     "bokeh",
     "colour",
-    "napari",
+    "napari>=0.4.19",
     "plotly",
     "pydantic",
     "pydantic-extra-types",
