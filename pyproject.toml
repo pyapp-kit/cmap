@@ -51,15 +51,15 @@ test_thirdparty = [
     "colorspacious",
     "bokeh",
     "colour",
-    "napari",
+    "napari>=0.4.19",
     "plotly",
     "pydantic",
-    "pydantic-extra-types",
+    "pydantic-extra-types>=2",
     "pygfx",
     "pytest-qt",
     "rich",
     "viscm",
-    "vispy",
+    "vispy>=0.14",
     "pyqtgraph",
 ]
 dev = [

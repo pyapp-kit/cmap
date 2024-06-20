@@ -17,7 +17,7 @@ except ImportError:
 
 try:
     import pydantic_extra_types.color as pydantic_color
-except ImportError:
+except (ImportError, NotImplementedError):
     import pydantic.color as pydantic_color
 
 
@@ -59,6 +59,11 @@ def test_pydantic_validate() -> None:
         assert MyModel.model_validate_json(serialized) == obj
     else:
         assert MyModel.parse_raw(serialized) == obj
+
+    # with category colormaps, we only use the qualified name
+    obj2 = MyModel(color="red", colormap=Colormap("viridis"))
+    serialized2 = obj2.json()
+    assert '"colormap":"bids:viridis"' in serialized2
 
 
 def test_psygnal_serialization() -> None:
