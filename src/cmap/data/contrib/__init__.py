@@ -4,7 +4,6 @@ For example, to add a new colormap here, first define the data in this file
 (or in a new file in this directory, imported here). Even-spaced colormaps are
 best expressed as a list of RGB triplets, for example:
 
-
     my_colormap = [
         [0.468775, 0.468876, 0.468851],
         [0.473809, 0.47391, 0.473885],
@@ -21,13 +20,14 @@ with a pointer to your data (`module:attribute`), and assign it to a category.
 For example:
 
     {
-        "authors": [
-            "Jane Doe"  # add your name to the authors list
-        ],
         "colormaps": {
             "my_colormap": {
+                "authors": [
+                    "Jane Doe"
+                ],
                 "category": "sequential",
-                "data": "cmap.data.contrib:my_colormap"
+                "data": "cmap.data.contrib:my_colormap",
+                "info": "A brief description of the colormap."
             }
         },
         ...
