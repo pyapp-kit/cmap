@@ -7,7 +7,7 @@
       "category": "sequential",
       "data": "cmap.data.contrib:araucaria",
       "info": "The araucaria colormap is a sequential colormap that transitions from deep blue to light pink, created with the viscm tool."
-    },
+    }
   },
   "license": "CC0",
   "namespace": "contrib",
