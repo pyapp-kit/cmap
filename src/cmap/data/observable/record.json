@@ -1,0 +1,13 @@
+{
+  "authors": [],
+  "colormaps": {
+    "observable10": {
+      "category": "qualitative",
+      "data": "cmap.data.observable:observable10",
+      "info": "A categorical palette with ten colors designed for Observable Plot library.",
+      "interpolation": false
+    }
+  },
+  "namespace": "observable",
+  "source": "https://github.com/d3/d3-scale-chromatic"
+}
