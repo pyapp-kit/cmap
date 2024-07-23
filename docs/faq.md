@@ -4,20 +4,18 @@
 
 We welcome contributions!
 
-Before opening a PR, please [open an
-issue](https://github.com/tlambert03/cmap/issues/new) to discuss the colormap(s)
-you would like to add.  A screenshot and description of the colormap is helpful.
-
 To add a colormap: you first need to pick a namespace for your colormap.
 Namespaces are directories in the `src/cmap/data` folder.
 
-- If you are extending an existing colormap library, you should add to that
-existing directory.
-- If you want to add a new collection of colormaps, you should create a new
-namespace (please open an issue to discuss this first).
-- If you have a few colormaps that you have personally created that are not part
-of any existing collection, feel free to contribut to the `cmap/contrib`
-namespace
+- If the colormap is part of known broader collection (e.g., `cet`, `cmocean`,
+  `colorbrewer`, etc.), please check to see whether the collection already
+  exists in the `cmap/data` directory.  If so, please extend that collection.
+  If not, please create a new namespace and directory for that collection.
+- If you would like to contribute a colormap that doesn't nicely fit into an
+  broader collection of colormaps (regardless of whether that collection exists
+  in `cmap`), please contribute to the `cmap/contrib` namespace.
+
+If you are unsure where to put your colormap, please open an issue.
 
 Once you have picked a namespace:
 
@@ -61,6 +59,18 @@ Once you have picked a namespace:
 
 It may be helpful to look at existing namespaces in the
 `cmap/data` directory for examples of how to structure the data.
+
+When opening a PR, please include a screenshot of the colormap, along
+with a brief description of the colormap design and its intended use.
+
+!!! note "Licencing"
+
+   When adding a colormap, please ensure that the colormap data is available
+   under a permissive license.  Note that namespaces share a license, so if you
+   are adding a colormap to an existing namespace, please ensure that the
+   colormap is compatible with the existing license.  New licenses may be added
+   to the `LICENSES` directory at the root of the repo.  If you are unsure
+   about licensing, please open an issue.
 
 ## How can I add support for exporting to another colormap format?
 
