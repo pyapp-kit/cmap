@@ -349,7 +349,7 @@ class Colormap:
         lut = self.lut(N=N, gamma=gamma, with_over_under=True)
         if bytes:
             lut = (lut * 255).astype(np.uint8)
-        # the lut wil have three additional colors at the end for under, over, and bad
+        # the lut will have three additional colors at the end for under, over, and bad
         N = len(lut) - 3
 
         xa = np.array(x, copy=True)
