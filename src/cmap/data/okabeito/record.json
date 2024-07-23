@@ -1,0 +1,16 @@
+{
+  "authors": [
+    "Masataka Okabe",
+    "Kei Ito"
+  ],
+  "category": "qualitative",
+  "colormaps": {
+    "okabeito": {
+      "data": "cmap.data.okabeito:okabeito",
+      "info": "Qualitative color palette for color-vision deficiencies",
+      "interpolation": false
+    }
+  },
+  "namespace": "okabeito",
+  "source": "https://web.archive.org/web/20210108233739/http://jfly.iam.u-tokyo.ac.jp/color/"
+}
