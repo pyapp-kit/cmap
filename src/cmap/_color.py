@@ -513,8 +513,6 @@ class Color:
 
         Parameters
         ----------
-        color : RGBA
-            The color to convert.
         format : str
             The format of the integer value.  Must be a string composed only of
             the characters 'r', 'g', 'b', and 'a'.
