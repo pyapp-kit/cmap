@@ -8,6 +8,7 @@
       "interpolation": false
     }
   },
+  "license": "Apache-2.0",
   "namespace": "observable",
   "source": "https://github.com/d3/d3-scale-chromatic"
 }
