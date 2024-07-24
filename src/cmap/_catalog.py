@@ -45,6 +45,8 @@ if TYPE_CHECKING:
         over: NotRequired[str]
         under: NotRequired[str]
         bad: NotRequired[str]
+        authors: NotRequired[list[str]]
+        license: NotRequired[str]
 
     class UnloadedCatalogAlias(TypedDict):
         alias: str
@@ -57,7 +59,7 @@ if TYPE_CHECKING:
 
         namespace: Required[str]
         colormaps: Required[CatalogDict]
-        # globals that override colormap values if present
+        # globals that are used if missing on colormap values
         license: str
         source: str
         authors: list[str]
@@ -175,7 +177,7 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
             # here we add any global keys to the colormap that are not already there.
             for k in ("license", "namespace", "source", "authors", "category"):
                 if k in data:
-                    v.setdefault(k, data[k])  # type: ignore
+                    v.setdefault(k, data[k])  # type: ignore [misc,literal-required]
 
             # add the fully namespaced colormap to the catalog
             ctlg[namespaced] = v
