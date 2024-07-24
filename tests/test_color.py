@@ -3,7 +3,7 @@ from typing import Any
 import numpy as np
 import pytest
 
-from cmap._color import RGBA, RGBA8, Color
+from cmap._color import RGBA, RGBA8, Color, parse_int
 
 try:
     import colour
@@ -171,3 +171,31 @@ def test_to_array_in_list() -> None:
 def test_hashable():
     assert hash(Color("red")) == hash(Color("red"))
     assert hash(Color("red")) != hash(Color("blue"))
+
+
+def test_parse_int():
+    # Test parsing a 24-bit integer value
+    assert parse_int(0xFF00FF, "rgb") == RGBA(1.0, 0.0, 1.0, 1.0)
+
+    # Test parsing a 32-bit integer value with alpha
+    assert parse_int(0x00FF00FF, "rgba") == RGBA(0.0, 1.0, 0.0, 1.0)
+
+    # Test parsing a 16-bit integer value with custom format
+    assert parse_int(0x0FF, "bgr", bits_per_component=4) == RGBA(1.0, 1.0, 0.0, 1.0)
+
+    expect = RGBA8(123, 255, 0)
+    assert parse_int(0x7FE0, "rgb", bits_per_component=[5, 6, 5]).to_8bit() == expect
+
+    # # Test parsing an invalid format
+    with pytest.raises(ValueError):
+        parse_int(0x7FE0, "rgbx")
+
+    # Test parsing an invalid number of bits per component
+    with pytest.raises(ValueError):
+        parse_int(0x7FE0, "rgb", bits_per_component=[5, 5])
+
+
+@pytest.mark.parametrize("input", [0xFF00FF, 0x00FF00FF, 0x0FF, 0x7FE0])
+@pytest.mark.parametrize("fmt", ["rgb", "rgba", "bgr"])
+def test_round_trip(input: int, fmt: str):
+    assert Color.from_int(input, fmt).to_int(fmt) == input

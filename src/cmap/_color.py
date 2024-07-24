@@ -9,6 +9,7 @@ from typing import (
     Any,
     Callable,
     Iterable,
+    Literal,
     NamedTuple,
     Sequence,
     SupportsFloat,
@@ -33,6 +34,8 @@ if TYPE_CHECKING:
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import CoreSchema
     from typing_extensions import TypeAlias
+
+    rgba = Literal["r", "g", "b", "a"]
 
     # not used internally... but available for typing
     RGBTuple: TypeAlias = "tuple[int, int, int] | tuple[float, float, float]"
@@ -95,6 +98,15 @@ class RGBA(NamedTuple):
     @classmethod
     def parse(cls, value: Any) -> RGBA:
         return parse_rgba(value)
+
+    @classmethod
+    def from_int(
+        cls,
+        value: int,
+        format: str,
+        bits_per_component: int | Sequence[int] = 8,
+    ) -> RGBA:
+        return parse_int(value, format=format, bits_per_component=bits_per_component)
 
     def to_8bit(self) -> RGBA8:
         """Convert to 8-bit integer form."""
@@ -291,8 +303,100 @@ def _norm_name(name: str) -> str:
     return delim.sub("", name).lower()
 
 
+def _ensure_format(format: str) -> Sequence[rgba]:
+    _format = "".join(format).lower()
+    if not all(c in "rgba" for c in _format):
+        raise ValueError("Format must be composed of 'r', 'g', 'b', and 'a'")
+    return _format  # type: ignore [return-value]
+
+
+def parse_int(
+    value: int,
+    format: str,
+    bits_per_component: int | Sequence[int] = 8,
+) -> RGBA:
+    """Parse color from bit-shifted integer encoding.
+
+    Parameters
+    ----------
+    value : int
+        The integer value to parse.
+    format : str
+        The format of the integer value.  Must be a string composed only of
+        the characters 'r', 'g', 'b', and 'a'.
+    bits_per_component : int | Sequence[int] | None
+        The number of bits used to represent each color component.  If a single
+        integer is provided, it is used for all components.  If a sequence of
+        integers is provided, the length must match the length of `format`.
+    """
+    fmt = _ensure_format(format)
+    if isinstance(bits_per_component, int):
+        bits_per_component = [bits_per_component] * len(fmt)
+    elif len(bits_per_component) != len(fmt):
+        raise ValueError("Length of 'bits_per_component' must match 'format'")
+
+    components: dict[str, float] = {"r": 0, "g": 0, "b": 0, "a": 1}
+    shift = 0
+
+    # Calculate the starting shift amount
+    for bits in reversed(bits_per_component):
+        shift += bits
+
+    # Parse each component from the integer value
+    for i, comp in enumerate(fmt):
+        shift -= bits_per_component[i]
+        mask = (1 << bits_per_component[i]) - 1
+        components[comp] = ((value >> shift) & mask) / mask
+
+    return RGBA(**components)
+
+
+def to_int(
+    color: RGBA,
+    format: str,
+    bits_per_component: int | Sequence[int] = 8,
+) -> int:
+    """Convert color to bit-shifted integer encoding.
+
+    Parameters
+    ----------
+    color : RGBA
+        The color to convert.
+    format : str
+        The format of the integer value.  Must be a string composed only of
+        the characters 'r', 'g', 'b', and 'a'.
+    bits_per_component : int | Sequence[int] | None
+        The number of bits used to represent each color component.  If a single
+        integer is provided, it is used for all components.  If a sequence of
+        integers is provided, the length must match the length of `format`.
+    """
+    fmt = _ensure_format(format)
+    if isinstance(bits_per_component, int):
+        bits_per_component = [bits_per_component] * len(fmt)
+    elif len(bits_per_component) != len(fmt):
+        raise ValueError("Length of 'bits_per_component' must match 'format'")
+
+    value = 0
+    shift = 0
+
+    # Calculate the starting shift amount
+    for bits in reversed(bits_per_component):
+        shift += bits
+
+    # Parse each component from the integer value
+    for i, comp in enumerate(fmt):
+        shift -= bits_per_component[i]
+        mask = (1 << bits_per_component[i]) - 1
+        value |= int(getattr(color, comp) * mask) << shift
+
+    return value
+
+
 def parse_rgba(value: Any) -> RGBA:
     """Parse a color."""
+    if isinstance(value, RGBA):
+        return value
+
     # parse hex, rgb, rgba, hsl, hsla, and color name strings
     if isinstance(value, str):
         key = _norm_name(value)
@@ -337,11 +441,8 @@ def parse_rgba(value: Any) -> RGBA:
         return value._rgba
 
     if isinstance(value, int):
-        # convert 24-bit integer to RGBA8 with bit shifting
-        r = (value >> 16) & 0xFF
-        g = (value >> 8) & 0xFF
-        b = value & 0xFF
-        return RGBA8(r, g, b).to_float()
+        # assume RGB24, use parse_int to explicitly pass format and bits_per_component
+        return parse_int(value, "rgb")
 
     # support for pydantic.color.Color
     for mod in ("pydantic", "pydantic_extra_types"):
@@ -387,6 +488,51 @@ class Color:
             object.__setattr__(obj, "_name", name)
             _COLOR_CACHE[rgba] = obj
         return _COLOR_CACHE[rgba]
+
+    @classmethod
+    def from_int(
+        cls,
+        value: int,
+        format: str,
+        bits_per_component: int | Sequence[int] = 8,
+    ) -> Color:
+        """Parse color from bit-shifted integer encoding.
+
+        Parameters
+        ----------
+        value : int
+            The integer value to parse.
+        format : str
+            The format of the integer value.  Must be a string composed only of
+            the characters 'r', 'g', 'b', and 'a'.
+        bits_per_component : int | Sequence[int] | None
+            The number of bits used to represent each color component.  If a single
+            integer is provided, it is used for all components.  If a sequence of
+            integers is provided, the length must match the length of `format`.
+        """
+        rgba = parse_int(value, format=format, bits_per_component=bits_per_component)
+        return cls(rgba)
+
+    def to_int(
+        self,
+        format: str,
+        bits_per_component: int | Sequence[int] = 8,
+    ) -> int:
+        """Convert color to bit-shifted integer encoding.
+
+        Parameters
+        ----------
+        color : RGBA
+            The color to convert.
+        format : str
+            The format of the integer value.  Must be a string composed only of
+            the characters 'r', 'g', 'b', and 'a'.
+        bits_per_component : int | Sequence[int] | None
+            The number of bits used to represent each color component.  If a single
+            integer is provided, it is used for all components.  If a sequence of
+            integers is provided, the length must match the length of `format`.
+        """
+        return to_int(self._rgba, format=format, bits_per_component=bits_per_component)
 
     # for mkdocstrings
     def __init__(self, value: ColorLike) -> None:
