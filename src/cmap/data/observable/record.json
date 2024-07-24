@@ -4,7 +4,7 @@
     "observable10": {
       "category": "qualitative",
       "data": "cmap.data.observable:observable10",
-      "info": "A categorical palette with ten colors designed for Observable Plot library.",
+      "info": "A categorical palette with ten colors designed for Observable Plot library. See <https://observablehq.com/blog/crafting-data-colors> for more information.",
       "interpolation": false
     }
   },
