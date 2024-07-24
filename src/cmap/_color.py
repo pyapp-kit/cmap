@@ -99,15 +99,6 @@ class RGBA(NamedTuple):
     def parse(cls, value: Any) -> RGBA:
         return parse_rgba(value)
 
-    @classmethod
-    def from_int(
-        cls,
-        value: int,
-        format: str,
-        bits_per_component: int | Sequence[int] = 8,
-    ) -> RGBA:
-        return parse_int(value, format=format, bits_per_component=bits_per_component)
-
     def to_8bit(self) -> RGBA8:
         """Convert to 8-bit integer form."""
         # not performing min/max checks here
@@ -332,7 +323,7 @@ def parse_int(
     fmt = _ensure_format(format)
     if isinstance(bits_per_component, int):
         bits_per_component = [bits_per_component] * len(fmt)
-    elif len(bits_per_component) != len(fmt):
+    elif len(bits_per_component) != len(fmt):  # pragma: no cover
         raise ValueError("Length of 'bits_per_component' must match 'format'")
 
     components: dict[str, float] = {"r": 0, "g": 0, "b": 0, "a": 1}
@@ -373,7 +364,7 @@ def to_int(
     fmt = _ensure_format(format)
     if isinstance(bits_per_component, int):
         bits_per_component = [bits_per_component] * len(fmt)
-    elif len(bits_per_component) != len(fmt):
+    elif len(bits_per_component) != len(fmt):  # pragma: no cover
         raise ValueError("Length of 'bits_per_component' must match 'format'")
 
     value = 0
