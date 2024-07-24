@@ -1,0 +1,17 @@
+{
+  "authors": [],
+  "colormaps": {
+    "observable10": {
+      "authors": [
+        "Jeff Pettiross"
+      ],
+      "category": "qualitative",
+      "data": "cmap.data.observable:observable10",
+      "info": "A categorical palette with ten colors designed for Observable Plot library. See <https://observablehq.com/blog/crafting-data-colors> for more information.",
+      "interpolation": false
+    }
+  },
+  "license": "Apache-2.0",
+  "namespace": "observable",
+  "source": "https://github.com/d3/d3-scale-chromatic"
+}
