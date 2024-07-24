@@ -7,6 +7,14 @@
       "category": "sequential",
       "data": "cmap.data.contrib:araucaria",
       "info": "The araucaria colormap is a sequential colormap that transitions from deep blue to light pink, created with the viscm tool."
+    },
+    "cerrado": {
+      "authors": [
+        "Antonio Camargo"
+      ],
+      "category": "sequential",
+      "data": "cmap.data.contrib:cerrado",
+      "info": "The cerrado colormap is a sequential colormap with earthy tones created via color interpolation in the OKLAB space."
     }
   },
   "license": "CC0",
