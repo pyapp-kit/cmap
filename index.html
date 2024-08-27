@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Drop and Normalize</title>
+    <style>
+      #drop-area {
+        width: 100%;
+        height: 200px;
+        border: 2px dashed #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      #drop-area.hover {
+        border-color: #666;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="drop-area">Drop your image here</div>
+    <canvas id="canvas"></canvas>
+
+    <!-- Import required libraries via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/tiff.js@1.0.0/tiff.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pako@2.0.4/dist/pako.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jimp@0.22.12/browser/lib/jimp.min.js"></script>
+
+    <script>
+      const dropArea = document.getElementById("drop-area");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      const colormap = {
+        map: (grayValue) => {
+          return {
+            r: grayValue,
+            g: 0,
+            b: 255 - grayValue,
+            a: 255,
+          };
+        },
+      };
+
+      dropArea.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropArea.classList.add("hover");
+      });
+
+      dropArea.addEventListener("dragleave", () => {
+        dropArea.classList.remove("hover");
+      });
+
+      dropArea.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        dropArea.classList.remove("hover");
+
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        console.log("File dropped:", file);
+
+        const fileType = file.type; // Ensure fileType is defined here
+        const fileReader = new FileReader();
+
+        fileReader.onload = async (event) => {
+          console.log("File loaded:", file.name);
+          const arrayBuffer = event.target.result;
+
+          let image;
+          const fileType = file.type;
+
+          try {
+            if (fileType === "image/tiff" || fileType === "image/tif") {
+              const tiff = new Tiff({ buffer: arrayBuffer });
+              image = await Tiff.toCanvas(tiff);
+            } else {
+              image = await Jimp.read(arrayBuffer);
+            }
+
+            if (image) {
+              // Normalize and apply colormap
+              const imageData = normalizeAndApplyColormap(ctx, image, colormap);
+              // Draw the processed image on canvas
+              drawImageOnCanvas(ctx, imageData);
+            }
+          } catch (error) {
+            console.error("Error loading the image:", error);
+          }
+        };
+        console.log("Reading file:", file.name);
+        console.log("File type:", file.type);
+        if (fileType === "image/tiff" || fileType === "image/tif") {
+          fileReader.readAsArrayBuffer(file);
+        } else {
+          fileReader.readAsArrayBuffer(file);
+        }
+      });
+
+      /**
+       * Normalize image to 8-bit grayscale, apply colormap, and return ImageData.
+       * @param {CanvasRenderingContext2D} ctx - Canvas rendering context.
+       * @param {Jimp} image - The image to process.
+       * @param {Object} colormap - The colormap object with a `map` function.
+       * @returns {ImageData} - The processed ImageData object.
+       */
+       function normalizeAndApplyColormap(ctx, image, colormap) {
+        image.greyscale().normalize();
+
+        const imageData = ctx.createImageData(image.bitmap.width, image.bitmap.height);
+
+        for (let i = 0; i < imageData.data.length; i += 4) {
+          const grayValue = image.bitmap.data[i];
+          const color = colormap.map(grayValue);
+
+          imageData.data[i] = color.r; // R
+          imageData.data[i + 1] = color.g; // G
+          imageData.data[i + 2] = color.b; // B
+          imageData.data[i + 3] = color.a; // A
+        }
+
+        return imageData;
+      }
+
+      /**
+       * Draw the image on the canvas, keeping the aspect ratio.
+       * @param {CanvasRenderingContext2D} ctx - Canvas rendering context.
+       * @param {ImageData} imageData - The processed ImageData object.
+       */
+      function drawImageOnCanvas(ctx, imageData) {
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const imageWidth = imageData.width;
+        const imageHeight = imageData.height;
+
+        const aspectRatio = imageWidth / imageHeight;
+        let drawWidth, drawHeight;
+
+        if (canvasWidth / canvasHeight > aspectRatio) {
+          drawHeight = canvasHeight;
+          drawWidth = canvasHeight * aspectRatio;
+        } else {
+          drawWidth = canvasWidth;
+          drawHeight = canvasWidth / aspectRatio;
+        }
+
+        const offsetX = (canvasWidth - drawWidth) / 2;
+        const offsetY = (canvasHeight - drawHeight) / 2;
+        console.log("Drawing image on canvas:", offsetX, offsetY, drawWidth, drawHeight);
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.putImageData(imageData, offsetX, offsetY);
+      }
+    </script>
+  </body>
+</html>
