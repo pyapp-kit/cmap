@@ -1,11 +1,11 @@
 # cmap
 
-[![License](https://img.shields.io/pypi/l/cmap.svg?color=green)](https://github.com/tlambert03/cmap/raw/main/LICENSE)
+[![License](https://img.shields.io/pypi/l/cmap.svg?color=green)](https://github.com/pyapp-kit/cmap/raw/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/cmap.svg?color=green)](https://pypi.org/project/cmap)
 ![Conda](https://img.shields.io/conda/v/conda-forge/cmap)
 [![Python Version](https://img.shields.io/pypi/pyversions/cmap.svg?color=green)](https://python.org)
-[![CI](https://github.com/tlambert03/cmap/actions/workflows/ci.yml/badge.svg)](https://github.com/tlambert03/cmap/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/tlambert03/cmap/branch/main/graph/badge.svg)](https://codecov.io/gh/tlambert03/cmap)
+[![CI](https://github.com/pyapp-kit/cmap/actions/workflows/ci.yml/badge.svg)](https://github.com/pyapp-kit/cmap/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/pyapp-kit/cmap/branch/main/graph/badge.svg)](https://codecov.io/gh/pyapp-kit/cmap)
 [![Documentation Status](https://readthedocs.org/projects/cmap-docs/badge/?version=latest)](https://cmap-docs.readthedocs.io/en/latest/?badge=latest)
 
 Scientific colormaps for python, with no dependencies beyond numpy.
