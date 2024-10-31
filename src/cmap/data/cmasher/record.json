@@ -1,0 +1,276 @@
+{
+  "authors": [
+    "Ellert van der Velden"
+  ],
+  "colormaps": {
+    "amber": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:amber",
+      "info": "The amber colormap is a visual representation of the gemstone with the same name."
+    },
+    "amethyst": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:amethyst",
+      "info": "The amethyst colormap is a visual representation of the gemstone with the same name."
+    },
+    "apple": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:apple",
+      "info": "The apple colormap is a visual representation of the fruit with the same name, in particular an <a href='https://en.wikipedia.org/wiki/Elstar'>Elstar</a> apple."
+    },
+    "arctic": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:arctic",
+      "info": "The arctic colormap is a visual representation of the cold landscape of the Arctic."
+    },
+    "bubblegum": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:bubblegum",
+      "info": "The bubblegum colormap is a visual representation of the candy with the same name."
+    },
+    "chroma": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:chroma",
+      "info": "The chroma colormap is a visual representation of all major colors."
+    },
+    "copper": {
+      "category": "cyclic",
+      "data": "cmap.data.cmasher:copper",
+      "info": "The copper colormap is a visual representation of both oxidized copper (left, like copper ore) and refined copper (right, like copper ingots)."
+    },
+    "cosmic": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:cosmic",
+      "info": "The cosmic colormap is a visual representation of the cosmos, with the black/purple representing the vast emptiness of space and the purple/blue the bright stars and galaxies."
+    },
+    "dusk": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:dusk",
+      "info": "The dusk colormap is a visual representation of what the sky looks like during dusk (with the black/blue representing the dark sky and the orange/red the last few sunrays above the horizon)."
+    },
+    "eclipse": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:eclipse",
+      "info": "The eclipse colormap is a visual representation of a solar eclipse (with the black/blue representing the Moon and the yellow the Sun's corona)."
+    },
+    "ember": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:ember",
+      "info": "The ember colormap is a visual representation of coal embers."
+    },
+    "emerald": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:emerald",
+      "info": "The emerald colormap is a visual representation of the gemstone with the same name."
+    },
+    "emergency": {
+      "category": "cyclic",
+      "data": "cmap.data.cmasher:emergency",
+      "info": "The emergency colormap is a visual representation of the emergency warning lights on emergency vehicles in many countries."
+    },
+    "fall": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:fall",
+      "info": "The fall colormap is a visual representation of the season with the same name, in particular its characteristic leaf colors."
+    },
+    "flamingo": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:flamingo",
+      "info": "The flamingo colormap is a visual representation of the bird with the same name."
+    },
+    "freeze": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:freeze",
+      "info": "The freeze colormap is one of the two main colormaps used in `PRISM`_, and is a visual representation of a large body of water freezing over."
+    },
+    "fusion": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:fusion",
+      "info": "The fusion colormap is a visual representation of two particles fusing together."
+    },
+    "gem": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:gem",
+      "info": "The gem colormap is a visual representation of the amethyst and aquamarine gemstones."
+    },
+    "ghostlight": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:ghostlight",
+      "info": "The ghostlight colormap is a visual representation of the lanterns you expect to find in haunted houses (either in real-life or in videogames)."
+    },
+    "gothic": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:gothic",
+      "info": "The gothic colormap is a visual representation of the stereotypical gothic colors."
+    },
+    "guppy": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:guppy",
+      "info": "The guppy colormap is a visual representation of the tropical fish species with the same name."
+    },
+    "holly": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:holly",
+      "info": "The holly colormap is a visual representation of the flower/plant with the same name, commonly associated with Christmas."
+    },
+    "horizon": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:horizon",
+      "info": "The horizon colormap is a visual representation of the horizon, from the green colors of the land to the calm colors of the clouds."
+    },
+    "iceburn": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:iceburn",
+      "info": "The iceburn colormap is a visual representation of ice and fire colliding."
+    },
+    "infinity": {
+      "category": "cyclic",
+      "data": "cmap.data.cmasher:infinity",
+      "info": "The infinity colormap is a visual representation of the infiniteness of a circle and the <a href='https://en.wikipedia.org/wiki/Ouroboros'>Ouroboros</a> symbol."
+    },
+    "jungle": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:jungle",
+      "info": "The jungle colormap is a visual representation of a jungle."
+    },
+    "lavender": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:lavender",
+      "info": "The lavender colormap is a visual representation of the flower with the same name."
+    },
+    "lilac": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:lilac",
+      "info": "The lilac colormap is a visual representation of the flower species with the same name (also known as 'syringa')."
+    },
+    "neon": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:neon",
+      "info": "The neon colormap is a visual representation of the typical neon signs found in leisure areas."
+    },
+    "neutral": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:neutral",
+      "info": "The neutral colormap is a neutral, colorless colormap."
+    },
+    "nuclear": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:nuclear",
+      "info": "The nuclear colormap is a visual representation of the colors commonly associated with nuclear radiation."
+    },
+    "ocean": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:ocean",
+      "info": "The ocean colormap is a visual representation of an ocean wave."
+    },
+    "pepper": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:pepper",
+      "info": "The pepper colormap is a visual representation of the vegetable with the same name (also known as 'bell pepper'; 'paprika'; 'capsicum'; etc.)."
+    },
+    "pride": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:pride",
+      "info": "The pride colormap is a visual representation of the equality of all communities."
+    },
+    "prinsenvlag": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:prinsenvlag",
+      "info": "The prinsenvlag colormap is a visual representation of the flag with the same name, which one can read about right <a href='https://en.wikipedia.org/wiki/Prince%27s_Flag'>here</a>."
+    },
+    "rainforest": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:rainforest",
+      "info": "The rainforest colormap is one of the two main colormaps used in `PRISM`_, and is a visual representation of Mother Nature, in particular a dense rainforest (with blue representing the water; green the trees/plants; and yellow/red the Sun)."
+    },
+    "redshift": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:redshift",
+      "info": "The redshift colormap is a visual representation of the (mostly) astronomical phenomenon with the same name, where electromagnetic radiation (such as light) undergoes an increase in wavelength."
+    },
+    "sapphire": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:sapphire",
+      "info": "The sapphire colormap is a visual representation of the gemstone with the same name."
+    },
+    "savanna": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:savanna",
+      "info": "The savanna colormap is a visual representation of the tropical savanna ecosystems."
+    },
+    "seasons": {
+      "category": "cyclic",
+      "data": "cmap.data.cmasher:seasons",
+      "info": "The seasons colormap is a visual representation of the cycle of the four seasons; winter, spring, summer and fall."
+    },
+    "seaweed": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:seaweed",
+      "info": "The seaweed colormap is a visual representation of the type of sea algae with the same name."
+    },
+    "sepia": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:sepia",
+      "info": "The sepia colormap is a visual representation of the sepia toning often used in photography."
+    },
+    "sunburst": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:sunburst",
+      "info": "The sunburst colormap is a visual representation of a sunburst or solar flare."
+    },
+    "swamp": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:swamp",
+      "info": "The swamp colormap is a visual representation of the wet swamp ecosystems."
+    },
+    "torch": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:torch",
+      "info": "The torch colormap is a visual representation of the typical blue/orange gas flame produced by torches or burners."
+    },
+    "toxic": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:toxic",
+      "info": "The toxic colormap is a visual representation of the colors commonly associated with toxic substances."
+    },
+    "tree": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:tree",
+      "info": "The tree colormap is a visual representation of the woody plants with the same name (there is, funnily enough, no accepted definition of what a <a href='https://en.wikipedia.org/wiki/Tree'>tree</a>_ is)."
+    },
+    "tropical": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:tropical",
+      "info": "The tropical colormap is a visual representation of the tropical colors of beach parties and flower leis."
+    },
+    "viola": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:viola",
+      "info": "The viola colormap is a visual representation of the flower family with the same name."
+    },
+    "voltage": {
+      "category": "sequential",
+      "data": "cmap.data.cmasher:voltage",
+      "info": "The voltage colormap is a visual representation of the high voltage electricity in a tesla coil or lightning strike."
+    },
+    "waterlily": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:waterlily",
+      "info": "The waterlily colormap is a visual representation of the water flower with the same name."
+    },
+    "watermelon": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:watermelon",
+      "info": "The watermelon colormap is a visual representation of the fruit with the same name."
+    },
+    "wildfire": {
+      "category": "diverging",
+      "data": "cmap.data.cmasher:wildfire",
+      "info": "The wildfire colormap is a visual representation of the natural disaster with the same name."
+    }
+  },
+  "info": "",
+  "license": "BSD-3-Clause",
+  "namespace": "cmasher",
+  "source": "https://github.com/1313e/CMasher"
+}
