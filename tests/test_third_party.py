@@ -71,6 +71,10 @@ def test_napari(qapp: "QApplication") -> None:
     v.close()
 
 
+@pytest.mark.skipif(
+    sys.platform == "darwin" and sys.version_info >= (3, 13),
+    reason="not yet working upstream",
+)
 def test_vispy(qapp: "QApplication") -> None:
     scene = pytest.importorskip("vispy.scene")
 
