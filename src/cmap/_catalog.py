@@ -238,9 +238,17 @@ class Catalog(Mapping[str, "CatalogItem"]):
         # _rev_aliases maps fully qualified names to a list of aliases
         self._rev_aliases: dict[str, list[str]] = {}
 
-        for name, data in _build_catalog(
-            sorted(data_root.rglob(record_pattern))
-        ).items():
+        # sort record files.  Put matplotlib-related names first so that un-namespaced
+        # names resolve to the matplotlib colormaps by default.
+        MPL_PRIORTY_NAMESPACES = ("matplotlib", "bids", "matlab", "gnuplot")
+
+        def _sorter(x: Path) -> tuple[int, Path]:
+            if any(s in str(x) for s in MPL_PRIORTY_NAMESPACES):
+                return (0, x)
+            return (1, x)
+
+        record_files = sorted(data_root.rglob(record_pattern), key=_sorter)
+        for name, data in _build_catalog(record_files).items():
             normed_name = self._norm_name(name)
             self._original_names[name] = normed_name
             self._data[normed_name] = data
