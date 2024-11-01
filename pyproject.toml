@@ -12,7 +12,7 @@ requires-python = ">=3.8"
 license = { text = "BSD 3-Clause License" }
 authors = [{ email = "talley.lambert@gmail.com", name = "Talley Lambert" }]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dynamic = ["version"]
 dependencies = ["numpy"]
@@ -51,7 +52,7 @@ test_thirdparty = [
     "colorspacious",
     "bokeh",
     "colour",
-    "napari>=0.4.19",
+    "napari>=0.4.19; python_version<'3.13'",
     "plotly",
     "pydantic",
     "pydantic-extra-types>=2",
