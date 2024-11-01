@@ -1345,9 +1345,9 @@ def _mpl_segmentdata_to_stops(
         A list of (position, [r, g, b]) tuples.
     """
     if all(callable(v) for v in data.values()):
-        funcs = (data["red"], data["green"], data["blue"])
+        funcs: tuple = (data["red"], data["green"], data["blue"])
         if "alpha" in data:
-            return partial(_map_rgb, (*funcs, data["alpha"]))
+            funcs = (*funcs, data["alpha"])
         return partial(_map_rgb, funcs)
     if any(callable(v) for v in data.values()):
         raise ValueError(

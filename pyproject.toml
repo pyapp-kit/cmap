@@ -74,9 +74,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/tlambert03/cmap"
-Repository = "https://github.com/tlambert03/cmap"
-"Bug Tracker" = "https://github.com/tlambert03/cmap/issues"
+Homepage = "https://github.com/pyapp-kit/cmap"
+Repository = "https://github.com/pyapp-kit/cmap"
+"Bug Tracker" = "https://github.com/pyapp-kit/cmap/issues"
 Documentation = "https://cmap-docs.rtfd.io/"
 
 # https://hatch.pypa.io/latest/config/metadata/
@@ -113,9 +113,9 @@ select = [
     "TID",  # flake8-tidy-imports
 ]
 ignore = [
-    "D100", # Missing docstring in public module
-    "D104", # Missing docstring in public module
-    "D401", # First line should be in imperative mood (remove to opt in)
+    "D100",   # Missing docstring in public module
+    "D104",   # Missing docstring in public module
+    "D401",   # First line should be in imperative mood (remove to opt in)
     "ISC001", # conflicts with formatter
 ]
 

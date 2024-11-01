@@ -2,8 +2,8 @@ site_name: cmap
 site_description: Colors and scientific colormaps for python, no dependencies
 # strict: true
 
-repo_name: tlambert03/cmap
-repo_url: https://github.com/tlambert03/cmap
+repo_name: pyapp-kit/cmap
+repo_url: https://github.com/pyapp-kit/cmap
 edit_uri: edit/main/docs/
 
 watch:
