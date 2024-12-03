@@ -121,6 +121,9 @@ class Colormap:
     """
 
     __slots__ = (
+        "__weakref__",
+        "_initialized",
+        "_lut_cache",
         "bad_color",
         "category",
         "color_stops",
@@ -130,9 +133,6 @@ class Colormap:
         "name",
         "over_color",
         "under_color",
-        "_initialized",
-        "_lut_cache",
-        "__weakref__",
     )
 
     color_stops: ColorStops
