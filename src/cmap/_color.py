@@ -466,7 +466,7 @@ class Color:
         The color to represent.  Can be any "ColorLike".
     """
 
-    __slots__ = ("_rgba", "_name", "__weakref__")
+    __slots__ = ("__weakref__", "_name", "_rgba")
     _rgba: RGBA
     _name: str | None
 
