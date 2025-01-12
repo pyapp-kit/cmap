@@ -147,6 +147,16 @@ def test_altair() -> None:
     assert alt[-1] == "#0000FF"
 
 
+def test_gee() -> None:
+    # These strings are used in the palette variables
+    # You can't test this without an account
+    cmap1 = Colormap(["red", "green", "blue"])
+    alt = cmap1.to_gee()
+    assert isinstance(alt, list) and all(isinstance(c, str) for c in alt)
+    assert alt[0] == "FF0000"
+    assert alt[-1] == "0000FF"
+
+
 def test_viscm(tmp_path: Path) -> None:
     pytest.importorskip("viscm")
     # NOT using importorskip here because there IS an error import viscm
