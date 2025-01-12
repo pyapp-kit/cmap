@@ -121,6 +121,9 @@ class Colormap:
     """
 
     __slots__ = (
+        "__weakref__",
+        "_initialized",
+        "_lut_cache",
         "bad_color",
         "category",
         "color_stops",
@@ -130,9 +133,6 @@ class Colormap:
         "name",
         "over_color",
         "under_color",
-        "_initialized",
-        "_lut_cache",
-        "__weakref__",
     )
 
     color_stops: ColorStops
@@ -920,7 +920,7 @@ class ColorStops(Sequence[ColorStop]):
         return cls(np.concatenate([stops[:, None], ary], axis=1))
 
     @property
-    def stops(self) -> tuple[float, ...]:
+    def stops(self) -> tuple[np.floating, ...]:
         """Return tuple of color stop positions."""
         return tuple(self._stops[:, 0])
 
@@ -1061,14 +1061,14 @@ class ColorStops(Sequence[ColorStop]):
             midpoints = np.linspace(0, 1, len(colors) + 1)[1:-1]
             _midstops = []
             for m, (c1, c2) in zip(midpoints, zip(colors[:-1], colors[1:])):
-                s1 = f"{c1.hex if as_hex else c1.rgba_string} {m*100:g}%"
-                s2 = f"{c2.hex if as_hex else c2.rgba_string} {m*100:g}%"
+                s1 = f"{c1.hex if as_hex else c1.rgba_string} {m * 100:g}%"
+                s2 = f"{c2.hex if as_hex else c2.rgba_string} {m * 100:g}%"
                 _midstops.extend([s1, s2])
             _stops = ", ".join(_midstops)
         else:
             _stops = ", ".join(
                 [
-                    f"{c.hex if as_hex else c.rgba_string} {s*100:g}%"
+                    f"{c.hex if as_hex else c.rgba_string} {s * 100:g}%"
                     for c, s in zip(colors, stops)
                 ]
             )

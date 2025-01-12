@@ -177,7 +177,7 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
             # here we add any global keys to the colormap that are not already there.
             for k in ("license", "namespace", "source", "authors", "category"):
                 if k in data:
-                    v.setdefault(k, data[k])  # type: ignore [misc,literal-required]
+                    v.setdefault(k, data[k])  # type: ignore [misc]
 
             # add the fully namespaced colormap to the catalog
             ctlg[namespaced] = v

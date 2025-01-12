@@ -62,13 +62,13 @@ else:
     from ._catalog import Catalog, CatalogItem
 
 __all__ = [
-    "Catalog",
-    "CatalogItem",
-    "Color",
-    "Colormap",
-    "ColorStops",
     "HSLA",
     "HSVA",
     "RGBA",
     "RGBA8",
+    "Catalog",
+    "CatalogItem",
+    "Color",
+    "ColorStops",
+    "Colormap",
 ]

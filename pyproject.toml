@@ -9,7 +9,8 @@ name = "cmap"
 description = "Scientific colormaps for python, without dependencies"
 readme = "README.md"
 requires-python = ">=3.8"
-license = { text = "BSD 3-Clause License" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE/*"]
 authors = [{ email = "talley.lambert@gmail.com", name = "Talley Lambert" }]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -24,9 +25,6 @@ classifiers = [
 ]
 dynamic = ["version"]
 dependencies = ["numpy"]
-
-[project.license-files]
-globs = ["LICENSE/*"]
 
 # extras
 # https://peps.python.org/pep-0621/#dependencies-optional-dependencies
@@ -52,9 +50,9 @@ test_thirdparty = [
     "colour",
     "matplotlib",
     "napari>=0.4.19; python_version<'3.13'",
-    "numba; python_version<'3.13'",
+    "numba; python_version<'3.13' and platform_machine != 'arm64'",
     "plotly",
-    "pydantic-extra-types>=2",
+    "pydantic-extra-types>=2,!=2.10.1",
     "pydantic",
     "pygfx",
     "pyqtgraph",
@@ -73,6 +71,7 @@ dev = [
     "pytest",
     "rich",
     "ruff",
+    "pyqt6",
 ]
 
 [project.urls]
