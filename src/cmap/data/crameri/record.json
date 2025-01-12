@@ -1,6 +1,6 @@
 {
   "authors": [
-    ""
+    "Fabio Crameri"
   ],
   "colormaps": {
     "acton": {
@@ -75,6 +75,10 @@
       "category": "miscellaneous",
       "data": "cmap.data.crameri.fes:fes"
     },
+    "glasgow": {
+      "category": "sequential",
+      "data": "cmap.data.crameri.glasgow:glasgow"
+    },
     "grayC": {
       "category": "sequential",
       "data": "cmap.data.crameri.grayC:grayC"
@@ -95,9 +99,25 @@
       "category": "sequential",
       "data": "cmap.data.crameri.lapaz:lapaz"
     },
+    "lipari": {
+      "category": "sequential",
+      "data": "cmap.data.crameri.lipari:lipari"
+    },
     "lisbon": {
       "category": "diverging",
       "data": "cmap.data.crameri.lisbon:lisbon"
+    },
+    "managua": {
+      "category": "diverging",
+      "data": "cmap.data.crameri.managua:managua"
+    },
+    "navia": {
+      "category": "sequential",
+      "data": "cmap.data.crameri.navia:navia"
+    },
+    "naviaW": {
+      "category": "sequential",
+      "data": "cmap.data.crameri.naviaW:naviaW"
     },
     "nuuk": {
       "category": "sequential",
