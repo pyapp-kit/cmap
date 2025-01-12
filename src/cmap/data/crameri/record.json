@@ -1,7 +1,5 @@
 {
-  "authors": [
-    ""
-  ],
+  "authors": ["Fabio Crameri"],
   "colormaps": {
     "acton": {
       "category": "sequential",

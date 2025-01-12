@@ -20,9 +20,6 @@
       "license": "MIT",
       "source": "https://github.com/wistia/heatmap-palette"
     },
-    "berlin": {
-      "alias": "crameri:berlin"
-    },
     "binary": {
       "category": "sequential",
       "data": "cmap.data.matplotlib:binary"
@@ -34,9 +31,6 @@
     "bwr": {
       "category": "diverging",
       "data": "cmap.data.matplotlib:bwr"
-    },
-    "cividis": {
-      "alias": "cividis:cividis"
     },
     "coolwarm": {
       "authors": [
@@ -82,9 +76,6 @@
     "magma": {
       "alias": "bids:magma"
     },
-    "managua": {
-      "alias": "crameri:managua"
-    },
     "nipy_spectral": {
       "category": "miscellaneous",
       "data": "cmap.data.matplotlib:nipy_spectral",
@@ -102,9 +93,6 @@
       "data": "cmap.data.matplotlib:terrain",
       "info": "Appears to have its origin in Igor, and was [added to matplotlib in 2009](https://sourceforge.net/p/matplotlib/mailman/message/23330302/)."
     },
-    "turbo": {
-      "alias": "google:turbo"
-    },
     "twilight": {
       "authors": [
         "Bastian Bechtold"
@@ -118,9 +106,6 @@
       ],
       "category": "sequential",
       "data": "cmap.data.matplotlib:twilight_shifted"
-    },
-    "vanimo": {
-      "alias": "crameri:vanimo"
     },
     "viridis": {
       "alias": "bids:viridis"

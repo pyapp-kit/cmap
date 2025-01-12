@@ -50,7 +50,7 @@ test_thirdparty = [
     "colour",
     "matplotlib",
     "napari>=0.4.19; python_version<'3.13'",
-    "numba; python_version<'3.13'",
+    "numba; python_version<'3.13' and platform_machine != 'arm64'",
     "plotly",
     "pydantic-extra-types>=2,!=2.10.1",
     "pydantic",
