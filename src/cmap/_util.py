@@ -34,7 +34,11 @@ def plot_color_gradients(
     nrows = len(cmap_list) * (2 if compare else 1)
     figh = 0.35 + 0.15 + (nrows + (nrows - 1) * 0.1) * 0.22
     fig, axs = plt.subplots(nrows=nrows + 1, figsize=(6.4, figh))
-    fig.subplots_adjust(top=1 - 0.35 / figh, bottom=0.15 / figh, left=0.2, right=0.99)
+    bottom = 0.15 / figh
+    top = 1 - 0.35 / figh
+    if bottom >= top:  # pragma: no cover
+        bottom, top = top, bottom
+    fig.subplots_adjust(top=top, bottom=bottom, left=0.2, right=0.99)
 
     for i, (ax, name) in enumerate(zip(axs[:: 2 if compare else 1], cmap_list)):
         cm = _ensure_cmap(name).to_mpl()
@@ -137,7 +141,7 @@ def plot_lightness(
     x = np.linspace(0.0, 1.0, 101) if x is None else np.asarray(x)
     cmap = _ensure_cmap(cmap)
     lab = calc_lightness(cmap, x, colorspace)
-    lslice = np.s_[::-1] if reverse else np.s_[:]
+    lslice = np.s_[::-1] if reverse else slice(None)
     y_ = lab[lslice]
     c_ = x[lslice]
 
