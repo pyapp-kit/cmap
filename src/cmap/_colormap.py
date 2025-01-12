@@ -747,8 +747,9 @@ class Colormap:
     def to_gee(self, N: int = 256) -> list[str]:
         """Return a Google Earth Engine palette with N color samples from the colormap.
 
-        Suitable for passing to the palette parameter of Google Earth Engine visualizations.
-        https://developers.google.com/earth-engine/guides/image_visualization#color-palettes
+        Suitable for passing to the palette parameter of Google Earth Engine
+        visualizations. See:
+        https://developers.google.com/earth-engine/guides/image_visualization
         """
         return _external.to_gee(self, N=N)
 
