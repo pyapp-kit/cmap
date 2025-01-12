@@ -141,7 +141,7 @@ class RGBA8(NamedTuple):
     def to_hex(self) -> str:
         """Convert to hex color."""
         out = f"#{self.r:02X}{self.g:02X}{self.b:02X}"
-        return f"{out}{round(self.a*255):02X}" if self.a != 1 else out
+        return f"{out}{round(self.a * 255):02X}" if self.a != 1 else out
 
     def to_hsv(self) -> HSVA:
         """Convert to Hue, Saturation, Value."""
