@@ -368,6 +368,13 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
 
     Returns a list of hexadecimal color strings.
 
+- [gee](https://developers.google.com/earth-engine/guides/quickstart_python)
+
+    ```python
+    Colormap("viridis").to_gee()
+    ```
+    Returns a list of hexadecimal color strings (without a `#` prefix).
+
 - [pyqtgraph](https://pyqtgraph.org/)
 
     ```python

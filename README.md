@@ -102,6 +102,7 @@ third-party colormap objects, including:
 - [plotly](https://plotly.com/python/)
 - [bokeh](https://docs.bokeh.org/en/latest/)
 - [altair](https://altair-viz.github.io/)
+- [earthengine-api](https://developers.google.com/earth-engine/guides/quickstart_python)
 - [pyqtgraph](https://www.pyqtgraph.org/)
 
 See [documentation](https://cmap-docs.readthedocs.io/en/latest/colormaps/#usage-with-external-visualization-libraries)

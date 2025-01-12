@@ -106,6 +106,22 @@ def to_altair(cm: Colormap, N: int = 256) -> list[str]:
     return [color.hex for color in cm.iter_colors(N)]
 
 
+def to_gee(cm: Colormap, N: int = 256) -> list[str]:
+    """Return a Google Earth Engine palette with N color samples from the colormap.
+
+    Suitable for passing to the palette parameter of Google Earth Engine visualizations.
+
+    See details at
+    https://developers.google.com/earth-engine/guides/image_visualization#color-palettes
+    """
+    rgbs = [
+        # drop the # symbol
+        color.hex.lstrip("#")
+        for color in cm.iter_colors(N)
+    ]
+    return rgbs
+
+
 def to_pyqtgraph(cm: Colormap) -> PyqtgraphColorMap:
     """Return a `pyqtgraph.Colormap`."""
     from pyqtgraph import ColorMap

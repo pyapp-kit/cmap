@@ -744,6 +744,14 @@ class Colormap:
         """
         return _external.to_altair(self, N=N)
 
+    def to_gee(self, N: int = 256) -> list[str]:
+        """Return a Google Earth Engine palette with N color samples from the colormap.
+
+        Suitable for passing to the palette parameter of Google Earth Engine visualizations.
+        https://developers.google.com/earth-engine/guides/image_visualization#color-palettes
+        """
+        return _external.to_gee(self, N=N)
+
     def to_viscm(
         self, dpi: int = 100, dest: str | None = None
     ) -> matplotlib.figure.Figure:
