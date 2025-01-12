@@ -1,11 +1,27 @@
 # Changelog
 
+## [v0.5.0](https://github.com/pyapp-kit/cmap/tree/v0.5.0) (2025-01-12)
+
+[Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.4.0...v0.5.0)
+
+**Implemented enhancements:**
+
+- feat: update for crameri v8 [\#83](https://github.com/pyapp-kit/cmap/pull/83) ([tlambert03](https://github.com/tlambert03))
+- feat: Implement Google Earth Engine palette external [\#82](https://github.com/pyapp-kit/cmap/pull/82) ([SiggyF](https://github.com/SiggyF))
+- feat: Add the pantanal colormap [\#81](https://github.com/pyapp-kit/cmap/pull/81) ([apcamargo](https://github.com/apcamargo))
+
+**Merged pull requests:**
+
+- ci\(dependabot\): bump codecov/codecov-action from 4 to 5 [\#78](https://github.com/pyapp-kit/cmap/pull/78) ([dependabot[bot]](https://github.com/apps/dependabot))
+- ci\(pre-commit.ci\): autoupdate [\#77](https://github.com/pyapp-kit/cmap/pull/77) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
+
 ## [v0.4.0](https://github.com/pyapp-kit/cmap/tree/v0.4.0) (2024-11-01)
 
 [Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.3.0...v0.4.0)
 
 **Implemented enhancements:**
 
+- build: support py3.13 [\#76](https://github.com/pyapp-kit/cmap/pull/76) ([tlambert03](https://github.com/tlambert03))
 - feat: add cmasher colormaps [\#75](https://github.com/pyapp-kit/cmap/pull/75) ([tlambert03](https://github.com/tlambert03))
 
 **Documentation:**
@@ -14,7 +30,6 @@
 
 **Merged pull requests:**
 
-- build: support py3.13 [\#76](https://github.com/pyapp-kit/cmap/pull/76) ([tlambert03](https://github.com/tlambert03))
 - Rename tlambert03/cmap -\> pyapp-kit/cmap [\#73](https://github.com/pyapp-kit/cmap/pull/73) ([tlambert03](https://github.com/tlambert03))
 - ci\(pre-commit.ci\): autoupdate [\#70](https://github.com/pyapp-kit/cmap/pull/70) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
 
@@ -26,6 +41,7 @@
 
 - feat: Add the `cerrado` sequential colormap [\#69](https://github.com/pyapp-kit/cmap/pull/69) ([apcamargo](https://github.com/apcamargo))
 - feat: add flexible integer conversion [\#68](https://github.com/pyapp-kit/cmap/pull/68) ([tlambert03](https://github.com/tlambert03))
+- Add the `observable10` qualitative colormap [\#67](https://github.com/pyapp-kit/cmap/pull/67) ([apcamargo](https://github.com/apcamargo))
 - feat: Add the `okabeito` namespace and colormap [\#65](https://github.com/pyapp-kit/cmap/pull/65) ([apcamargo](https://github.com/apcamargo))
 - feat: Add the `araucaria` sequential colormap [\#64](https://github.com/pyapp-kit/cmap/pull/64) ([apcamargo](https://github.com/apcamargo))
 
@@ -35,7 +51,6 @@
 
 **Merged pull requests:**
 
-- Add the `observable10` qualitative colormap [\#67](https://github.com/pyapp-kit/cmap/pull/67) ([apcamargo](https://github.com/apcamargo))
 - refactor: clarify that authors/license can be added directly to colormap entries, update contrib [\#66](https://github.com/pyapp-kit/cmap/pull/66) ([tlambert03](https://github.com/tlambert03))
 
 ## [v0.2.2](https://github.com/pyapp-kit/cmap/tree/v0.2.2) (2024-06-20)
