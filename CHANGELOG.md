@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.5.1](https://github.com/pyapp-kit/cmap/tree/v0.5.1) (2025-03-07)
+
+[Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.5.0...v0.5.1)
+
+**Implemented enhancements:**
+
+- feat: Set interpolation when exporting to pygfx [\#88](https://github.com/pyapp-kit/cmap/pull/88) ([kevinyamauchi](https://github.com/kevinyamauchi))
+
+**Merged pull requests:**
+
+- ci\(pre-commit.ci\): autoupdate [\#84](https://github.com/pyapp-kit/cmap/pull/84) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
+
 ## [v0.5.0](https://github.com/pyapp-kit/cmap/tree/v0.5.0) (2025-01-12)
 
 [Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.4.0...v0.5.0)
