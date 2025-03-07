@@ -111,11 +111,17 @@ def test_pygfx(qapp: "QApplication") -> None:
     # camera.position.x = IMG.shape[1] / 2
     # camera.scale.y = -1
 
+    # check that the colormap interpolation is set
+    color_map = CMAP.to_pygfx()
+    assert color_map.mag_filter == CMAP.interpolation
+    assert color_map.min_filter == CMAP.interpolation
+    assert color_map.mipmap_filter == CMAP.interpolation
+
     scene = gfx.Scene()
     scene.add(
         gfx.Image(
             gfx.Geometry(grid=gfx.Texture(IMG, dim=2)),
-            gfx.ImageBasicMaterial(clim=(0, IMG.max()), map=CMAP.to_pygfx()),
+            gfx.ImageBasicMaterial(clim=(0, IMG.max()), map=color_map),
         )
     )
 
