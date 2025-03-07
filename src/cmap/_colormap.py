@@ -703,8 +703,14 @@ class Colormap:
         """Return a vispy colormap."""
         return _external.to_vispy(self)
 
-    def to_pygfx(self, N: int = 256, *, as_view: bool | None = None) -> pygfx.Texture:
-        """Return a pygfx Texture."""
+    def to_pygfx(
+        self, N: int = 256, *, as_view: bool | None = None
+    ) -> pygfx.TextureMap:
+        """Return a pygfx TextureMap.
+
+        Note that it is recommended to use at least 256 colors for the LUT.
+        https://github.com/pygfx/pygfx/pull/1025#issuecomment-2706170445
+        """
         if as_view is not None:
             warnings.warn(
                 "as_view argument is deprecated and does nothing",
