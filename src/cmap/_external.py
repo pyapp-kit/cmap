@@ -62,7 +62,7 @@ def to_vispy(cm: Colormap) -> VispyColormap:
     return Colormap(colors=cm.color_stops.color_array, controls=cm.color_stops.stops)
 
 
-def to_pygfx(cm: Colormap, N: int = 256) -> pygfx.Texture:
+def to_pygfx(cm: Colormap, N: int = 256) -> pygfx.TextureMap:
     """Return a pygfx Texture."""
     import pygfx
 
@@ -70,7 +70,11 @@ def to_pygfx(cm: Colormap, N: int = 256) -> pygfx.Texture:
     # and if so, use that instead of .lut()
     # (get_view has a filter argument... but I don't know whether it will take
     # care of the stops)
-    return pygfx.Texture(cm.lut(N).astype(np.float32), dim=1)
+    pygfx_texture = pygfx.Texture(cm.lut(N).astype(np.float32), dim=1)
+
+    return pygfx.TextureMap(
+        texture=pygfx_texture, filter=cm.interpolation, wrap="clamp"
+    )
 
 
 def to_plotly(cm: Colormap) -> list[list[float | str]]:
