@@ -89,6 +89,7 @@ def test_vispy(qapp: "QApplication") -> None:
     canvas.close()
 
 
+@pytest.mark.filterwarnings("ignore:\\*scattermapbox\\* is deprecated")
 @pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
 def test_plotly() -> None:
     px = pytest.importorskip("plotly.express")
