@@ -1,5 +1,7 @@
 {
-  "authors": ["Paul Tol"],
+  "authors": [
+    "Paul Tol"
+  ],
   "colormaps": {
     "BuRd": {
       "category": "diverging",
