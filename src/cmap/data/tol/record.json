@@ -39,6 +39,11 @@
       "data": "cmap.data.tol:bright",
       "interpolation": false
     },
+    "bright-alt": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:bright_alt",
+      "interpolation": false
+    },
     "dark": {
       "category": "qualitative",
       "data": "cmap.data.tol:dark",
@@ -47,6 +52,11 @@
     "high-contrast": {
       "category": "qualitative",
       "data": "cmap.data.tol:high_contrast",
+      "interpolation": false
+    },
+    "high-contrast-alt": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:high_contrast_alt",
       "interpolation": false
     },
     "incandescent": {
@@ -62,14 +72,29 @@
       "data": "cmap.data.tol:light",
       "interpolation": false
     },
+    "light-alt": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:light_alt",
+      "interpolation": false
+    },
     "medium-contrast": {
       "category": "qualitative",
       "data": "cmap.data.tol:medium_contrast",
       "interpolation": false
     },
+    "medium-contrast-alt": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:medium_contrast_alt",
+      "interpolation": false
+    },
     "muted": {
       "category": "qualitative",
       "data": "cmap.data.tol:muted",
+      "interpolation": false
+    },
+    "muted-alt": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:muted_alt",
       "interpolation": false
     },
     "nightfall": {
@@ -229,6 +254,11 @@
     "vibrant": {
       "category": "qualitative",
       "data": "cmap.data.tol:vibrant",
+      "interpolation": false
+    },
+    "vibrant-alt": {
+      "category": "qualitative",
+      "data": "cmap.data.tol:vibrant_alt",
       "interpolation": false
     }
   },

@@ -3,9 +3,9 @@
 Paul Tol is a Dutch instrument scientist with a PhD in atomic physics,
 working on the TROPOMI, SPEXone and TANGO projects in the Earth programme of SRON.
 
-https://personal.sron.nl/~pault/
-https://personal.sron.nl/~pault/data/tol_colors.py
-https://personal.sron.nl/~pault/data/colourschemes.pdf
+https://sronpersonalpages.nl/~pault/
+https://sronpersonalpages.nl/~pault/data/tol_colors.py
+https://sronpersonalpages.nl/~pault/data/colourschemes.pdf
 
 Copyright:
 
@@ -364,12 +364,15 @@ bright = [
     (187, 187, 187),  # "#BBBBBB"
 ]
 
+bright_alt = [bright[i] for i in [0, 4, 2, 3, 1, 5, 6]]
 
 high_contrast = [
     (221, 170, 51),  # "#DDAA33",
     (187, 85, 102),  # "#BB5566",
     (0, 68, 136),  # "#004488",
 ]
+
+high_contrast_alt = [high_contrast[i] for i in [2, 0, 1]]
 
 vibrant = [
     (0, 119, 187),  # "#0077BB"
@@ -380,6 +383,8 @@ vibrant = [
     (238, 51, 119),  # "#EE3377"
     (187, 187, 187),  # "#BBBBBB"
 ]
+
+vibrant_alt = [vibrant[i] for i in [3, 0, 1, 5, 4, 2, 6]]
 
 muted = [
     (51, 34, 136),  # "#332288"
@@ -393,6 +398,8 @@ muted = [
     (170, 68, 153),  # "#AA4499"
 ]
 
+muted_alt = [muted[i] for i in [6, 0, 5, 3, 1, 7, 2, 4, 8]]
+
 medium_contrast = [
     (238, 204, 102),  # "#EECC66"
     (238, 153, 170),  # "#EE99AA"
@@ -401,6 +408,8 @@ medium_contrast = [
     (153, 68, 85),  # "#994455"
     (0, 68, 136),  # "#004488"
 ]
+
+medium_contrast_alt = [medium_contrast[i] for i in [2, 5, 0, 4, 3, 1]]
 
 pale = [
     (187, 204, 238),  # "#BBCCEE"
@@ -431,3 +440,5 @@ light = [
     (255, 170, 187),  # "#FFAABB"
     (221, 221, 221),  # "#DDDDDD"
 ]
+
+light_alt = [light[i] for i in [0, 6, 5, 7, 1, 2, 3, 4, 8]]
