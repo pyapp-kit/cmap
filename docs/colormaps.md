@@ -1,8 +1,13 @@
 # Colormaps
 
-The `cmap.Colormap` type represents a colormap.
+The [`cmap.Colormap`][cmap.Colormap] type represents a colormap.
 
-Also known as a LUT (look-up table), a colormap is a mapping from a scalar value to a color.  Colormaps are used in a variety of contexts, including image processing, data visualization, and scientific visualization.  The `cmap` library provides a [number of built-in colormaps](catalog/index.md), including all of the colormaps in matplotlib, napari, vispy, and more.
+Also known as a LUT (look-up table), a colormap is a mapping from a scalar value
+to a color.  Colormaps are used in a variety of contexts, including image
+processing, data visualization, and scientific visualization.  The `cmap`
+library provides a [number of built-in colormaps](catalog/index.md), including
+all of the colormaps in matplotlib, cmocean, colorbrewer, colorcet, crameri, and
+more.
 
 ```python
 from cmap import Colormap

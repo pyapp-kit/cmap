@@ -1,14 +1,13 @@
 # Overview
 
-`cmap` is a work-in-progress colormap library for python, providing all of the
-colormaps in matplotlib, vispy, cmocean, (and more), with no dependencies beyond
-numpy.
+`cmap` is a colormap library for python, providing all of the colormaps in
+matplotlib, vispy, cmocean, (and more), with no dependencies beyond numpy.
 
 ## Purpose
 
 Mapping scalar values to colors is a very common procedure in scientific
 visualization; as such, many visualization libraries (e.g. matplotlib, vispy,
-napari, etc...) have some need for and some internal representation of colors
+pygfx, etc...) have some need for and some internal representation of colors
 and colormaps.
 
 !!!question "Don't we already have this?"
