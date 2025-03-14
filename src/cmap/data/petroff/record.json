@@ -4,16 +4,16 @@
   ],
   "category": "qualitative",
   "colormaps": {
+    "petroff10": {
+      "data": "cmap.data.petroff:petroff10",
+      "interpolation": false
+    },
     "petroff6": {
       "data": "cmap.data.petroff:petroff6",
       "interpolation": false
     },
     "petroff8": {
       "data": "cmap.data.petroff:petroff8",
-      "interpolation": false
-    },
-    "petroff10": {
-      "data": "cmap.data.petroff:petroff10",
       "interpolation": false
     }
   },
