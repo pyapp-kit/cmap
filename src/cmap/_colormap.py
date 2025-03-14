@@ -67,7 +67,7 @@ ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
 # All of the things that we can pass to the constructor of Colormap
 ColormapLike: TypeAlias = Union[
     str,  # colormap name, w/ optional "_r" suffix
-    Iterable[ColorLike | ColorStopLike],
+    Iterable[Union[ColorLike | ColorStopLike]],
     "NDArray",
     "MPLSegmentData",
     dict[float, ColorLike],
