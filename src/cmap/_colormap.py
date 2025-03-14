@@ -1,20 +1,32 @@
+"""Colormap object."""
+
 from __future__ import annotations
 
 import base64
 import warnings
 from functools import partial
 from numbers import Number
-from typing import TYPE_CHECKING, Any, NamedTuple, Sequence, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Iterable,
+    NamedTuple,
+    Sequence,
+    Union,
+    cast,
+    overload,
+)
 
 import numpy as np
 import numpy.typing as npt
 
 from . import _external
 from ._catalog import Catalog
-from ._color import Color
+from ._color import Color, ColorLike
 
 if TYPE_CHECKING:
-    from typing import Callable, Iterable, Iterator, Literal, Union
+    from typing import Iterator, Literal
 
     import bokeh.models
     import matplotlib.colors
@@ -29,22 +41,9 @@ if TYPE_CHECKING:
     from typing_extensions import TypeAlias, TypedDict, TypeGuard
 
     from ._catalog import CatalogItem
-    from ._color import ColorLike
 
     LutCacheKey = tuple[int, float, bool]
     Interpolation = Literal["linear", "nearest"]
-    LutCallable: TypeAlias = Callable[[NDArray], NDArray]
-    ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], np.ndarray]
-    # All of the things that we can pass to the constructor of Colormap
-    ColorStopsLike: TypeAlias = Union[
-        str,  # colormap name, w/ optional "_r" suffix
-        Iterable[ColorLike | ColorStopLike],
-        np.ndarray,
-        "MPLSegmentData",
-        dict[float, ColorLike],
-        "ColorStops",
-        LutCallable,
-    ]
 
     class MPLSegmentData(TypedDict, total=False):
         red: list[tuple[float, float, float]] | Callable[[np.ndarray], np.ndarray]
@@ -58,6 +57,26 @@ if TYPE_CHECKING:
         category: str | None
         value: list[tuple[float, list[float]]]
 
+
+LutCallable: TypeAlias = Callable[["NDArray"], "NDArray"]
+"""Function type for a callable that takes an array of values in the range [0, 1] and returns an (N, 4) array of RGBA values in the range [0, 1]."""  # noqa
+
+ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
+"""A single color-stop: 2-tuple of a scalar "stop" value and a color-like object, or an array of color-like objects."""  # noqa
+
+# All of the things that we can pass to the constructor of Colormap
+ColormapLike: TypeAlias = Union[
+    str,  # colormap name, w/ optional "_r" suffix
+    Iterable[ColorLike | ColorStopLike],
+    "NDArray",
+    "MPLSegmentData",
+    dict[float, ColorLike],
+    "ColorStops",
+    LutCallable,
+]
+"""Data types that can be passed to the Colormap constructor."""
+
+ColorStopsLike = ColormapLike  # legacy alias for backwards compatibility
 
 BAD_COLOR = (0.0, 0.0, 0.0, 0.0)
 
@@ -81,13 +100,13 @@ class Colormap:
         - a `str` containing a recognized string colormap name (e.g. `"viridis"`,
           `"magma"`), optionally suffixed with `"_r"` to reverse the colormap
           (e.g. `"viridis"`, `"magma_r"`).
-        - An iterable of [ColorLike](/colors#colorlike-objects) values (any object that
-          can be cast to a [`Color`][cmap.Color]), or "color-stop-like" tuples (
-          `(float, ColorLike)` where the first element is a scalar value specifying the
-          position of the color in the gradient. When using color stops, the stop
-          position values should be in the range [0, 1]. If no scalar stop positions are
-          given, they will be linearly interpolated between any neighboring stops (or
-          0-1 if there are no stops).
+        - An iterable of [ColorLike](../../colors.md#colorlike-objects) values (any
+          object that can be cast to a [`Color`][cmap.Color]), or "color-stop-like"
+          tuples ( `(float, ColorLike)` where the first element is a scalar value
+          specifying the position of the color in the gradient. When using color stops,
+          the stop position values should be in the range [0, 1]. If no scalar stop
+          positions are given, they will be linearly interpolated between any
+          neighboring stops (or 0-1 if there are no stops).
         - a `dict` mapping scalar values to color-like values: e.g.
           `{0.0: "red", 0.5: (0, 1, 0), 1.0: "#0000FF"}`.
         - a matplotlib-style [segmentdata
@@ -206,7 +225,7 @@ class Colormap:
 
     def __init__(
         self,
-        value: ColorStopsLike,
+        value: ColormapLike,
         *,
         name: str | None = None,
         identifier: str | None = None,
@@ -880,7 +899,7 @@ class ColorStops(Sequence[ColorStop]):
         return cast("np.ndarray", colors)
 
     @classmethod
-    def parse(cls, colors: ColorStopsLike) -> ColorStops:
+    def parse(cls, colors: ColormapLike) -> ColorStops:
         """Parse any colorstops-like object into a ColorStops object.
 
         Each item in `colors` can be a color, or a 2-tuple of (position, color), where
@@ -1394,7 +1413,7 @@ def _is_mpl_segmentdata(obj: Any) -> TypeGuard[MPLSegmentData]:
 
 
 def _parse_colorstops(
-    val: ColorStopsLike,
+    val: ColormapLike,
     cls: type[ColorStops] = ColorStops,
 ) -> ColorStops:
     """Parse `colors` into a sequence of color stops.

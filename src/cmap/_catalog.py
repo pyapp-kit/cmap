@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from _typeshed import FileDescriptorOrPath
     from typing_extensions import NotRequired, Required, TypeAlias, TypedDict
 
-    from ._colormap import ColorStopsLike, Interpolation
+    from ._colormap import ColormapLike, Interpolation
 
     Category: TypeAlias = Literal[
         "sequential", "diverging", "cyclic", "qualitative", "miscellaneous"
@@ -78,9 +78,10 @@ class CatalogItem:
 
     Attributes
     ----------
-    data: ColorStopsLike
+    data: ColormapLike
         Any object that can be passed to `Colormap` to create a colormap.
-        https://cmap-docs.readthedocs.io/en/latest/colormaps/#colormaplike-objects
+        See [ColormapLike objects](../../colormaps.md#colormaplike-objects) for more
+        information.
     name: str
         The (short) name of the colormap, e.g. "viridis".
     category: str
@@ -118,7 +119,7 @@ class CatalogItem:
         The color to use for bad values.
     """
 
-    data: ColorStopsLike
+    data: ColormapLike
     name: str
     category: Category
     license: str = "UNKNOWN"
@@ -208,11 +209,11 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
 
 
 class Catalog(Mapping[str, "CatalogItem"]):
-    """Catalog of available colormaps.
+    """Runtime representation of catalog of available colormaps.
 
     Parameters
     ----------
-    root : Path, optional
+    data_root : Path, optional
         Path to the root of the data directory, by default uses the `cmap.data` folder.
     record_pattern : str, optional
         Glob pattern to use to find record files, by default "record.json".

@@ -15,7 +15,7 @@ cm = Colormap('viridis')
 
 The following objects can be interpreted as a colormap, and used as the first argument
 to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectively as
-"`ColormapLike`".  Briefly, valid arguments are of type:
+["`ColormapLike`"][cmap.ColormapLike].  Briefly, valid arguments are of type:
 
 - [⬇️ `str`](#str)
 - [⬇️ `Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](colors.md#colorlike-objects))*
@@ -300,7 +300,7 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
 `to_<libname>()` methods for a number of libraries:
 
 !!!tip
-    Some of these methods take additional arguments, see [Colormap API](api/colormap.md)
+    Some of these methods take additional arguments, see [Colormap API][cmap.Colormap]
     for details.
 
 - [matplotlib](https://matplotlib.org/)
