@@ -1,0 +1,23 @@
+{
+  "authors": [
+    "Matthew A. Petroff"
+  ],
+  "category": "qualitative",
+  "colormaps": {
+    "petroff6": {
+      "data": "cmap.data.petroff:petroff6",
+      "interpolation": false
+    },
+    "petroff8": {
+      "data": "cmap.data.petroff:petroff8",
+      "interpolation": false
+    },
+    "petroff10": {
+      "data": "cmap.data.petroff:petroff10",
+      "interpolation": false
+    }
+  },
+  "info": "Color sequences generated using a data-driven aesthetic-preference model and accessibility constraints.",
+  "namespace": "petroff",
+  "source": "https://arxiv.org/abs/2107.02270"
+}
