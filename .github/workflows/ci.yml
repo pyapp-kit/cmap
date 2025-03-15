@@ -74,6 +74,23 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  test-pyinstaller-build:
+    name: Test pyinstaller
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+    - name: Install package and dev dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install .
+        pip install pytest pyinstaller
+    - name: Unit tests
+      run: pytest -v --pyargs cmap.__pyinstaller
+
   deploy:
     name: Deploy
     needs: test
