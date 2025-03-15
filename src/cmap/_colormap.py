@@ -14,6 +14,7 @@ from typing import (
     Iterable,
     NamedTuple,
     Sequence,
+    Tuple,
     Union,
     cast,
     overload,
@@ -62,7 +63,7 @@ if TYPE_CHECKING:
 LutCallable: TypeAlias = Callable[["NDArray"], "NDArray"]
 """Function type for a callable that takes an array of values in the range [0, 1] and returns an (N, 4) array of RGBA values in the range [0, 1]."""  # noqa
 
-ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
+ColorStopLike: TypeAlias = Union[Tuple[float, ColorLike], "NDArray"]
 """A single color-stop: 2-tuple of a scalar "stop" value and a color-like object, or an array of color-like objects."""  # noqa
 
 # All of the things that we can pass to the constructor of Colormap
