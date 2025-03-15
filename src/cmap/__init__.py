@@ -9,8 +9,8 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "uninstalled"
 
 
-from ._color import HSLA, HSVA, RGBA, RGBA8, Color
-from ._colormap import Colormap, ColorStops
+from ._color import HSLA, HSVA, RGBA, RGBA8, Color, ColorLike
+from ._colormap import Colormap, ColormapLike, ColorStop, ColorStops
 
 if TYPE_CHECKING:
     from ._catalog import CatalogItem
@@ -69,6 +69,9 @@ __all__ = [
     "Catalog",
     "CatalogItem",
     "Color",
+    "ColorLike",
+    "ColorStop",
     "ColorStops",
     "Colormap",
+    "ColormapLike",
 ]

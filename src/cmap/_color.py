@@ -1,3 +1,5 @@
+"""Color utilities."""
+
 from __future__ import annotations
 
 import colorsys
@@ -9,10 +11,12 @@ from typing import (
     Any,
     Callable,
     Iterable,
+    List,
     Literal,
     NamedTuple,
     Sequence,
     SupportsFloat,
+    Union,
     cast,
     overload,
 )
@@ -28,7 +32,6 @@ from . import _external
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Union
 
     import numpy.typing as npt
     from pydantic import GetCoreSchemaHandler
@@ -37,26 +40,49 @@ if TYPE_CHECKING:
 
     rgba = Literal["r", "g", "b", "a"]
 
-    # not used internally... but available for typing
-    RGBTuple: TypeAlias = "tuple[int, int, int] | tuple[float, float, float]"
-    RGBATuple: TypeAlias = (
-        "tuple[int, int, int, float] | tuple[float, float, float, float]"
-    )
-    # all of the valid argument types that can be cast to a color
-    ColorLike: TypeAlias = Union[
-        None,  # casts to transparent
-        str,  # color name, hex, 'rgba(r,g,b,a)' or 'hsla(h,s,l,a)' string
-        RGBTuple,  # 3-tuple of all ints or all floats
-        RGBATuple,  # 4-tuple of all floats, or 3 ints and 1 float
-        np.ndarray,  # 3- or 4-element rgb(a) vector
-        list[float | int],  # 3- or 4-element rgb(a) vector
-        "Color",  # another color object
-    ]
+# not used internally... but available for typing
+RGBTuple: TypeAlias = "tuple[int, int, int] | tuple[float, float, float]"
+"""3-tuple of all ints or all floats, representing an RGB color"""
+
+RGBATuple: TypeAlias = "tuple[int, int, int, float] | tuple[float, float, float, float]"
+"""4-tuple of all floats, or 3 ints and 1 float, representing an RGBA color"""
+
+ColorLike: TypeAlias = Union[
+    None,  # casts to transparent
+    str,  # color name, hex, 'rgba(r,g,b,a)' or 'hsla(h,s,l,a)' string
+    RGBTuple,  # 3-tuple of all ints or all floats
+    RGBATuple,  # 4-tuple of all floats, or 3 ints and 1 float
+    np.ndarray,  # 3- or 4-element rgb(a) vector
+    List[Union[float, int]],  # 3- or 4-element rgb(a) vector
+    "Color",  # another color object
+]
+"""Data types that can be cast to a [cmap.Color][] instance.
+
+RGBTuple: 3-tuple of all ints or all floats, representing an RGB color
+
+RGBATuple: 4-tuple of all floats, or 3 ints and 1 float, representing an RGBA color
+"""
 
 # Tuples
 
 
 class HSVA(NamedTuple):
+    """Hue, Saturation, Value, Alpha named tuple.
+
+    All values are floats between 0 and 1.
+
+    Attributes
+    ----------
+    h : float
+        Hue
+    s : float
+        Saturation
+    v : float
+        Value
+    a : float
+        Alpha value (default is 1)
+    """
+
     h: float
     s: float
     v: float
@@ -68,9 +94,20 @@ class HSVA(NamedTuple):
 
 
 class HSLA(NamedTuple):
-    """Hue, Saturation, Lightness.
+    """Hue, Saturation, Lightness named tuple.
 
     All values are floats between 0 and 1.
+
+    Attributes
+    ----------
+    h : float
+        Hue
+    s : float
+        Saturation
+    l : float
+        Lightness
+    a : float
+        Alpha value (default is 1)
     """
 
     h: float
@@ -88,7 +125,19 @@ class HSLA(NamedTuple):
 
 
 class RGBA(NamedTuple):
-    """RGBA color tuple, all values are floats between 0 and 1."""
+    """RGBA named tuple, all values are floats between 0 and 1.
+
+    Attributes
+    ----------
+    r : float
+        Red
+    g : float
+        Green
+    b : float
+        Blue
+    a : float, optional
+        Alpha value (default is 1)
+    """
 
     r: float
     g: float
@@ -123,7 +172,19 @@ class RGBA(NamedTuple):
 
 
 class RGBA8(NamedTuple):
-    """8 bit RGBA color tuple, where RGB values are from 0 to 255, alpha from 0 to 1."""
+    """8 bit RGBA named tuple, where RGB values are from 0 to 255, alpha from 0 to 1.
+
+    Attributes
+    ----------
+    r : int
+        Red
+    g : int
+        Green
+    b : int
+        Blue
+    a : float, optional
+        Alpha value (default is 1)
+    """
 
     r: int
     g: int

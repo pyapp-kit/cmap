@@ -13,7 +13,7 @@ best expressed as a list of RGB triplets, for example:
     ]
 
 However, if you have a more complicated colormap, you can define it as a any
-[`ColormapLike` object](https://cmap-docs.readthedocs.io/en/stable/colormaps/#colormaplike-objects)
+[`ColormapLike` object](../../colormaps.md#colormaplike-objects)
 
 Then update `contrib/record.json`, adding a new item to the `colormaps` dict,
 with a pointer to your data (`module:attribute`), and assign it to a category.
