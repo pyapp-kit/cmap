@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.6.0](https://github.com/pyapp-kit/cmap/tree/v0.6.0) (2025-03-15)
+
+[Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.5.1...v0.6.0)
+
+**Implemented enhancements:**
+
+- feat: add pyinstaller hook [\#95](https://github.com/pyapp-kit/cmap/pull/95) ([tlambert03](https://github.com/tlambert03))
+- feat: Add the Petroff qualitative color sequences [\#92](https://github.com/pyapp-kit/cmap/pull/92) ([apcamargo](https://github.com/apcamargo))
+- feat: add top level to\_mpl convenience [\#91](https://github.com/pyapp-kit/cmap/pull/91) ([tlambert03](https://github.com/tlambert03))
+- feat: add alternative order for tol colormaps [\#89](https://github.com/pyapp-kit/cmap/pull/89) ([beskep](https://github.com/beskep))
+
+**Documentation:**
+
+- docs: update docs and use api-autonav [\#93](https://github.com/pyapp-kit/cmap/pull/93) ([tlambert03](https://github.com/tlambert03))
+
+**Merged pull requests:**
+
+- build: drop support for python 3.8 [\#94](https://github.com/pyapp-kit/cmap/pull/94) ([tlambert03](https://github.com/tlambert03))
+
 ## [v0.5.1](https://github.com/pyapp-kit/cmap/tree/v0.5.1) (2025-03-07)
 
 [Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.5.0...v0.5.1)
