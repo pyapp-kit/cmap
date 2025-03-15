@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
+import cmap
 from cmap import Color, Colormap
 
 try:
@@ -184,8 +185,7 @@ def test_pyqtgraph() -> None:
     cm.reverse()
 
 
-# def microvis_imshow(img_data: np.ndarray, cmap: cmap.Colormap) -> None:
-#     from microvis import _util, imshow
+def test_to_mpl() -> None:
+    colors = pytest.importorskip("matplotlib.colors")
 
-#     with _util.exec_if_new_qt_app():
-#         imshow(img_data, cmap=cmap)
+    assert isinstance(cmap.to_mpl("viridis"), colors.Colormap)
