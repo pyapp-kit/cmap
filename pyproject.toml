@@ -9,8 +9,7 @@ name = "cmap"
 description = "Scientific colormaps for python, without dependencies"
 readme = "README.md"
 requires-python = ">=3.9"
-license = "BSD-3-Clause"
-license-files = ["LICENSE/*"]
+license = { text = "BSD-3-Clause" }
 authors = [{ email = "talley.lambert@gmail.com", name = "Talley Lambert" }]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -49,8 +48,8 @@ test_thirdparty = [
     "colorspacious",
     "colour",
     "matplotlib",
-    "napari>=0.4.19; python_version<'3.13'",
-    "numba; python_version<'3.13' and platform_machine != 'arm64'",
+    "napari>=0.5.0",
+    "numba",
     "plotly",
     "pydantic-extra-types>=2,!=2.10.1",
     "pydantic",
