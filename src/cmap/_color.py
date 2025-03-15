@@ -15,6 +15,7 @@ from typing import (
     NamedTuple,
     Sequence,
     SupportsFloat,
+    List,
     Union,
     cast,
     overload,
@@ -52,7 +53,7 @@ ColorLike: TypeAlias = Union[
     RGBTuple,  # 3-tuple of all ints or all floats
     RGBATuple,  # 4-tuple of all floats, or 3 ints and 1 float
     np.ndarray,  # 3- or 4-element rgb(a) vector
-    list[Union[float, int]],  # 3- or 4-element rgb(a) vector
+    List[Union[float, int]],  # 3- or 4-element rgb(a) vector
     "Color",  # another color object
 ]
 """Data types that can be cast to a [cmap.Color][] instance.

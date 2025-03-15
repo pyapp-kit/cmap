@@ -12,6 +12,7 @@ from typing import (
     Callable,
     Iterable,
     NamedTuple,
+    Dict,
     Sequence,
     Union,
     cast,
@@ -70,7 +71,7 @@ ColormapLike: TypeAlias = Union[
     Iterable[Union[ColorLike, ColorStopLike]],
     "NDArray",
     "MPLSegmentData",
-    dict[float, ColorLike],
+    Dict[float, ColorLike],
     "ColorStops",
     LutCallable,
 ]
