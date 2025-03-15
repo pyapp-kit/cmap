@@ -1,6 +1,8 @@
 import numpy as np
 import pytest
 
+import cmap
+
 try:
     from matplotlib.figure import Figure as MplFigure
 except ImportError:
@@ -78,3 +80,9 @@ def test_report() -> None:
 
     report2 = _util.report(Colormap("red"))
     assert isinstance(report2, dict)
+
+
+def test_to_mpl() -> None:
+    import matplotlib.colors
+
+    assert isinstance(cmap.to_mpl(CMAP_NAME), matplotlib.colors.Colormap)
