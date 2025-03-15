@@ -37,11 +37,11 @@ For a complete list of available colormaps, see the [Colormaps
 catalog](catalog/index.md). You can also use the search bar at the top to search
 for a specific colormap.
 
-For details on using the `cmap.Colormap` object, see [Colormaps](colormaps.md).
+For details on using the [`cmap.Colormap`][cmap.Colormap] object, see [Colormaps](colormaps.md).
 
 ## Colors
 
-This library also offers a simple `cmap.Color` object.  It can cast a variety of
+This library also offers a simple [`cmap.Color`][cmap.Color] object.  It can cast a variety of
 inputs (including strings, tuples/lists, arrays, integers) to an RGBA color
 representation, and offers some basic conversions.  See [Colors](colors.md) for
 details

@@ -74,7 +74,7 @@ ColormapLike: TypeAlias = Union[
     "ColorStops",
     LutCallable,
 ]
-"""Data types that can be passed to the Colormap constructor."""
+"""Data types that can be passed to the [cmap.Colormap][] constructor."""
 
 ColorStopsLike = ColormapLike  # legacy alias for backwards compatibility
 
@@ -90,7 +90,7 @@ class Colormap:
 
     Parameters
     ----------
-    value : Color | ColorStop | Iterable[Color | ColorStop] | dict[float, Color]
+    value : ColormapLike
         The color data to use for the colormap. Can be a single color, a single
         color stop, a sequence of colors and/or color stops, or a dictionary
         mapping scalar values to colors.
@@ -808,6 +808,15 @@ class ColorStop(NamedTuple):
     """A color stop in a color gradient.
 
     Just a named tuple with a `position` (`float`) and a `color` (`cmap.Color`).
+
+    Attributes
+    ----------
+    position : float
+        The position of the color stop in the gradient, between 0 and 1.
+    color : cmap.Color
+        The color at the position in the gradient.  This is a `cmap.Color` object.
+        The color can be any object that can be cast to a `Color`, including a string,
+        or 3/4-sequence of RGB(A) values.
     """
 
     position: float
