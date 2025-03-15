@@ -75,6 +75,10 @@ dev = [
     "pyqt6",
 ]
 
+[project.entry-points."pyinstaller40"]
+hook-dirs = "cmap.__pyinstaller:get_hook_dirs"
+tests = "cmap.__pyinstaller:get_test_dirs"
+
 [project.urls]
 Homepage = "https://github.com/pyapp-kit/cmap"
 Repository = "https://github.com/pyapp-kit/cmap"
@@ -139,6 +143,9 @@ filterwarnings = [
     "ignore:datetime.datetime.utcfromtimestamp:DeprecationWarning",
     "ignore::DeprecationWarning:docstring_parser",
     "ignore:Pyarrow will become a required dependency of pandas",
+    "ignore::DeprecationWarning:Pyinstaller",
+    "ignore::DeprecationWarning:pkg_resources",
+    "ignore::DeprecationWarning:altgraph",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
