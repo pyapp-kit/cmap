@@ -60,16 +60,14 @@ Once you have picked a namespace:
     ```
 
 !!!tip
-
-   It may be helpful to look at existing folders and files in the
-   [`cmap/data` directory](https://github.com/pyapp-kit/cmap/tree/main/src/cmap/data)
-   for examples of how to structure the data
+    It may be helpful to look at existing folders and files in the
+    [`cmap/data` directory](https://github.com/pyapp-kit/cmap/tree/main/src/cmap/data)
+    for examples of how to structure the data
 
 When opening a PR, please include a screenshot of the colormap, along
 with a brief description of the colormap design and its intended use.
 
 !!!info "Licensing"
-
     Please ensure that the colormap you are adding is available
     under a permissive license.  Note that namespaces share a license, so if you
     are adding a colormap to an existing namespace, make sure that the
@@ -80,7 +78,7 @@ with a brief description of the colormap design and its intended use.
 ## How can I add support for exporting to another colormap format?
 
 cmap [exports to a variety of known third-party colormap
-formats](https://cmap-docs.readthedocs.io/en/latest/colormaps/#usage-with-external-visualization-libraries).
+formats](colormaps.md#usage-with-external-visualization-libraries).
 
 If you are the author (or user) of a library that consumes colormaps, and you
 would like to have a `to_your_lib()` function in `cmap`, we welcome

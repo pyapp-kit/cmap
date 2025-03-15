@@ -28,8 +28,9 @@ and colormaps.
    beyond numpy. (by "applying" here, we mean converting an array of scalar
    values to an array of RGBA values)
 3. Provide an API for converting colormaps to the native format for a variety of
-   third party libraries (currently including, matplotlib, napari, vispy, pygfx,
-   bokeh, plotly, altair, and more)
+   third party libraries (such as matplotlib, napari, vispy, pygfx,
+   bokeh, plotly, altair,
+   [and more](https://github.com/pyapp-kit/cmap/blob/main/src/cmap/_external.py))
 
 ## Colormaps
 
