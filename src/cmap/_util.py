@@ -11,10 +11,14 @@ gradient = np.vstack((gradient, gradient))
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
+    import matplotlib.colors
     from matplotlib.figure import Figure as MplFigure
     from numpy.typing import ArrayLike, NDArray
 
     from cmap import Colormap
+
+    from ._color import ColorLike
+    from ._colormap import ColorStopsLike, Interpolation
 
 
 def _ensure_cmap(cmap: Colormap | str) -> Colormap:
@@ -498,6 +502,40 @@ def report(cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS") -> Repo
     # M -> colorfulness
     # s -> saturation
     # H -> hue composition
+
+
+def to_mpl(
+    value: ColorStopsLike,
+    /,
+    *,
+    name: str | None = None,
+    identifier: str | None = None,
+    category: str | None = None,
+    interpolation: Interpolation | bool | None = None,
+    under: ColorLike | None = None,
+    over: ColorLike | None = None,
+    bad: ColorLike | None = None,
+    N: int = 256,
+    gamma: float = 1.0,
+) -> matplotlib.colors.Colormap:
+    """Convienence function to create a matplotlib colormap.
+
+    Arguments are the same as for [cmap.Colormap][]. This simply creates the
+    colormap instance and returns the value of `to_matplotlib()`.
+    """
+    from cmap import Colormap
+
+    cm = Colormap(
+        value,
+        name=name,
+        identifier=identifier,
+        category=category,
+        interpolation=interpolation,
+        under=under,
+        over=over,
+        bad=bad,
+    )
+    return cm.to_matplotlib(N=N, gamma=gamma)
 
 
 if __name__ == "__main__":  # pragma: no cover
