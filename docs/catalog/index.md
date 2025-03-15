@@ -16,7 +16,7 @@ cmap = Colormap('viridis')
     `matplotlib.colors.Colormap` instance, you may call
     [`.to_mpl()`][cmap.Colormap.to_matplotlib].
 
-See the [Colormap API docs](../api/colormap.md) for details.
+See the [Colormap API docs][cmap.Colormap] for details.
 
 <!--
 With that object you can do things like:

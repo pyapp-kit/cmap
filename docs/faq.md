@@ -9,8 +9,10 @@ Namespaces are directories in the `src/cmap/data` folder.
 
 - If the colormap is part of known broader collection (e.g., `cet`, `cmocean`,
   `colorbrewer`, etc.), please check to see whether the collection already
-  exists in the `cmap/data` directory.  If so, please extend that collection.
-  If not, please create a new namespace and directory for that collection.
+  exists in the [`cmap/data`
+  directory](https://github.com/pyapp-kit/cmap/tree/main/src/cmap/data).  If so,
+  please extend that collection. If not, please create a new namespace and
+  directory for that collection.
 - If you would like to contribute a colormap that doesn't nicely fit into an
   broader collection of colormaps (regardless of whether that collection exists
   in `cmap`), please contribute to the `cmap/contrib` namespace.
@@ -24,7 +26,7 @@ Once you have picked a namespace:
    in the `record.json` file.  The key should be the name of the colormap, and
    the value should be an object with the following keys:
       - `data`: either a direct
-         [`ColormapLike` data](https://cmap-docs.readthedocs.io/en/stable/colormaps/#colormaplike-objects)
+         [`ColormapLike` data](colormaps.md#colormaplike-objects)
          entry, such as an array of RGB values; or a
          string pointing to the python-path of colormap data in the form of
          `cmap.data.<namespace>:<colormap>`.
@@ -57,8 +59,10 @@ Once you have picked a namespace:
     ]
     ```
 
-**It may be helpful to look at existing folders and files in the
-`cmap/data` directory for examples of how to structure the data.**
+!!!tip
+    It may be helpful to look at existing folders and files in the
+    [`cmap/data` directory](https://github.com/pyapp-kit/cmap/tree/main/src/cmap/data)
+    for examples of how to structure the data
 
 When opening a PR, please include a screenshot of the colormap, along
 with a brief description of the colormap design and its intended use.
@@ -74,7 +78,7 @@ with a brief description of the colormap design and its intended use.
 ## How can I add support for exporting to another colormap format?
 
 cmap [exports to a variety of known third-party colormap
-formats](https://cmap-docs.readthedocs.io/en/latest/colormaps/#usage-with-external-visualization-libraries).
+formats](colormaps.md#usage-with-external-visualization-libraries).
 
 If you are the author (or user) of a library that consumes colormaps, and you
 would like to have a `to_your_lib()` function in `cmap`, we welcome

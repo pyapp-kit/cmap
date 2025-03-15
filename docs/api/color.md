@@ -1,3 +1,0 @@
-# cmap.Color
-
-::: cmap.Color

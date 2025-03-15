@@ -1,8 +1,13 @@
 # Colormaps
 
-The `cmap.Colormap` type represents a colormap.
+The [`cmap.Colormap`][cmap.Colormap] type represents a colormap.
 
-Also known as a LUT (look-up table), a colormap is a mapping from a scalar value to a color.  Colormaps are used in a variety of contexts, including image processing, data visualization, and scientific visualization.  The `cmap` library provides a [number of built-in colormaps](catalog/index.md), including all of the colormaps in matplotlib, napari, vispy, and more.
+Also known as a LUT (look-up table), a colormap is a mapping from a scalar value
+to a color.  Colormaps are used in a variety of contexts, including image
+processing, data visualization, and scientific visualization.  The `cmap`
+library provides a [number of built-in colormaps](catalog/index.md), including
+all of the colormaps in matplotlib, cmocean, colorbrewer, colorcet, crameri, and
+more.
 
 ```python
 from cmap import Colormap
@@ -15,7 +20,7 @@ cm = Colormap('viridis')
 
 The following objects can be interpreted as a colormap, and used as the first argument
 to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectively as
-"`ColormapLike`".  Briefly, valid arguments are of type:
+["`ColormapLike`"][cmap.ColormapLike].  Briefly, valid arguments are of type:
 
 - [⬇️ `str`](#str)
 - [⬇️ `Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](colors.md#colorlike-objects))*
@@ -300,7 +305,7 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
 `to_<libname>()` methods for a number of libraries:
 
 !!!tip
-    Some of these methods take additional arguments, see [Colormap API](api/colormap.md)
+    Some of these methods take additional arguments, see [Colormap API][cmap.Colormap]
     for details.
 
 - [matplotlib](https://matplotlib.org/)

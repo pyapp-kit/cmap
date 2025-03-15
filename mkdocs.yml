@@ -14,7 +14,6 @@ nav:
   - Colors: colors.md
   - Colormaps: colormaps.md
   - Colormap Catalog: catalog/
-  - API: api/
   - FAQ: faq.md
 
 theme:
@@ -68,7 +67,11 @@ hooks:
 plugins:
   - search:
       separator: '[\s\-\_,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
-  - autorefs
+  - autorefs:
+      resolve_closest: true
+  - api-autonav:
+      modules: ['src/cmap']
+      exclude: ['cmap.data']
   - literate-nav:
       implicit_index: true
       nav_file: SUMMARY.md
@@ -89,7 +92,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          import:
+          inventories:
             - https://docs.python.org/3/objects.inv
             - https://numpy.org/doc/stable/objects.inv
           options:
@@ -104,6 +107,14 @@ plugins:
             show_source: false # default is true
             docstring_section_style: list
             merge_init_into_class: true
+
+            filters: ['(__call__|^[^_])']
+            heading_level: 1
+            parameter_headings: true
+            separate_signature: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            summary: true
 
 extra_css:
   - stylesheets/extra.css

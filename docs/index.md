@@ -1,14 +1,13 @@
 # Overview
 
-`cmap` is a work-in-progress colormap library for python, providing all of the
-colormaps in matplotlib, vispy, cmocean, (and more), with no dependencies beyond
-numpy.
+`cmap` is a colormap library for python, providing all of the colormaps in
+matplotlib, vispy, cmocean, (and more), with no dependencies beyond numpy.
 
 ## Purpose
 
 Mapping scalar values to colors is a very common procedure in scientific
 visualization; as such, many visualization libraries (e.g. matplotlib, vispy,
-napari, etc...) have some need for and some internal representation of colors
+pygfx, etc...) have some need for and some internal representation of colors
 and colormaps.
 
 !!!question "Don't we already have this?"
@@ -29,8 +28,9 @@ and colormaps.
    beyond numpy. (by "applying" here, we mean converting an array of scalar
    values to an array of RGBA values)
 3. Provide an API for converting colormaps to the native format for a variety of
-   third party libraries (currently including, matplotlib, napari, vispy, pygfx,
-   bokeh, plotly, altair, and more)
+   third party libraries (such as matplotlib, napari, vispy, pygfx,
+   bokeh, plotly, altair,
+   [and more](https://github.com/pyapp-kit/cmap/blob/main/src/cmap/_external.py))
 
 ## Colormaps
 
@@ -38,11 +38,11 @@ For a complete list of available colormaps, see the [Colormaps
 catalog](catalog/index.md). You can also use the search bar at the top to search
 for a specific colormap.
 
-For details on using the `cmap.Colormap` object, see [Colormaps](colormaps.md).
+For details on using the [`cmap.Colormap`][cmap.Colormap] object, see [Colormaps](colormaps.md).
 
 ## Colors
 
-This library also offers a simple `cmap.Color` object.  It can cast a variety of
+This library also offers a simple [`cmap.Color`][cmap.Color] object.  It can cast a variety of
 inputs (including strings, tuples/lists, arrays, integers) to an RGBA color
 representation, and offers some basic conversions.  See [Colors](colors.md) for
 details
