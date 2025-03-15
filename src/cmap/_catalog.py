@@ -13,12 +13,7 @@ import logging
 from collections.abc import Container, Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Literal,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import cmap.data
 

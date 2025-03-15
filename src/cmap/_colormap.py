@@ -7,15 +7,7 @@ import warnings
 from collections.abc import Iterable, Sequence
 from functools import partial
 from numbers import Number
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    NamedTuple,
-    Union,
-    cast,
-    overload,
-)
+from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Union, cast, overload
 
 import numpy as np
 import numpy.typing as npt
