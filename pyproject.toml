@@ -8,13 +8,15 @@ build-backend = "hatchling.build"
 name = "cmap"
 description = "Scientific colormaps for python, without dependencies"
 readme = "README.md"
-requires-python = ">=3.9"
-license = { text = "BSD-3-Clause" }
+requires-python = ">=3.8"
+license = "BSD-3-Clause"
+license-files = ["LICENSE/*"]
 authors = [{ email = "talley.lambert@gmail.com", name = "Talley Lambert" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -48,8 +50,8 @@ test_thirdparty = [
     "colorspacious",
     "colour",
     "matplotlib",
-    "napari>=0.5.0",
-    "numba",
+    "napari>=0.4.19; python_version<'3.13'",
+    "numba; python_version<'3.13' and platform_machine != 'arm64'",
     "plotly",
     "pydantic-extra-types>=2,!=2.10.1",
     "pydantic",
@@ -91,7 +93,7 @@ include = ["/src", "/tests", "CHANGELOG.md"]
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
 line-length = 88
-target-version = "py39"
+target-version = "py38"
 src = ["src"]
 
 [tool.ruff.lint]
