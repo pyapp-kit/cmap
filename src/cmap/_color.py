@@ -21,11 +21,6 @@ from typing import (
 
 import numpy as np
 
-try:
-    from pydantic import model_serializer
-except ImportError:
-    model_serializer = lambda x: x  # noqa: E731
-
 from . import _external
 
 if TYPE_CHECKING:
