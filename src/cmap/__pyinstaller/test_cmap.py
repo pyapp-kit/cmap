@@ -1,3 +1,4 @@
+from PyInstaller.utils.conftest import *  # noqa
 from typing import Any
 
 
