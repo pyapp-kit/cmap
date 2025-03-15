@@ -11,6 +11,7 @@ except PackageNotFoundError:  # pragma: no cover
 
 from ._color import HSLA, HSVA, RGBA, RGBA8, Color, ColorLike
 from ._colormap import Colormap, ColormapLike, ColorStop, ColorStops
+from ._util import to_mpl
 
 if TYPE_CHECKING:
     from ._catalog import CatalogItem
@@ -74,4 +75,5 @@ __all__ = [
     "ColorStops",
     "Colormap",
     "ColormapLike",
+    "to_mpl",
 ]
