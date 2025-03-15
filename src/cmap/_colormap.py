@@ -4,21 +4,10 @@ from __future__ import annotations
 
 import base64
 import warnings
+from collections.abc import Iterable, Sequence
 from functools import partial
 from numbers import Number
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Dict,
-    Iterable,
-    NamedTuple,
-    Sequence,
-    Tuple,
-    Union,
-    cast,
-    overload,
-)
+from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Union, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -28,7 +17,8 @@ from ._catalog import Catalog
 from ._color import Color, ColorLike
 
 if TYPE_CHECKING:
-    from typing import Iterator, Literal
+    from collections.abc import Iterator
+    from typing import Literal
 
     import bokeh.models
     import matplotlib.colors
@@ -63,7 +53,7 @@ if TYPE_CHECKING:
 LutCallable: TypeAlias = Callable[["NDArray"], "NDArray"]
 """Function type for a callable that takes an array of values in the range [0, 1] and returns an (N, 4) array of RGBA values in the range [0, 1]."""  # noqa
 
-ColorStopLike: TypeAlias = Union[Tuple[float, ColorLike], "NDArray"]
+ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
 """A single color-stop: 2-tuple of a scalar "stop" value and a color-like object, or an array of color-like objects."""  # noqa
 
 # All of the things that we can pass to the constructor of Colormap
@@ -72,7 +62,7 @@ ColormapLike: TypeAlias = Union[
     Iterable[Union[ColorLike, ColorStopLike]],
     "NDArray",
     "MPLSegmentData",
-    Dict[float, ColorLike],
+    dict[float, ColorLike],
     "ColorStops",
     LutCallable,
 ]

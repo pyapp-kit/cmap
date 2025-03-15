@@ -52,8 +52,9 @@ https://gnuplot.sourceforge.net
 #   36: 2*x - 1
 """
 
+from collections.abc import Sequence
 from functools import partial
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 

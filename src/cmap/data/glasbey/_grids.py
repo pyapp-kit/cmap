@@ -2,7 +2,7 @@
 # see __init__ and LICENSE_GLASBEY
 from __future__ import annotations
 
-from typing import Sized
+from collections.abc import Sized
 
 import numpy as np
 

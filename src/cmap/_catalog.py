@@ -10,18 +10,10 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Container, Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Container,
-    Iterable,
-    Iterator,
-    Literal,
-    Mapping,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import cmap.data
 
