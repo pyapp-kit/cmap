@@ -1,7 +1,7 @@
 """Scientific colormaps for python, without dependencies."""
 
 from importlib.metadata import PackageNotFoundError, version
-from typing import TYPE_CHECKING, Iterator, Mapping
+from typing import TYPE_CHECKING
 
 try:
     __version__ = version("cmap")
@@ -13,6 +13,8 @@ from ._color import HSLA, HSVA, RGBA, RGBA8, Color, ColorLike
 from ._colormap import Colormap, ColormapLike, ColorStop, ColorStops
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
+
     from ._catalog import CatalogItem
 
     class Catalog(Mapping[str, CatalogItem]):

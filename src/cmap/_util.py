@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Sequence, TypedDict, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import numpy as np
 
@@ -9,6 +9,8 @@ gradient = np.linspace(0, 1, 256)
 gradient = np.vstack((gradient, gradient))
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from matplotlib.figure import Figure as MplFigure
     from numpy.typing import ArrayLike, NDArray
 

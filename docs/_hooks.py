@@ -1,9 +1,10 @@
 import base64
 import re
 import sys
+from collections.abc import Sequence
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Sequence, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import natsort
 import numpy as np

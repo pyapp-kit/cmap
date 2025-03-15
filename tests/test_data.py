@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Set, cast
+from typing import TYPE_CHECKING, cast
 
 import numpy as np
 import numpy.testing as npt
@@ -9,7 +9,7 @@ from cmap import Colormap
 try:
     import matplotlib as mpl
 
-    MPL_CMAPS: Set[str] = {c for c in mpl.colormaps if not c.endswith("_r")}
+    MPL_CMAPS: set[str] = {c for c in mpl.colormaps if not c.endswith("_r")}
 except ImportError:
     MPL_CMAPS = {}
 
@@ -32,7 +32,7 @@ def test_napari_name_parity() -> None:
     pytest.importorskip("napari")
     import napari.utils.colormaps.colormap_utils as ncm
 
-    napari_cmaps: Set[str] = set(ncm.AVAILABLE_COLORMAPS)
+    napari_cmaps: set[str] = set(ncm.AVAILABLE_COLORMAPS)
     napari_cmaps.update(ncm._VISPY_COLORMAPS_ORIGINAL)
     napari_cmaps.update(ncm._MATPLOTLIB_COLORMAP_NAMES)
     # TODO: later it would be good to make sure we can accept all strings
