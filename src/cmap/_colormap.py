@@ -1182,7 +1182,7 @@ class ColorStops(Sequence[ColorStop]):
         yield cls.parse  # pydantic validator
 
     def _json_encode(self) -> list:
-        return cast(list, self._stops.tolist())
+        return cast("list", self._stops.tolist())
 
 
 def _fill_stops(

@@ -258,7 +258,7 @@ class Catalog(Mapping[str, "CatalogItem"]):
             self._original_names[name] = normed_name
             self._data[normed_name] = data
             if alias := data.get("alias"):
-                self._aliases[normed_name] = cast(str, alias)
+                self._aliases[normed_name] = cast("str", alias)
                 self._rev_aliases.setdefault(self._norm_name(alias), []).append(
                     normed_name
                 )
