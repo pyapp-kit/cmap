@@ -60,7 +60,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           python -m pip install -e .[test_thirdparty] ${{ github.event_name == 'schedule' && '--pre' || ''  }}
-          python -m pip install PyQt6==6.5.3
+          python -m pip install PyQt6==6.8.1
 
       - name: Run test
         if: runner.os != 'Windows'

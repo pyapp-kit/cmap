@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import logging
+import warnings
 from collections.abc import Container, Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -196,6 +197,17 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
                         "should not have colon."
                     )
                 ctlg[f"{namespace}{NAMESPACE_DELIMITER}{alias}"] = {"alias": namespaced}
+
+    if dashed_names := {
+        k for k in ctlg if "-" in k and "alias" not in ctlg[k]
+    }:  # pragma: no cover
+        warnings.warn(
+            f"The following colormap names contain dashes in the record.json: "
+            f"{dashed_names}.\n\n"
+            "This is unsupported and will cause issues for docs. "
+            "Please use underscores instead.",
+            stacklevel=2,
+        )
 
     return ctlg
 
