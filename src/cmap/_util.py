@@ -426,7 +426,7 @@ def circlesineramp(
         im[rad < 0] = np.nan
         alpha[rad < 0] = 0
 
-    return cast(np.ndarray, im * alpha)
+    return cast("np.ndarray", im * alpha)
 
 
 class ReportDict(TypedDict):
