@@ -96,6 +96,8 @@ def build_catalog(catalog: "_catalog.Catalog") -> None:
         except KeyError as e:
             raise KeyError(f"Missing info for {name}: {e}") from e
 
+        # FIXME: not a great way to determine aliases...
+        # prone to false positives if normalization is not perfect/consistent
         if info.qualified_name.lower() != name.lower():
             # skip aliases
             continue

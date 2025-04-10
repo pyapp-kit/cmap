@@ -39,7 +39,7 @@
       "data": "cmap.data.tol:bright",
       "interpolation": false
     },
-    "bright-alt": {
+    "bright_alt": {
       "category": "qualitative",
       "data": "cmap.data.tol:bright_alt",
       "interpolation": false
@@ -49,12 +49,12 @@
       "data": "cmap.data.tol:dark",
       "interpolation": false
     },
-    "high-contrast": {
+    "high_contrast": {
       "category": "qualitative",
       "data": "cmap.data.tol:high_contrast",
       "interpolation": false
     },
-    "high-contrast-alt": {
+    "high_contrast_alt": {
       "category": "qualitative",
       "data": "cmap.data.tol:high_contrast_alt",
       "interpolation": false
@@ -72,17 +72,17 @@
       "data": "cmap.data.tol:light",
       "interpolation": false
     },
-    "light-alt": {
+    "light_alt": {
       "category": "qualitative",
       "data": "cmap.data.tol:light_alt",
       "interpolation": false
     },
-    "medium-contrast": {
+    "medium_contrast": {
       "category": "qualitative",
       "data": "cmap.data.tol:medium_contrast",
       "interpolation": false
     },
-    "medium-contrast-alt": {
+    "medium_contrast_alt": {
       "category": "qualitative",
       "data": "cmap.data.tol:medium_contrast_alt",
       "interpolation": false
@@ -92,7 +92,7 @@
       "data": "cmap.data.tol:muted",
       "interpolation": false
     },
-    "muted-alt": {
+    "muted_alt": {
       "category": "qualitative",
       "data": "cmap.data.tol:muted_alt",
       "interpolation": false
@@ -256,7 +256,7 @@
       "data": "cmap.data.tol:vibrant",
       "interpolation": false
     },
-    "vibrant-alt": {
+    "vibrant_alt": {
       "category": "qualitative",
       "data": "cmap.data.tol:vibrant_alt",
       "interpolation": false
