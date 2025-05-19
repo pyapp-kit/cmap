@@ -998,7 +998,7 @@ class ColorStops(Sequence[ColorStop]):
     def __reversed__(self) -> Iterator[ColorStop]:
         # this for the reversed() builtin ... when iterating single
         # ColorStops.  But see the reversed() method below for when
-        # you want to create a new ColorStops object that is "permantently"
+        # you want to create a new ColorStops object that is "permanently"
         # reversed.
         for pos, *rgba in self._stops[::-1]:
             # reverse the colors, but not the positions

@@ -165,6 +165,7 @@ def test_gee() -> None:
     assert alt[-1] == "0000FF"
 
 
+@pytest.mark.xfail(reason="viscm is unmaintained")
 def test_viscm(tmp_path: Path) -> None:
     pytest.importorskip("viscm")
     # NOT using importorskip here because there IS an error import viscm
