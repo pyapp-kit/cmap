@@ -25,31 +25,17 @@ classifiers = [
 dynamic = ["version"]
 dependencies = ["numpy"]
 
-# extras
-# https://peps.python.org/pep-0621/#dependencies-optional-dependencies
-[project.optional-dependencies]
-docs = [
-    'colorcet',
-    'colorspacious',
-    'imageio',
-    'mkdocs-gen-files',
-    'mkdocs-literate-nav',
-    'mkdocs-api-autonav',
-    'mkdocs-material',
-    'mkdocs-minify-plugin',
-    'mkdocs',
-    'mkdocstrings-python',
-    'natsort',
-]
+[dependency-groups]
 test_min = ["pytest>=6.0"]
-test = ["cmap[test_min]", "pytest-cov"]
+test = [{ include-group = "test_min" }, "pytest-cov"]
 test_thirdparty = [
-    "cmap[test]",
+    { include-group = "test" },
     "bokeh",
     "colorspacious",
     "colour",
     "matplotlib",
     "napari>=0.5.0",
+    "PyQt6==6.8.1",
     "numba",
     "numba<0.61; python_version<'3.12'",
     "plotly",
@@ -64,16 +50,32 @@ test_thirdparty = [
     "vispy>=0.14",
 ]
 dev = [
-    "cmap[test_thirdparty]",
+    { include-group = "test_thirdparty" },
     "ipython",
     "mypy",
     "pdbpp",
-    "pre-commit",
+    "pre-commit-uv",
     "pytest",
     "rich",
     "ruff",
     "pyqt6",
 ]
+docs = [
+    'colorcet',
+    'colorspacious',
+    'imageio',
+    'mkdocs-gen-files',
+    'mkdocs-literate-nav',
+    'mkdocs-api-autonav',
+    'mkdocs-material',
+    'mkdocs-minify-plugin',
+    'mkdocs',
+    'mkdocstrings-python',
+    'natsort',
+]
+
+[tool.uv.sources]
+cmap = { workspace = true }
 
 [project.entry-points."pyinstaller40"]
 hook-dirs = "cmap.__pyinstaller:get_hook_dirs"

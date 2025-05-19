@@ -1399,7 +1399,7 @@ def _mpl_segmentdata_to_stops(
         alpha = np.ones_like(all_positions)
 
     rgba = np.stack([*rgb, alpha], axis=1)
-    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist())]  # type: ignore
+    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist())]
 
 
 def _make_identifier(name: str) -> str:
