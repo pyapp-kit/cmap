@@ -195,3 +195,7 @@ ignore = [
     "mkdocs.yml",
     ".readthedocs.yaml",
 ]
+
+[tool.check-wheel-contents]
+# W004: Module is not located at importable path (hook-psygnal.py)
+ignore = ["W004"]
