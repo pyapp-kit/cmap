@@ -998,7 +998,7 @@ class ColorStops(Sequence[ColorStop]):
     def __reversed__(self) -> Iterator[ColorStop]:
         # this for the reversed() builtin ... when iterating single
         # ColorStops.  But see the reversed() method below for when
-        # you want to create a new ColorStops object that is "permantently"
+        # you want to create a new ColorStops object that is "permanently"
         # reversed.
         for pos, *rgba in self._stops[::-1]:
             # reverse the colors, but not the positions
@@ -1399,7 +1399,7 @@ def _mpl_segmentdata_to_stops(
         alpha = np.ones_like(all_positions)
 
     rgba = np.stack([*rgb, alpha], axis=1)
-    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist())]  # type: ignore
+    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist())]
 
 
 def _make_identifier(name: str) -> str:
