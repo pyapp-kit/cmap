@@ -27,7 +27,6 @@ jobs:
     name: ${{ matrix.platform }} (${{ matrix.python-version }})
     runs-on: ${{ matrix.platform }}
     env:
-      UV_NO_SYNC: 1
       UV_PRERELEASE: ${{ github.event_name == 'schedule' && 'allow' || 'if-necessary-or-explicit' }}
     strategy:
       fail-fast: false
