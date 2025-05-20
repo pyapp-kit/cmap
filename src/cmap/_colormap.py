@@ -239,11 +239,13 @@ class Colormap:
             bad = info.bad if bad is None else bad
             self.info = info
             if isinstance(info.data, list):
+                if not info.data:  # pragma: no cover
+                    raise ValueError(f"Catalog colormap {info.name!r} has no data")
                 ld = len(info.data[0])
                 if ld == 2:
                     # if it's a list of tuples, it's a list of color stops
                     stops = ColorStops._from_uniform_stops(info.data)
-                elif ld == 3:
+                elif ld in (3, 4):
                     stops = ColorStops._from_colorarray_like(info.data)
                 else:  # pragma: no cover
                     raise ValueError(

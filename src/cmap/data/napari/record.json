@@ -1,0 +1,59 @@
+{
+  "colormaps": {
+    "HiLo": {
+      "category": "miscellaneous",
+      "data": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "over": [
+        1.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "under": [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    "nan": {
+      "bad": [
+        1.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "category": "miscellaneous",
+      "data": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    }
+  },
+  "license": "BSD-3-Clause",
+  "namespace": "napari",
+  "source": "https://github.com/napari/napari"
+}
