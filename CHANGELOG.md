@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.6.1](https://github.com/pyapp-kit/cmap/tree/v0.6.1) (2025-05-20)
+
+[Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.6.0...v0.6.1)
+
+**Merged pull requests:**
+
+- fix: fixes for napari 0.6.1 [\#103](https://github.com/pyapp-kit/cmap/pull/103) ([tlambert03](https://github.com/tlambert03))
+- ci\(dependabot\): bump pyvista/setup-headless-display-action from 3 to 4 [\#102](https://github.com/pyapp-kit/cmap/pull/102) ([dependabot[bot]](https://github.com/apps/dependabot))
+- build: use uv for setup and ci  [\#101](https://github.com/pyapp-kit/cmap/pull/101) ([tlambert03](https://github.com/tlambert03))
+- docs: fix 404 for names with dashes  in docs [\#99](https://github.com/pyapp-kit/cmap/pull/99) ([tlambert03](https://github.com/tlambert03))
+- ci\(pre-commit.ci\): autoupdate [\#97](https://github.com/pyapp-kit/cmap/pull/97) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
+
 ## [v0.6.0](https://github.com/pyapp-kit/cmap/tree/v0.6.0) (2025-03-15)
 
 [Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.5.1...v0.6.0)
