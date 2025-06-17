@@ -43,6 +43,9 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "**/pyproject.toml"
 
+      - name: Check ColormapName annotation is up to date
+        run: uv run --no-dev python scripts/make_cmapnames.py --check
+
       - name: Run min test
         run: uv run --no-dev --group test_min pytest -v
 

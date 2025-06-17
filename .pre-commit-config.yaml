@@ -6,6 +6,15 @@ ci:
 exclude: ^LICENSE
 
 repos:
+  - repo: local
+    hooks:
+      - id: make_cmapnames
+        name: make_cmapnames
+        entry: python scripts/make_cmapnames.py --exit-code
+        language: python
+        files: src/cmap/data/[a-zA-Z0-9_]/record.json
+        pass_filenames: false
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:

@@ -15,6 +15,7 @@ import numpy.typing as npt
 from . import _external
 from ._catalog import Catalog
 from ._color import Color, ColorLike
+from ._colormapname import ColormapName
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -58,7 +59,7 @@ ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
 
 # All of the things that we can pass to the constructor of Colormap
 ColormapLike: TypeAlias = Union[
-    str,  # colormap name, w/ optional "_r" suffix
+    ColormapName,
     Iterable[Union[ColorLike, ColorStopLike]],
     "NDArray",
     "MPLSegmentData",
@@ -491,7 +492,7 @@ class Colormap:
             N = self.num_colors
         nums = np.linspace(0, 1, N) if isinstance(N, int) else np.asarray(N)
         for c in self(nums, N=len(nums)):
-            yield Color(c)
+            yield Color(c)  # type: ignore
 
     def reversed(self, name: str | None = None) -> Colormap:
         """Return a new Colormap, with reversed colors.
@@ -1080,7 +1081,7 @@ class ColorStops(Sequence[ColorStop]):
             stops = tuple(np.linspace(0, 1, max_stops))
             colors = tuple(Color(c) for c in self.to_lut(max_stops))
         else:
-            stops, colors = self.stops, self.colors
+            stops, colors = self.stops, self.colors  # type: ignore
         if not colors:
             return ""
         out = f"background: {colors[0].hex if as_hex else colors[0].rgba_string};\n"
