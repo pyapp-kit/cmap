@@ -61,6 +61,9 @@ if TYPE_CHECKING:
         def resolve(self, name: str) -> str:
             """Return the fully qualified, normalized name of a colormap or alias."""
 
+        def disable_warn_on_alias(self) -> str:
+            """Disable warnings when a colormap is loaded which clashes with another."""
+
 else:
     from ._catalog import Catalog, CatalogItem
 

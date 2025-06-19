@@ -59,6 +59,10 @@ Once you have picked a namespace:
     ]
     ```
 
+1. Run `scripts/make_cmapnames.py` to ensure that the `ColormapLike` type alias
+   includes your contribution.
+   `pre-commit` will update it for you, but will fail if changes were made.
+
 !!!tip
     It may be helpful to look at existing folders and files in the
     [`cmap/data` directory](https://github.com/pyapp-kit/cmap/tree/main/src/cmap/data)
