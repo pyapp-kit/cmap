@@ -44,3 +44,5 @@ repos:
         files: "^src/"
         additional_dependencies:
           - numpy>=2.2
+        stages:
+          - pre-push
