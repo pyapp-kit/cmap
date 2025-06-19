@@ -15,7 +15,6 @@ import numpy.typing as npt
 from . import _external
 from ._catalog import Catalog
 from ._color import Color, ColorLike
-from ._colormapname import ColormapName
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -34,6 +33,7 @@ if TYPE_CHECKING:
     from typing_extensions import TypeAlias, TypedDict, TypeGuard
 
     from ._catalog import CatalogItem
+    from ._colormapname import ColormapName
 
     LutCacheKey = tuple[int, float, bool]
     Interpolation = Literal["linear", "nearest"]
@@ -59,13 +59,14 @@ ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
 
 # All of the things that we can pass to the constructor of Colormap
 ColormapLike: TypeAlias = Union[
-    ColormapName,
+    "ColormapName",
     Iterable[Union[ColorLike, ColorStopLike]],
     "NDArray",
     "MPLSegmentData",
     dict[float, ColorLike],
     "ColorStops",
     LutCallable,
+    str,
 ]
 """Data types that can be passed to the [cmap.Colormap][] constructor."""
 

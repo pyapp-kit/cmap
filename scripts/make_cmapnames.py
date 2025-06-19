@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """Generate a `Literal[...]` type annotation for named colormaps."""
 
-import json
 import sys
 from argparse import ArgumentParser
 from difflib import unified_diff
 from pathlib import Path
 
+import cmap
+
 scripts_dir = Path(__file__).resolve().parent
 module_dir = scripts_dir.parent.joinpath("src", "cmap")
 data_dir = module_dir.joinpath("data")
-out_file = module_dir.joinpath("_colormapname.py")
+out_file = module_dir.joinpath("_colormapname.pyi")
 
 SCRIPT_TEMPLATE = '''
 """Type annotation for literal colormap names.
@@ -25,22 +26,25 @@ ColormapName: TypeAlias = Literal[
 '''.lstrip()
 
 
+def get_cmap_names():
+    """Get the names of colormap items."""
+    visited = set()
+    catalog = cmap.Catalog()
+    catalog.disable_warn_on_alias()
+    for item in catalog.values():
+        for name in [item.qualified_name, item.name]:
+            for rev in ["", "_r"]:
+                full = name + rev
+                if full in visited:
+                    continue
+                yield full
+                visited.add(full)
+
+
 def generate_script():
     """Produce the expected script."""
-    names = []
-
-    for rel_path in sorted(data_dir.glob("*/record.json")):
-        p = data_dir.joinpath(rel_path)
-        prefix_name = rel_path.parent.name
-        with p.open() as f:
-            d = json.load(f)
-
-        for subname in d.get("colormaps", []):
-            for prefix in ["", f"{prefix_name}:"]:
-                for suffix in ["", "_r"]:
-                    names.append(f"{prefix}{subname.lower()}{suffix}")
-
-    names_fmt = "".join(" " * 4 + f'"{n}",\n' for n in names)
+    names_iter = get_cmap_names()
+    names_fmt = "".join(" " * 4 + f'"{n}",\n' for n in names_iter)
 
     return SCRIPT_TEMPLATE.format(names_fmt)
 

@@ -243,6 +243,8 @@ class Catalog(Mapping[str, "CatalogItem"]):
         # _rev_aliases maps fully qualified names to a list of aliases
         self._rev_aliases: dict[str, list[str]] = {}
 
+        self._warn_on_alias: bool = True
+
         # sort record files.  Put matplotlib-related names first so that un-namespaced
         # names resolve to the matplotlib colormaps by default.
         MPL_PRIORTY_NAMESPACES = ("matplotlib", "bids", "matlab", "gnuplot")
@@ -262,6 +264,10 @@ class Catalog(Mapping[str, "CatalogItem"]):
                 self._rev_aliases.setdefault(self._norm_name(alias), []).append(
                     normed_name
                 )
+
+    def disable_warn_on_alias(self) -> None:
+        """Disable warnings when a colormap is loaded which is an alias of another."""
+        self._warn_on_alias = False
 
     def unique_keys(
         self,
@@ -369,11 +375,13 @@ class Catalog(Mapping[str, "CatalogItem"]):
             item = cast("UnloadedCatalogAlias", item)
             namespaced = item["alias"]
             if conflicts := item.get("conflicts"):
-                logger.warning(
-                    f"WARNING: The name {normed_key!r} is an alias for {namespaced!r}, "
-                    f"but is also available as: {', '.join(conflicts)!r}.\nTo "
-                    "silence this warning, use a fully namespaced name.",
-                )
+                if self._warn_on_alias:
+                    logger.warning(
+                        f"WARNING: The name {normed_key!r} "
+                        f"is an alias for {namespaced!r}, "
+                        f"but is also available as: {', '.join(conflicts)!r}.\n"
+                        "To silence this warning, use a fully namespaced name.",
+                    )
             return self[namespaced]
 
         _item = cast("UnloadedCatalogItem", item.copy())
