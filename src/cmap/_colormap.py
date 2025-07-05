@@ -1077,7 +1077,7 @@ class ColorStops(Sequence[ColorStop]):
             If `True`, return colors as hex strings, by default use `rgba()` strings.
         """
         if max_stops and len(self._stops) > max_stops:
-            stops = tuple(np.linspace(0, 1, max_stops))
+            stops: tuple[np.floating, ...] = tuple(np.linspace(0, 1, max_stops))
             colors = tuple(Color(c) for c in self.to_lut(max_stops))
         else:
             stops, colors = self.stops, self.colors
