@@ -457,7 +457,7 @@ def report(
     cm: Colormap,
     n: int = 256,
     uniform_space: str = "CAM02-UCS",
-    initial_space: dict = {"name":"sRGB1"}
+    initial_space: dict | None = None,
 ) -> ReportDict:
     """Generate a report of data describing a colormap.
 
@@ -465,6 +465,8 @@ def report(
     """
     from colorspacious import cspace_convert
 
+    if initial_space is None:
+        initial_space = {"name": "sRGB1"}
     if len(cm.color_stops) >= 100:
         RGBA = np.asarray(cm.color_stops.color_array)
         n = RGBA.shape[0]
