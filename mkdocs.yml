@@ -117,6 +117,7 @@ plugins:
             summary: true
 
 extra_css:
+  - https://fonts.googleapis.com/icon?family=Material+Icons
   - stylesheets/extra.css
 
 extra_javascript:

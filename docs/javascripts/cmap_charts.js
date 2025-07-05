@@ -22,14 +22,20 @@ async function initCharts() {
       chartElems[cmap_name] = [charts[i]];
     }
   }
+  var cvd_type = document.getElementById("cvd").querySelector('input[name="cvd_button"]:checked')?.value;
   // Make all charts for each cmap name
   for (var cmap_name in chartElems) {
     // NOTE: we're using a global window variable here that will be
     // injected into the _gen_cmaps page... because it's much faster
     // on readthedocs than making an additional fetch request
-    var cmap_data = window.cmap_data[cmap_name];
+    var cmap_data = window.cmap_data[cmap_name][cvd_type] || window.cmap_data[cmap_name]["normal"];
     for (var i = 0; i < chartElems[cmap_name].length; i++) {
       var canv = chartElems[cmap_name][i];
+      const chart = Chart.getChart(canv);
+      if (chart) {
+        chart.destroy();
+      }
+
       if (canv.classList.contains("rgb-chart")) {
         makeRGBChart(canv, cmap_data);
       } else if (canv.classList.contains("hsl-chart")) {
