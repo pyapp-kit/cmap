@@ -124,4 +124,3 @@ extra_javascript:
   - javascripts/filter.js
   - https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.1.2/chart.umd.min.js
   - javascripts/cmap_charts.js
-

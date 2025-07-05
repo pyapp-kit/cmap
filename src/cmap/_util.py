@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, TypedDict, Dict, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import numpy as np
 
@@ -453,7 +453,9 @@ class CVDReportDict(TypedDict):
     tritan: ReportDict
 
 
-def report(cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS", initial_space= "sRGB1") -> ReportDict:
+def report(
+    cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS", initial_space="sRGB1"
+) -> ReportDict:
     """Generate a report of data describing a colormap.
 
     This is primarily used for generating charts in the documentation
