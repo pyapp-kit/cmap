@@ -457,7 +457,7 @@ def report(
     cm: Colormap,
     n: int = 256,
     uniform_space: str = "CAM02-UCS",
-    initial_space: str = "sRGB1",
+    initial_space: dict = {"name":"sRGB1"}
 ) -> ReportDict:
     """Generate a report of data describing a colormap.
 
