@@ -446,13 +446,27 @@ class ReportDict(TypedDict):
     lightness_derivs: np.ndarray
 
 
-def report(cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS") -> ReportDict:
+class CVDReportDict(TypedDict):
+    normal: ReportDict
+    protan: ReportDict
+    deutan: ReportDict
+    tritan: ReportDict
+
+
+def report(
+    cm: Colormap,
+    n: int = 256,
+    uniform_space: str = "CAM02-UCS",
+    initial_space: dict | None = None,
+) -> ReportDict:
     """Generate a report of data describing a colormap.
 
     This is primarily used for generating charts in the documentation
     """
     from colorspacious import cspace_convert
 
+    if initial_space is None:
+        initial_space = {"name": "sRGB1"}
     if len(cm.color_stops) >= 100:
         RGBA = np.asarray(cm.color_stops.color_array)
         n = RGBA.shape[0]
@@ -462,6 +476,7 @@ def report(cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS") -> Repo
         RGBA = cm(x)
     RGB = RGBA[:, :3]
 
+    RGB = np.clip(cast("np.ndarray", cspace_convert(RGB, initial_space, "sRGB1")), 0, 1)
     Jab = cast("np.ndarray", cspace_convert(RGB, "sRGB1", uniform_space))
 
     local_deltas = np.sqrt(np.sum((Jab[:-1, :] - Jab[1:, :]) ** 2, axis=-1))
@@ -502,6 +517,48 @@ def report(cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS") -> Repo
     # M -> colorfulness
     # s -> saturation
     # H -> hue composition
+
+
+def report_cvds(
+    cm: Colormap, n: int = 256, uniform_space: str = "CAM02-UCS"
+) -> CVDReportDict:
+    """Generate a report of data describing a colormap for different CVD types.
+
+    This is primarily used for generating charts in the documentation
+    """
+    return {
+        "normal": report(cm, n=n, uniform_space=uniform_space),
+        "protan": report(
+            cm,
+            n=n,
+            uniform_space=uniform_space,
+            initial_space={
+                "name": "sRGB1+CVD",
+                "cvd_type": "protanomaly",
+                "severity": 100,
+            },
+        ),
+        "deutan": report(
+            cm,
+            n=n,
+            uniform_space=uniform_space,
+            initial_space={
+                "name": "sRGB1+CVD",
+                "cvd_type": "deuteranomaly",
+                "severity": 100,
+            },
+        ),
+        "tritan": report(
+            cm,
+            n=n,
+            uniform_space=uniform_space,
+            initial_space={
+                "name": "sRGB1+CVD",
+                "cvd_type": "tritanomaly",
+                "severity": 100,
+            },
+        ),
+    }
 
 
 def to_mpl(

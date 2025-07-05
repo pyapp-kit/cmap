@@ -9,7 +9,7 @@ import numpy as np
 if TYPE_CHECKING:
     from cmap import _catalog
 from cmap import Colormap
-from cmap._util import report
+from cmap._util import report_cvds
 
 # TODO: convert to jinja
 TEMPLATE = """# {name}
@@ -32,6 +32,29 @@ cm = Colormap('{name}')  # case insensitive
 {{{{ cmap_gray: {name} 30 }}}}
 {{{{ cmap_sineramp: {name} }}}}
 
+<form id="cvd" class="radio-group">
+  <label class="radio-option" title="Full Vision">
+    <input type="radio" name="cvd_button" value="normal" checked>
+    <span class="material-icons">visibility</span>
+    <span class="radio-label"> Normal Vision</span>
+  </label>
+  <label class="radio-option" title="Protanopic">
+    <input type="radio" name="cvd_button" value="protan">
+    <span class="material-icons">filter_1</span>
+    <span class="radio-label"> Protanopic</span>
+  </label>
+  <label class="radio-option" title="Deuteranopic">
+    <input type="radio" name="cvd_button" value="deutan">
+    <span class="material-icons">filter_2</span>
+    <span class="radio-label"> Deuteranopic</span>
+  </label>
+  <label class="radio-option" title="Tritananopic">
+    <input type="radio" name="cvd_button" value="tritan">
+    <span class="material-icons">filter_3</span>
+    <span class="radio-label"> Tritanopic</span>
+  </label>
+</form>
+
 ## Perceptual Lightness
 
 <canvas class="linearity-chart cmap-chart" data-cmap-name="{name}" width="800" height="350"></canvas>
@@ -53,6 +76,19 @@ L* measured in
 
 <script>
 window.cmap_data = {data};
+
+cvd?.addEventListener("change", (e) => {{
+    const selected = cvd.querySelector('input[name="cvd_button"]:checked')?.value;
+    //window.cmap_data = {data}[selected];
+    console.log("CVD type selected:", selected);
+    // re-render the charts
+    initCharts();
+
+    console.log("Selected variant:", selected);
+}});
+
+
+
 <!-- Note: this is here because of `navigation.instant` in the mkdocs settings -->
 typeof(initCharts) !== 'undefined' && initCharts();
 </script>
@@ -111,11 +147,13 @@ def build_catalog(catalog: "_catalog.Catalog") -> None:
         # write data used for charts
         cm = Colormap(name)
         cmap_data = {
-            k: np.around(v, 4).tolist() if isinstance(v, np.ndarray) else v
-            for k, v in report(cm).items()
-            if k in INCLUDE_DATA
+            cvd_type: {
+                k: np.around(v, 4).tolist() if isinstance(v, np.ndarray) else v
+                for k, v in report.items()
+                if k in INCLUDE_DATA
+            }
+            for cvd_type, report in report_cvds(cm).items()
         }
-
         _aliases = [x for x in info.aliases if x != info.name]
         aliases = _make_aliases_md(_aliases) if _aliases else ""
 
