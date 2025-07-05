@@ -28,7 +28,7 @@ async function initCharts() {
     // NOTE: we're using a global window variable here that will be
     // injected into the _gen_cmaps page... because it's much faster
     // on readthedocs than making an additional fetch request
-    var cmap_data = window.cmap_data[cmap_name][cvd_type];
+    var cmap_data = window.cmap_data[cmap_name][cvd_type] || window.cmap_data[cmap_name]["normal"];
     for (var i = 0; i < chartElems[cmap_name].length; i++) {
       var canv = chartElems[cmap_name][i];
       const chart = Chart.getChart(canv);
