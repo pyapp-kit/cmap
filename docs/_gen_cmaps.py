@@ -77,7 +77,6 @@ L* measured in
 <script>
 window.cmap_data = {data};
 
-const cvd = document.getElementById("cvd");
 cvd?.addEventListener("change", (e) => {{
     const selected = cvd.querySelector('input[name="cvd_button"]:checked')?.value;
     //window.cmap_data = {data}[selected];
