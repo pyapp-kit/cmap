@@ -165,9 +165,6 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
                 ctlg[name] = v  # FIXME
                 continue
 
-            # otherwise we have a CatalogItem
-            v = cast("UnloadedCatalogItem", v)
-
             # here we add any global keys to the colormap that are not already there.
             for k in ("license", "namespace", "source", "authors", "category"):
                 if k in data:
@@ -376,7 +373,7 @@ class Catalog(Mapping[str, "CatalogItem"]):
                 )
             return self[namespaced]
 
-        _item = cast("UnloadedCatalogItem", item.copy())
+        _item = item.copy()
         # if a string, it is a module:attribute reference to a ColormapLike object
         # load it here.
         if isinstance(_item["data"], str):

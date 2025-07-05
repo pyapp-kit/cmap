@@ -899,7 +899,7 @@ class ColorStops(Sequence[ColorStop]):
             colors = np.concatenate([colors, np.ones((len(X), 1))], axis=1)
         elif colors.shape[1] != 4:
             raise ValueError("lut_func must return RGB or RGBA values")
-        return cast("np.ndarray", colors)
+        return colors
 
     @classmethod
     def parse(cls, colors: ColormapLike) -> ColorStops:
@@ -1523,4 +1523,4 @@ def _wrap_shift_color_stops(data: np.ndarray, shift_amount: float) -> np.ndarray
     out[:, 0] %= 1
     # sort the array by the first column
     out = out[out[:, 0].argsort()]
-    return out
+    return out  # type: ignore[no-any-return]
