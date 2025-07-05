@@ -84,7 +84,7 @@ cvd?.addEventListener("change", (e) => {{
     console.log("CVD type selected:", selected);
     // re-render the charts
     initCharts();
-   
+
     console.log("Selected variant:", selected);
 }});
 

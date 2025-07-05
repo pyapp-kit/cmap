@@ -182,7 +182,7 @@ body[data-md-color-scheme="slate"] .btn.active {
   gap: 1rem;
   margin-bottom: 1rem;
 }
-  
+
 .radio-option {
   position: relative;
   display: inline-flex;
@@ -193,32 +193,32 @@ body[data-md-color-scheme="slate"] .btn.active {
   cursor: pointer;
   transition: background-color 0.2s, box-shadow 0.2s;
 }
-  
+
 .radio-option input[type="radio"] {
   appearance: none;
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
-  
+
 .radio-option .material-icons {
   font-size: 1rem;
   color: var(--md-default-fg-color);
   transition: color 0.2s;
 }
-  
+
 .radio-option input[type="radio"]:checked ~ .material-icons,
 .radio-option input[type="radio"]:checked ~ .radio-label {
   color: var(--md-accent-fg-color);
 }
-  
-  
+
+
 .radio-option:hover {
   background-color: var(--md-default-bg-color--lighter);
   box-shadow: 0 0 0 2px var(--md-accent-fg-color);
 }
-  
+
 .radio-option .radio-label {
   font-size: 0.65rem;
   color: var(--md-default-fg-color);
-}  
+}

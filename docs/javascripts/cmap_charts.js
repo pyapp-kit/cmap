@@ -35,7 +35,7 @@ async function initCharts() {
       if (chart) {
         chart.destroy();
       }
-    
+
       if (canv.classList.contains("rgb-chart")) {
         makeRGBChart(canv, cmap_data);
       } else if (canv.classList.contains("hsl-chart")) {
