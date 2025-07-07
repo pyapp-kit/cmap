@@ -259,7 +259,7 @@ Color((0.8941, 0.102, 0.1098))
 This also works well when using an array as input
 
 ```python
-c(np.arange(16 % c.num_colors))
+c(np.arange(16) % c.num_colors)
 ```
 
 which returns the cycled RGBA color values in an array output
