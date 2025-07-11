@@ -97,14 +97,14 @@
       "authors": [
         "Bastian Bechtold"
       ],
-      "category": "sequential",
+      "category": "cyclic",
       "data": "cmap.data.matplotlib:twilight"
     },
     "twilight_shifted": {
       "authors": [
         "Bastian Bechtold"
       ],
-      "category": "sequential",
+      "category": "cyclic",
       "data": "cmap.data.matplotlib:twilight_shifted"
     },
     "viridis": {
