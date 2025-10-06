@@ -1,14 +1,13 @@
-
 {
   "authors": [],
   "category": "qualitative",
   "colormaps": {
-    "ibm_light": {
-      "data": "cmap.data.ibm:ibm_light",
-      "interpolation": false
-    },
     "ibm_dark": {
       "data": "cmap.data.ibm:ibm_dark",
+      "interpolation": false
+    },
+    "ibm_light": {
+      "data": "cmap.data.ibm:ibm_light",
       "interpolation": false
     }
   },
