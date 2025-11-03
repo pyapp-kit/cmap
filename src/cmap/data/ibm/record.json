@@ -1,0 +1,17 @@
+{
+  "authors": [],
+  "category": "qualitative",
+  "colormaps": {
+    "ibm_dark": {
+      "data": "cmap.data.ibm:ibm_dark",
+      "interpolation": false
+    },
+    "ibm_light": {
+      "data": "cmap.data.ibm:ibm_light",
+      "interpolation": false
+    }
+  },
+  "info": "Color palettes for data visualizations from the IBM Design Language. Designed to maximize accessibility and harmony within a page.",
+  "namespace": "ibm",
+  "source": "https://carbondesignsystem.com/data-visualization/color-palettes/#categorical-palettes"
+}
