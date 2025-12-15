@@ -8,7 +8,8 @@
       ],
       "category": "diverging",
       "data": "cmap.data.paraview:fast",
-      "interpolation": true
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/smooth-cool-warm"
     },
     "fast": {
       "authors": [
@@ -16,10 +17,28 @@
       ],
       "category": "diverging",
       "data": "cmap.data.paraview:coolwarm",
-      "interpolation": true
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/fast"
+    },
+    "kindlmann": {
+      "authors": [
+        "Gordon Kindlmann",
+        "Erik Reinhard",
+        "Sarah Creem"
+      ],
+      "category": "sequential",
+      "data": "cmap.data.paraview:kindlmann",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/kindlmann"
+    },
+    "blackbody": {
+      "authors": [],
+      "category": "sequential",
+      "data": "cmap.data.paraview:blackbody",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body"
     }
   },
-  "info": "Color maps developed for the ParaView platform for interactive, scientific visualization.",
-  "namespace": "paraview",
-  "source": "https://www.kennethmoreland.com/color-advice/"
+  "info": "Color maps of the ParaView platform for interactive, scientific visualization.",
+  "namespace": "paraview"
 }
