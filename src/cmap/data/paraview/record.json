@@ -1,5 +1,12 @@
 {
   "colormaps": {
+    "blackbody": {
+      "authors": [],
+      "category": "sequential",
+      "data": "cmap.data.paraview:blackbody",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body"
+    },
     "coolwarm": {
       "authors": [
         "Francesca Samsel",
@@ -30,13 +37,6 @@
       "data": "cmap.data.paraview:kindlmann",
       "interpolation": true,
       "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/kindlmann"
-    },
-    "blackbody": {
-      "authors": [],
-      "category": "sequential",
-      "data": "cmap.data.paraview:blackbody",
-      "interpolation": true,
-      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body"
     }
   },
   "info": "Color maps of the ParaView platform for interactive, scientific visualization.",
