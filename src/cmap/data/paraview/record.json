@@ -1,16 +1,22 @@
 {
   "colormaps": {
     "coolwarm": {
-      "data": "cmap.data.paraview:fast",
+      "authors": [
+        "Francesca Samsel",
+        "W. Alan Scott",
+        "Kenneth Moreland"
+      ],
       "category": "diverging",
-      "interpolation": true,
-      "authors": ["Francesca Samsel", "W. Alan Scott", "Kenneth Moreland"]
+      "data": "cmap.data.paraview:fast",
+      "interpolation": true
     },
     "fast": {
-      "data": "cmap.data.paraview:coolwarm",
+      "authors": [
+        "Kenneth Moreland"
+      ],
       "category": "diverging",
-      "interpolation": true,
-      "authors": ["Kenneth Moreland"]
+      "data": "cmap.data.paraview:coolwarm",
+      "interpolation": true
     }
   },
   "info": "Color maps developed for the ParaView platform for interactive, scientific visualization.",
