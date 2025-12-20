@@ -23,8 +23,7 @@
       "category": "sequential",
       "data": "cmap.data.contrib:pantanal",
       "info": "The pantanal colormap is a sequential colormap that transitions from white to light green, then teal, and finally dark red, created via color interpolation in the Oklab space."
-    }
-  },
+    },
     "pampa": {
       "authors": [
         "Antonio Camargo"
