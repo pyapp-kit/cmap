@@ -31,7 +31,7 @@
       ],
       "category": "diverging",
       "data": "cmap.data.contrib:pampa",
-      "info": "A diverging color map (teal to magenta) built by interpolating colors in the Msh space. It has a smooth transition in the middle to prevent artifacts at the midpoint."
+      "info": "A diverging color map (magenta to teal) built by interpolating colors in the Msh space. It has a smooth transition in the middle to prevent artifacts at the midpoint."
     }
   },
   "license": "CC0",
