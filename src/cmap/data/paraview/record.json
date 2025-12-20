@@ -8,6 +8,16 @@
       "interpolation": true,
       "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body"
     },
+    "coolwarm": {
+      "authors": [
+        "Kenneth Moreland"
+      ],
+      "category": "diverging",
+      "data": "cmap.data.paraview:coolwarm",
+      "info": "Diverging color map (blue to red) built by interpolating colors in the Msh space. It has a smooth transition in the middle to prevent artifacts at the midpoint.",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/smooth-cool-warm"
+    },
     "fast": {
       "authors": [
         "Francesca Samsel",
@@ -19,16 +29,6 @@
       "info": "Diverging color map (blue to red) with high discriminability and a smooth transition in the middle to prevent artifacts at the midpoint.",
       "interpolation": true,
       "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/fast"
-    },
-    "coolwarm": {
-      "authors": [
-        "Kenneth Moreland"
-      ],
-      "category": "diverging",
-      "data": "cmap.data.paraview:coolwarm",
-      "info": "Diverging color map (blue to red) built by interpolating colors in the Msh space. It has a smooth transition in the middle to prevent artifacts at the midpoint.",
-      "interpolation": true,
-      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/smooth-cool-warm"
     },
     "kindlmann": {
       "authors": [
