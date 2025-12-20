@@ -8,7 +8,7 @@
       "interpolation": true,
       "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body"
     },
-    "coolwarm": {
+    "fast": {
       "authors": [
         "Francesca Samsel",
         "W. Alan Scott",
@@ -20,7 +20,7 @@
       "interpolation": true,
       "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/fast"
     },
-    "fast": {
+    "coolwarm": {
       "authors": [
         "Kenneth Moreland"
       ],
