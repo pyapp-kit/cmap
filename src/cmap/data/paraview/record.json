@@ -5,7 +5,8 @@
       "category": "sequential",
       "data": "cmap.data.paraview:blackbody",
       "interpolation": true,
-      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body"
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body",
+      "info": "A color map inspired by the wavelengths of light from black body radiation and designed to be perceptually uniform."
     },
     "coolwarm": {
       "authors": [
@@ -16,7 +17,8 @@
       "category": "diverging",
       "data": "cmap.data.paraview:fast",
       "interpolation": true,
-      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/fast"
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/fast",
+      "info": "Diverging color map (blue to red) with high discriminability and a smooth transition in the middle to prevent artifacts at the midpoint."
     },
     "fast": {
       "authors": [
@@ -25,7 +27,8 @@
       "category": "diverging",
       "data": "cmap.data.paraview:coolwarm",
       "interpolation": true,
-      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/smooth-cool-warm"
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/smooth-cool-warm",
+      "info": "Diverging color map (blue to red) built by interpolating colors in the Msh space. It has a smooth transition in the middle to prevent artifacts at the midpoint."
     },
     "kindlmann": {
       "authors": [
@@ -36,7 +39,8 @@
       "category": "sequential",
       "data": "cmap.data.paraview:kindlmann",
       "interpolation": true,
-      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/kindlmann"
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/kindlmann",
+      "info": "A rainbow color map with the luminance adjusted such that it changes monotonically."
     }
   },
   "info": "Color maps of the ParaView platform for interactive, scientific visualization.",
