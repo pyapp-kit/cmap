@@ -151,6 +151,7 @@ filterwarnings = [
     "ignore::DeprecationWarning:Pyinstaller",
     "ignore::DeprecationWarning:pkg_resources",
     "ignore::DeprecationWarning:altgraph",
+    "ignore::DeprecationWarning:pyparsing",
     "ignore::DeprecationWarning:matplotlib._mathtext",
     "ignore::DeprecationWarning:matplotlib._fontconfig_pattern",
 ]
