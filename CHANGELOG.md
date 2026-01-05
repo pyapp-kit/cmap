@@ -1,5 +1,40 @@
 # Changelog
 
+## [v0.7.0](https://github.com/pyapp-kit/cmap/tree/v0.7.0) (2026-01-05)
+
+[Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.6.2...v0.7.0)
+
+**Implemented enhancements:**
+
+- feat: Add the pampa colormap [\#128](https://github.com/pyapp-kit/cmap/pull/128) ([apcamargo](https://github.com/apcamargo))
+- feat: Add Paraview color maps [\#125](https://github.com/pyapp-kit/cmap/pull/125) ([apcamargo](https://github.com/apcamargo))
+- feat: Add the IBM Design Language qualitative color sequences [\#117](https://github.com/pyapp-kit/cmap/pull/117) ([apcamargo](https://github.com/apcamargo))
+
+**Fixed bugs:**
+
+- bug: Fix `pampa` colors [\#130](https://github.com/pyapp-kit/cmap/pull/130) ([apcamargo](https://github.com/apcamargo))
+- bug: fix twilight classification [\#112](https://github.com/pyapp-kit/cmap/pull/112) ([akhmerov](https://github.com/akhmerov))
+
+**Merged pull requests:**
+
+- feat: support py3.14 [\#132](https://github.com/pyapp-kit/cmap/pull/132) ([tlambert03](https://github.com/tlambert03))
+- ci\(dependabot\): bump actions/download-artifact from 6 to 7 [\#129](https://github.com/pyapp-kit/cmap/pull/129) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore: bunch dependabot prs [\#127](https://github.com/pyapp-kit/cmap/pull/127) ([tlambert03](https://github.com/tlambert03))
+- ci\(dependabot\): bump actions/upload-artifact from 4 to 5 [\#122](https://github.com/pyapp-kit/cmap/pull/122) ([dependabot[bot]](https://github.com/apps/dependabot))
+- ci\(pre-commit.ci\): autoupdate [\#119](https://github.com/pyapp-kit/cmap/pull/119) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
+- ci\(pre-commit.ci\): autoupdate [\#113](https://github.com/pyapp-kit/cmap/pull/113) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
+- docs: fix misplaced bracket [\#111](https://github.com/pyapp-kit/cmap/pull/111) ([Jhsmit](https://github.com/Jhsmit))
+- fix: fix pre-commit [\#110](https://github.com/pyapp-kit/cmap/pull/110) ([tlambert03](https://github.com/tlambert03))
+
+## [v0.6.2](https://github.com/pyapp-kit/cmap/tree/v0.6.2) (2025-07-05)
+
+[Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.6.1...v0.6.2)
+
+**Merged pull requests:**
+
+- Implements switchable color vision deficiency simulation to the docs [\#109](https://github.com/pyapp-kit/cmap/pull/109) ([aafkegros](https://github.com/aafkegros))
+- ci\(pre-commit.ci\): autoupdate [\#104](https://github.com/pyapp-kit/cmap/pull/104) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
+
 ## [v0.6.1](https://github.com/pyapp-kit/cmap/tree/v0.6.1) (2025-05-20)
 
 [Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.6.0...v0.6.1)
