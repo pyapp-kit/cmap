@@ -150,6 +150,10 @@ filterwarnings = [
     "ignore::DeprecationWarning:Pyinstaller",
     "ignore::DeprecationWarning:pkg_resources",
     "ignore::DeprecationWarning:altgraph",
+    "ignore:'oneOf' deprecated:DeprecationWarning:matplotlib",
+    "ignore:'parseString' deprecated:DeprecationWarning:matplotlib",
+    "ignore:'resetCache' deprecated:DeprecationWarning:matplotlib",
+    "ignore:'enablePackrat' deprecated:DeprecationWarning:matplotlib",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
