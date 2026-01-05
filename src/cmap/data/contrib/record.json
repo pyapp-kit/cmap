@@ -14,7 +14,15 @@
       ],
       "category": "sequential",
       "data": "cmap.data.contrib:cerrado",
-      "info": "The cerrado colormap is a sequential colormap with earthy tones, created via color interpolation in the OKLAB space."
+      "info": "The cerrado colormap is a sequential colormap with earthy tones, created via color interpolation in the Oklab space."
+    },
+    "pampa": {
+      "authors": [
+        "Antonio Camargo"
+      ],
+      "category": "diverging",
+      "data": "cmap.data.contrib:pampa",
+      "info": "A diverging color map (magenta to teal) built by interpolating colors in the Msh space. It has a smooth transition in the middle to prevent artifacts at the midpoint."
     },
     "pantanal": {
       "authors": [
@@ -22,7 +30,7 @@
       ],
       "category": "sequential",
       "data": "cmap.data.contrib:pantanal",
-      "info": "The pantanal colormap is a sequential colormap that transitions from white to light green, then teal, and finally dark red, created via color interpolation in the OKLAB space."
+      "info": "The pantanal colormap is a sequential colormap that transitions from white to light green, then teal, and finally dark red, created via color interpolation in the Oklab space."
     }
   },
   "license": "CC0",
