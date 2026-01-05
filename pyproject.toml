@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dynamic = ["version"]
 dependencies = ["numpy"]
@@ -34,7 +35,7 @@ test_thirdparty = [
     "colorspacious",
     "colour",
     "matplotlib",
-    "napari>=0.5.0",
+    "napari>=0.5.0; python_version<'3.14'",
     "PyQt6==6.8.1",
     "numba",
     "numba<0.61; python_version<'3.12'",
@@ -150,10 +151,9 @@ filterwarnings = [
     "ignore::DeprecationWarning:Pyinstaller",
     "ignore::DeprecationWarning:pkg_resources",
     "ignore::DeprecationWarning:altgraph",
-    "ignore:'oneOf' deprecated:DeprecationWarning:matplotlib",
-    "ignore:'parseString' deprecated:DeprecationWarning:matplotlib",
-    "ignore:'resetCache' deprecated:DeprecationWarning:matplotlib",
-    "ignore:'enablePackrat' deprecated:DeprecationWarning:matplotlib",
+    "ignore::DeprecationWarning:pyparsing",
+    "ignore::DeprecationWarning:matplotlib._mathtext",
+    "ignore::DeprecationWarning:matplotlib._fontconfig_pattern",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html

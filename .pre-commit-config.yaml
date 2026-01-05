@@ -34,4 +34,4 @@ repos:
       - id: mypy
         files: "^src/"
         additional_dependencies:
-          - numpy>=2.2
+          - numpy>=2.4.0
