@@ -603,7 +603,7 @@ class Color:
     def __iter__(self) -> Iterator[float]:
         return iter(self._rgba)
 
-    def __array__(self, dtype: npt.DTypeLike = None) -> np.ndarray:
+    def __array__(self, dtype: npt.DTypeLike | None = None) -> np.ndarray:
         return np.asarray(self._rgba, dtype=dtype)
 
     @property

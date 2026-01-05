@@ -1006,7 +1006,7 @@ class ColorStops(Sequence[ColorStop]):
             # reverse the colors, but not the positions
             yield ColorStop(1 - pos, Color(rgba))
 
-    def __array__(self, dtype: npt.DTypeLike = None) -> np.ndarray:
+    def __array__(self, dtype: npt.DTypeLike | None = None) -> np.ndarray:
         """Return (N, 5) array, N rows of (position, r, g, b, a)."""
         return self._stops if dtype is None else self._stops.astype(dtype)
 
@@ -1523,4 +1523,4 @@ def _wrap_shift_color_stops(data: np.ndarray, shift_amount: float) -> np.ndarray
     out[:, 0] %= 1
     # sort the array by the first column
     out = out[out[:, 0].argsort()]
-    return out  # type: ignore[no-any-return]
+    return out  # type: ignore

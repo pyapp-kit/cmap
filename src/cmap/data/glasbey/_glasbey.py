@@ -2,7 +2,7 @@
 # see __init__ and LICENSE_GLASBEY
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, cast
 
 import numpy as np
 
@@ -185,4 +185,5 @@ def create_palette(
 
 def _get_rgb_palette(cam02ucs_palette: np.ndarray) -> np.ndarray:
     raw_rgb_palette = _cspace_convert(cam02ucs_palette, "CAM02-UCS", "sRGB1")
-    return np.clip(raw_rgb_palette, 0.0, 1.0)
+    out = np.clip(raw_rgb_palette, 0.0, 1.0)
+    return cast("np.ndarray", out)
