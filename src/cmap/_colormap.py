@@ -1522,5 +1522,4 @@ def _wrap_shift_color_stops(data: np.ndarray, shift_amount: float) -> np.ndarray
     out[:, 0] += shift_amount
     out[:, 0] %= 1
     # sort the array by the first column
-    out = out[out[:, 0].argsort()]
-    return out  # type: ignore
+    return out[out[:, 0].argsort()]
