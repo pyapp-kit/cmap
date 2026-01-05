@@ -1,0 +1,48 @@
+{
+  "colormaps": {
+    "blackbody": {
+      "authors": [],
+      "category": "sequential",
+      "data": "cmap.data.paraview:blackbody",
+      "info": "A color map inspired by the wavelengths of light from black body radiation and designed to be perceptually uniform.",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/black-body"
+    },
+    "coolwarm": {
+      "authors": [
+        "Kenneth Moreland"
+      ],
+      "category": "diverging",
+      "data": "cmap.data.paraview:coolwarm",
+      "info": "Diverging color map (blue to red) built by interpolating colors in the Msh space. It has a smooth transition in the middle to prevent artifacts at the midpoint.",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/smooth-cool-warm"
+    },
+    "fast": {
+      "authors": [
+        "Francesca Samsel",
+        "W. Alan Scott",
+        "Kenneth Moreland"
+      ],
+      "category": "diverging",
+      "data": "cmap.data.paraview:fast",
+      "info": "Diverging color map (blue to red) with high discriminability and a smooth transition in the middle to prevent artifacts at the midpoint.",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/fast"
+    },
+    "kindlmann": {
+      "authors": [
+        "Gordon Kindlmann",
+        "Erik Reinhard",
+        "Sarah Creem"
+      ],
+      "category": "sequential",
+      "data": "cmap.data.paraview:kindlmann",
+      "info": "A rainbow color map with the luminance adjusted such that it changes monotonically.",
+      "interpolation": true,
+      "source": "https://github.com/kennethmoreland-com/kennethmoreland-com.github.io/tree/f0f50dcfda94c8e4c9c4927f78a98ff419fea450/content/color-advice/kindlmann"
+    }
+  },
+  "info": "Color maps of the ParaView platform for interactive, scientific visualization.",
+  "namespace": "paraview"
+}
