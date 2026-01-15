@@ -15,6 +15,7 @@ import numpy.typing as npt
 from . import _external
 from ._catalog import Catalog
 from ._color import Color, ColorLike
+from ._parametrized_colormaps import get_parametrized_colormap_function
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -92,6 +93,8 @@ class Colormap:
         - a `str` containing a recognized string colormap name (e.g. `"viridis"`,
           `"magma"`), optionally suffixed with `"_r"` to reverse the colormap
           (e.g. `"viridis"`, `"magma_r"`).
+        - a `str` containing a registered colormap function name (e.g. `"cubehelix"`),
+          used with the `cmap_kwargs` parameter to pass function arguments.
         - An iterable of [ColorLike](../../colors.md#colorlike-objects) values (any
           object that can be cast to a [`Color`][cmap.Color]), or "color-stop-like"
           tuples ( `(float, ColorLike)` where the first element is a scalar value
@@ -109,6 +112,12 @@ class Colormap:
           the matplotlib docs for more.
         - a `Callable` that takes an array of N values in the range [0, 1] and returns
           an (N, 4) array of RGBA values in the range [0, 1].
+    cmap_kwargs : dict[str, Any] | None
+        Keyword arguments to pass to a colormap function when `value` is a string
+        naming a registered function (e.g. `"cubehelix"`). For example:
+        `Colormap("cubehelix", cmap_kwargs={"start": 1.0, "rotation": -1.0})`.
+        If provided when `value` is not a registered function name, a `ValueError`
+        will be raised.
     name : str | None
         A name for the colormap. If None, will be set to the identifier or the string
         `"custom colormap"`.
@@ -226,10 +235,16 @@ class Colormap:
         under: ColorLike | None = None,
         over: ColorLike | None = None,
         bad: ColorLike | None = None,
+        cmap_kwargs: dict[str, Any] | None = None,
     ) -> None:
         self.info: CatalogItem | None = None
 
-        if isinstance(value, str):
+        if isinstance(value, str) and cmap_kwargs is not None:
+            name = name or value
+            colormap_func = get_parametrized_colormap_function(name)
+            colormap_func = partial(colormap_func, **cmap_kwargs)
+            stops = _parse_colorstops(colormap_func)
+        elif isinstance(value, str):
             rev = value.endswith("_r")
             info = self.catalog()[value[:-2] if rev else value]
             name = name or f"{info.namespace}:{info.name}"

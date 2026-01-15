@@ -236,3 +236,18 @@ def test_shifted() -> None:
     assert cm.shifted(0.5).shifted(-0.5) == cm
     # two shifts of 0.5 should give the original array
     assert cm.shifted().shifted() == cm
+
+
+def test_function_colormap_with_cmap_kwargs() -> None:
+    # construct cubehelix with custom parameters
+    ch = Colormap("cubehelix", cmap_kwargs={"start": 1.0, "rotation": -1.0})
+
+    # values should be different from default cubehelix
+    default_ch = Colormap("cubehelix")
+    assert ch(0.5) != default_ch(0.5)
+
+
+def test_invalid_function_colormap_with_cmap_kwargs() -> None:
+    # name which doesn't map to a registered function should raise ValueError
+    with pytest.raises(ValueError, match="Unknown colormap function"):
+        Colormap("nonexistent_function", cmap_kwargs={"param": 1.0})
