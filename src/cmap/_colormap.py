@@ -92,8 +92,6 @@ class Colormap:
         - a `str` containing a recognized string colormap name (e.g. `"viridis"`,
           `"magma"`), optionally suffixed with `"_r"` to reverse the colormap
           (e.g. `"viridis"`, `"magma_r"`).
-        - a `str` containing a registered colormap function name (e.g. `"cubehelix"`),
-          used with the `cmap_kwargs` parameter to pass function arguments.
         - An iterable of [ColorLike](../../colors.md#colorlike-objects) values (any
           object that can be cast to a [`Color`][cmap.Color]), or "color-stop-like"
           tuples ( `(float, ColorLike)` where the first element is a scalar value
@@ -112,11 +110,11 @@ class Colormap:
         - a `Callable` that takes an array of N values in the range [0, 1] and returns
           an (N, 4) array of RGBA values in the range [0, 1].
     cmap_kwargs : dict[str, Any] | None
-        Keyword arguments to pass to a colormap function when `value` is a string
-        naming a registered function (e.g. `"cubehelix"`). For example:
+        Keyword arguments to pass to the colormap function when `value` is a
+        registered colormap name that maps to a callable function. For example:
         `Colormap("cubehelix", cmap_kwargs={"start": 1.0, "rotation": -1.0})`.
-        If provided when `value` is not a registered function name, a `ValueError`
-        will be raised.
+        If provided when `value` does not resolve to a callable colormap function, a
+        `TypeError` will be raised.
     name : str | None
         A name for the colormap. If None, will be set to the identifier or the string
         `"custom colormap"`.
@@ -137,6 +135,14 @@ class Colormap:
         The color to use for values above the colormap's range.
     bad : ColorLike | None
         The color to use for bad (NaN, inf) values.
+
+    Raises
+    ------
+    TypeError
+        If `cmap_kwargs` is provided and `value` does not resolve to a callable
+        colormap function.
+    ValueError
+        If `value` is a string colormap name that is not found in the catalog.
     """
 
     __slots__ = (
