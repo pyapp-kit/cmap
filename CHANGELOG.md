@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.7.1](https://github.com/pyapp-kit/cmap/tree/v0.7.1) (2026-02-04)
+
+[Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.7.0...v0.7.1)
+
+**Merged pull requests:**
+
+- feat: add cmap\_kwargs to Colormap, to pass kwargs to parametrized colormaps [\#134](https://github.com/pyapp-kit/cmap/pull/134) ([alisterburt](https://github.com/alisterburt))
+- ci\(pre-commit.ci\): autoupdate [\#133](https://github.com/pyapp-kit/cmap/pull/133) ([pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci))
+
 ## [v0.7.0](https://github.com/pyapp-kit/cmap/tree/v0.7.0) (2026-01-05)
 
 [Full Changelog](https://github.com/pyapp-kit/cmap/compare/v0.6.2...v0.7.0)
