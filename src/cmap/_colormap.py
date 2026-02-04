@@ -15,7 +15,6 @@ import numpy.typing as npt
 from . import _external
 from ._catalog import Catalog
 from ._color import Color, ColorLike
-from ._parametrized_colormaps import get_parametrized_colormap_function
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -239,12 +238,7 @@ class Colormap:
     ) -> None:
         self.info: CatalogItem | None = None
 
-        if isinstance(value, str) and cmap_kwargs is not None:
-            name = name or value
-            colormap_func = get_parametrized_colormap_function(name)
-            colormap_func = partial(colormap_func, **cmap_kwargs)
-            stops = _parse_colorstops(colormap_func)
-        elif isinstance(value, str):
+        if isinstance(value, str):
             rev = value.endswith("_r")
             info = self.catalog()[value[:-2] if rev else value]
             name = name or f"{info.namespace}:{info.name}"
@@ -253,6 +247,14 @@ class Colormap:
             under = info.under if under is None else under
             bad = info.bad if bad is None else bad
             self.info = info
+
+            # Check if cmap_kwargs is provided for a non-callable colormap
+            if cmap_kwargs and not callable(info.data):
+                raise TypeError(
+                    f"Cannot apply cmap_kwargs to colormap {info.name!r}: "
+                    "colormap is not a parametrized callable"
+                )
+
             if isinstance(info.data, list):
                 if not info.data:  # pragma: no cover
                     raise ValueError(f"Catalog colormap {info.name!r} has no data")
@@ -267,7 +269,12 @@ class Colormap:
                         f"Invalid catalog colormap data for {info.name!r}: {info.data}"
                     )
             else:
-                stops = _parse_colorstops(info.data)
+                _data: ColormapLike
+                if cmap_kwargs:
+                    _data = partial(cast("Callable", info.data), **cmap_kwargs)
+                else:
+                    _data = info.data
+                stops = _parse_colorstops(_data)
             if interpolation is None:
                 interpolation = info.interpolation
             if rev:

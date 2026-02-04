@@ -248,6 +248,6 @@ def test_function_colormap_with_cmap_kwargs() -> None:
 
 
 def test_invalid_function_colormap_with_cmap_kwargs() -> None:
-    # name which doesn't map to a registered function should raise ValueError
-    with pytest.raises(ValueError, match="Unknown colormap function"):
-        Colormap("nonexistent_function", cmap_kwargs={"param": 1.0})
+    # providing cmap_kwargs to a non-callable colormap should raise TypeError
+    with pytest.raises(TypeError, match=r"Cannot apply cmap_kwargs.*not callable"):
+        Colormap("viridis", cmap_kwargs={"param": 1.0})
