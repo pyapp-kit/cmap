@@ -1,0 +1,184 @@
+version = 1
+
+# Default: the cmap package itself
+[[annotations]]
+path = "**"
+precedence = "closest"
+SPDX-FileCopyrightText = "2022 Talley Lambert"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+# --- Colormap data namespaces with distinct licenses ---
+
+[[annotations]]
+path = "src/cmap/data/bids/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Nathaniel J. Smith, Stefan van der Walt"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "src/cmap/data/chrisluts/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Christophe Leterrier"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/cmap/data/cividis/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2017 Battelle Memorial Institute"
+SPDX-License-Identifier = "LicenseRef-Battelle"
+
+[[annotations]]
+path = "src/cmap/data/cmap/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2022 Talley Lambert"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "src/cmap/data/cmasher/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2019-2021 Ellert van der Velden"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "src/cmap/data/cmocean/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2015 Kristen M. Thyng"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/cmap/data/colorbrewer/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2002 Cynthia Brewer, Mark Harrower, and The Pennsylvania State University"
+SPDX-License-Identifier = "LicenseRef-ColorBrewer"
+
+[[annotations]]
+path = "src/cmap/data/colorcet/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Peter Kovesi"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "src/cmap/data/contrib/**"
+precedence = "override"
+SPDX-FileCopyrightText = "cmap contributors"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "src/cmap/data/crameri/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2021 Fabio Crameri"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/cmap/data/cubehelix/**"
+precedence = "override"
+SPDX-FileCopyrightText = "James R. A. Davenport"
+SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = "src/cmap/data/glasbey/**"
+precedence = "override"
+SPDX-FileCopyrightText = ["2022 Leland McInnes", "2014 Sergey Alexandrov"]
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/cmap/data/gnuplot/**"
+precedence = "override"
+SPDX-FileCopyrightText = "1986-2004 Thomas Williams, Colin Kelley"
+SPDX-License-Identifier = "LicenseRef-gnuplot"
+
+[[annotations]]
+path = "src/cmap/data/google/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Anton Mikhailov"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "src/cmap/data/imagej/**"
+precedence = "override"
+SPDX-FileCopyrightText = "ImageJ contributors"
+SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = "src/cmap/data/matplotlib/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Python Software Foundation"
+SPDX-License-Identifier = "PSF-2.0"
+
+# matplotlib sub-colormaps with their own licenses
+[[annotations]]
+path = "src/cmap/data/matplotlib/_wistia.py"
+precedence = "override"
+SPDX-FileCopyrightText = "2014 jringenberg"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "src/cmap/data/matplotlib/_CMRmap.py"
+precedence = "override"
+SPDX-FileCopyrightText = "Carey Rappaport"
+SPDX-License-Identifier = "BSD-2-Clause"
+
+[[annotations]]
+path = "src/cmap/data/napari/**"
+precedence = "override"
+SPDX-FileCopyrightText = "napari contributors"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "src/cmap/data/observable/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Observable, Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "src/cmap/data/seaborn/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Michael Waskom"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "src/cmap/data/tableau/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Maureen Stone, Cristy Miller"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "src/cmap/data/tol/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2022 Paul Tol"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "src/cmap/data/vispy/**"
+precedence = "override"
+SPDX-FileCopyrightText = "VisPy Development Team"
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "src/cmap/data/yorick/**"
+precedence = "override"
+SPDX-FileCopyrightText = "1996 The Regents of the University of California"
+SPDX-License-Identifier = "LicenseRef-Yorick"
+
+[[annotations]]
+path = "src/cmap/data/ibm/**"
+precedence = "override"
+SPDX-FileCopyrightText = "IBM Corp."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "src/cmap/data/paraview/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Kitware, Inc."
+SPDX-License-Identifier = "BSD-3-Clause"
+
+[[annotations]]
+path = "src/cmap/data/petroff/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Matthew A. Petroff"
+SPDX-License-Identifier = "CC0-1.0"
+
+# NOTE: okabeito and matlab have no formal license. Okabe-Ito color values are
+# freely shared with an attribution request (not a formal license). The matlab
+# colormaps are trivial mathematical formulas independently re-implemented across
+# many projects. Both fall through to the project default for now.

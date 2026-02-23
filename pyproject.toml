@@ -10,7 +10,7 @@ description = "Scientific colormaps for python, without dependencies"
 readme = "README.md"
 requires-python = ">=3.9"
 license = "BSD-3-Clause"
-license-files = ["LICENSE/*"]
+license-files = ["LICENSES/*"]
 authors = [{ email = "talley.lambert@gmail.com", name = "Talley Lambert" }]
 classifiers = [
     "Development Status :: 4 - Beta",
