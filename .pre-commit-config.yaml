@@ -3,8 +3,6 @@ ci:
   autofix_commit_msg: "style(pre-commit.ci): auto fixes [...]"
   autoupdate_commit_msg: "ci(pre-commit.ci): autoupdate"
 
-exclude: ^LICENSE
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -21,12 +19,15 @@ repos:
         args: [--fix, --unsafe-fixes]
       - id: ruff-format
 
-  # commented out until PEP 639 is supported\
-  # https://github.com/abravalheri/validate-pyproject/issues/70
   - repo: https://github.com/abravalheri/validate-pyproject
     rev: v0.25
     hooks:
       - id: validate-pyproject
+
+  - repo: https://codeberg.org/fsfe/reuse-tool
+    rev: v6.2.0
+    hooks:
+      - id: reuse
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.19.1
