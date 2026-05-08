@@ -98,7 +98,9 @@ class Colormap:
           specifying the position of the color in the gradient. When using color stops,
           the stop position values should be in the range [0, 1]. If no scalar stop
           positions are given, they will be linearly interpolated between any
-          neighboring stops (or 0-1 if there are no stops).
+          neighboring stops (or 0-1 if there are no stops). A single color (e.g.
+          `["red"]` or `{0.5: "red"}`) yields a constant colormap, where `f(x)`
+          returns that color for every value of `x`.
         - a `dict` mapping scalar values to color-like values: e.g.
           `{0.0: "red", 0.5: (0, 1, 0), 1.0: "#0000FF"}`.
         - a matplotlib-style [segmentdata
@@ -1502,7 +1504,18 @@ def _parse_colorstops(
         _clr_seq = list(val)
 
     if len(_clr_seq) == 1:
-        _clr_seq = [None, _clr_seq[0]]
+        # A single color creates a constant colormap f(x) = c for all x in [0, 1].
+        # We duplicate the color at positions 0 and 1, discarding any explicit
+        # stop position the user may have provided (which is meaningless for a
+        # constant mapping).
+        item = _clr_seq[0]
+        if isinstance(item, (tuple, list)) and len(item) == 2:
+            item = item[1]
+        elif (isinstance(item, (tuple, list)) and len(item) == 5) or (
+            isinstance(item, np.ndarray) and item.shape == (5,)
+        ):
+            item = list(item)[1:]
+        _clr_seq = [item, item]
 
     _positions: list[float | None] = []
     _colors: list[Color] = []

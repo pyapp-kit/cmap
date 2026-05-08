@@ -106,6 +106,27 @@ def test_colormap_copy() -> None:
     assert cmap1 != {"1234"}
 
 
+def test_single_color_colormap() -> None:
+    """A single-color Colormap should evaluate to that color for all x in [0, 1].
+
+    Regression test for #139: previously a single color injected an implicit
+    transparent stop at position 0 (creating a transparent-to-color gradient).
+    The new behavior is f(x) = c, represented as two stops at 0 and 1, both
+    with the same color.
+    """
+    expected = ColorStops.parse([(0.0, "violet"), (1.0, "violet")])
+    # any of these single-color forms should produce the same constant colormap
+    for value in (
+        ["violet"],
+        {0.5: "violet"},
+        [(0.5, "violet")],  # explicit position is dropped — meaningless for f(x)=c
+    ):
+        cmap = Colormap(value)
+        assert cmap.color_stops == expected
+        for x in (0.0, 0.25, 0.5, 0.75, 1.0):
+            assert cmap(x) == Color("violet")
+
+
 def test_colormap_errors() -> None:
     with pytest.raises(ValueError, match="Colormap 'bad_string' not found"):
         Colormap("bad_string")
