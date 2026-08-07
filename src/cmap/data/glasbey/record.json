@@ -4,8 +4,9 @@
   ],
   "colormaps": {
     "glasbey": {
-      "category": "miscellaneous",
-      "data": "cmap.data.glasbey.prebuilt:glasbey"
+      "category": "qualitative",
+      "data": "cmap.data.glasbey.prebuilt:glasbey",
+      "interpolation": false
     }
   },
   "license": "CC0",
