@@ -37,8 +37,9 @@ test_thirdparty = [
     "matplotlib",
     "napari>=0.5.0; python_version<'3.14'",
     "PyQt6==6.8.1",
-    "numba",
-    "numba<0.61; python_version<'3.12'",
+    "numba>=0.60",
+    # numba 0.61 requires python>=3.10
+    "numba<0.61; python_version<'3.10'",
     "plotly",
     "pydantic-extra-types>=2,!=2.10.1",
     "pydantic",
@@ -154,6 +155,8 @@ filterwarnings = [
     "ignore::DeprecationWarning:pyparsing",
     "ignore::DeprecationWarning:matplotlib._mathtext",
     "ignore::DeprecationWarning:matplotlib._fontconfig_pattern",
+    # napari's evented models still use pydantic's deprecated json_encoders
+    "ignore:`json_encoders` is deprecated:DeprecationWarning",
 ]
 
 # https://mypy.readthedocs.io/en/stable/config_file.html
