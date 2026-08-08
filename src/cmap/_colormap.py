@@ -922,7 +922,7 @@ class ColorStops(Sequence[ColorStop]):
     def _call_lut_func(self, X: np.ndarray) -> np.ndarray:
         if self._lut_func is None:
             raise ValueError("No lut_func provided")  # pragma: no cover
-        colors = np.atleast_2d(np.clip(self._lut_func(X), 0, 1))
+        colors: np.ndarray = np.atleast_2d(np.clip(self._lut_func(X), 0, 1))
         if colors.shape[1] == 3:
             colors = np.concatenate([colors, np.ones((len(X), 1))], axis=1)
         elif colors.shape[1] != 4:
