@@ -19,12 +19,35 @@ if TYPE_CHECKING:
     from matplotlib.colors import Colormap as MPLColormap
 
 catalog = Colormap.catalog()
+_CRAMERI_NAMES = sorted(
+    k.split(":")[1] for k in catalog.namespaced_keys() if k.startswith("crameri:")
+)
 
 
 @pytest.mark.skipif(not MPL_CMAPS, reason="matplotlib not installed")
 def test_matplotlib_name_parity() -> None:
     if missing := (MPL_CMAPS - set(catalog._original_names)):
         raise AssertionError(f"missing cmap keys from matplotlib: {missing}")
+
+
+def test_crameri_data_parity() -> None:
+    """Our crameri tables must stay bit-exact with Scientific Colour Maps 8.0.1.
+
+    `cmcrameri` vendors the same deposit we cite (zenodo 8409685), so it makes a
+    convenient oracle. It doesn't ship `naviaW`, which is checked by name instead.
+    """
+    cm = pytest.importorskip("cmcrameri.cm")
+
+    checked = []
+    for name in _CRAMERI_NAMES:
+        if (theirs := getattr(cm, name, None)) is None:
+            continue
+        ours = np.asarray(Colormap(f"crameri:{name}").color_stops.color_array)[:, :3]
+        npt.assert_array_equal(ours, np.asarray(theirs.colors)[:, :3], err_msg=name)
+        checked.append(name)
+
+    if missing := (set(_CRAMERI_NAMES) - set(checked) - {"naviaW"}):
+        raise AssertionError(f"missing cmap keys from cmcrameri: {missing}")
 
 
 def test_napari_name_parity() -> None:
