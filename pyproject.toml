@@ -33,6 +33,7 @@ test_thirdparty = [
     { include-group = "test" },
     "bokeh",
     "cmcrameri",
+    "cmocean",
     "colorspacious",
     "colour",
     "matplotlib",

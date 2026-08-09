@@ -22,6 +22,11 @@ catalog = Colormap.catalog()
 _CRAMERI_NAMES = sorted(
     k.split(":")[1] for k in catalog.namespaced_keys() if k.startswith("crameri:")
 )
+_CMOCEAN_NAMES = sorted(
+    k.split(":")[1] for k in catalog.namespaced_keys() if k.startswith("cmocean:")
+)
+# cropped halves of the diverging maps; cmap-specific, no upstream equivalent
+_CMOCEAN_CMAP_ONLY = {"balance_blue", "curl_pink", "delta_blue"}
 
 
 @pytest.mark.skipif(not MPL_CMAPS, reason="matplotlib not installed")
@@ -48,6 +53,23 @@ def test_crameri_data_parity() -> None:
 
     if missing := (set(_CRAMERI_NAMES) - set(checked) - {"naviaW"}):
         raise AssertionError(f"missing cmap keys from cmcrameri: {missing}")
+
+
+def test_cmocean_data_parity() -> None:
+    """Our cmocean tables must match the ones cmocean itself renders.
+
+    cmocean serves `cmocean/rgb/<name>-rgb.txt`; note that several of its viscm
+    source files (`rgb/<name>.py`) hold a different table, so those are not a
+    valid source. The tolerance covers our literals being rounded to 8 decimals.
+    """
+    cm = pytest.importorskip("cmocean.cm")
+
+    for name in _CMOCEAN_NAMES:
+        if name in _CMOCEAN_CMAP_ONLY:
+            continue
+        ours = np.asarray(Colormap(f"cmocean:{name}")(_GRADIENT))[:, :3]
+        theirs = np.asarray(getattr(cm, name)(_GRADIENT))[:, :3]
+        npt.assert_allclose(ours, theirs, atol=1e-8, err_msg=name)
 
 
 def test_napari_name_parity() -> None:
