@@ -40,3 +40,12 @@ def test_glasbey_create_palette(
             grid_size=grid_size,
             cvd_severity=cvd_severity,
         )
+
+
+def test_glasbey_is_qualitative() -> None:
+    """Glasbey's palette is 256 maximally distinct categories, not a ramp."""
+    from cmap import Colormap
+
+    cm = Colormap("glasbey:glasbey")
+    assert cm.category == "qualitative"
+    assert cm.interpolation == "nearest"
