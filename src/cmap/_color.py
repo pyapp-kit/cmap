@@ -41,7 +41,6 @@ RGBATuple: TypeAlias = "tuple[int, int, int, float] | tuple[float, float, float,
 """4-tuple of all floats, or 3 ints and 1 float, representing an RGBA color"""
 
 ColorLike: TypeAlias = Union[
-    None,  # casts to transparent
     str,  # color name, hex, 'rgba(r,g,b,a)' or 'hsla(h,s,l,a)' string
     RGBTuple,  # 3-tuple of all ints or all floats
     RGBATuple,  # 4-tuple of all floats, or 3 ints and 1 float
@@ -49,6 +48,7 @@ ColorLike: TypeAlias = Union[
     np.number,
     list[Union[float, int]],  # 3- or 4-element rgb(a) vector
     "Color",  # another color object
+    None,  # casts to transparent
 ]
 """Data types that can be cast to a [cmap.Color][] instance.
 
