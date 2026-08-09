@@ -135,6 +135,23 @@ def test_colormap_apply() -> None:
     assert cmap1(swapped).shape == (10, 10, 4)
 
 
+def test_colormap_masked_array_with_unmasked_nan() -> None:
+    cmap = Colormap("viridis", bad="red")
+    mask = [True, False, False, False]
+    data = np.ma.masked_array([0.0, 0.25, np.nan, 1.0], mask=mask)
+
+    rgba = cmap(data)
+
+    npt.assert_array_equal(rgba[0], Color("red").rgba)  # masked
+    npt.assert_array_equal(rgba[2], Color("red").rgba)  # nan, not masked
+    npt.assert_array_equal(rgba[[1, 3]], cmap(np.array([0.25, 1.0])))
+    npt.assert_array_equal(data.mask, mask)
+
+    # an all-false mask takes the same path as a plain array
+    all_false = np.ma.masked_array([0.25, np.nan], mask=[False, False])
+    npt.assert_array_equal(cmap(all_false), cmap(np.array([0.25, np.nan])))
+
+
 def test_fill_stops() -> None:
     assert _fill_stops([None, None, None]) == [0, 0.5, 1.0]
     assert _fill_stops([None, 0.8, None]) == [0, 0.8, 1.0]
