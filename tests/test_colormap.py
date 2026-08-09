@@ -108,6 +108,15 @@ def test_construction_does_not_change_source_interpolation() -> None:
     npt.assert_array_equal(stops.to_lut(4), before)
 
 
+def test_with_extremes_preserves_interpolation() -> None:
+    cmap = Colormap(["red", "blue"], interpolation="nearest")
+
+    new = cmap.with_extremes(bad="red")
+
+    assert new.interpolation == "nearest"
+    npt.assert_array_equal(new.lut(4), cmap.lut(4))
+
+
 def test_colormap_copy() -> None:
     """Test Colormap copy."""
     import pickle

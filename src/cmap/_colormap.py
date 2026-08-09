@@ -459,6 +459,7 @@ class Colormap:
             self.color_stops,
             name=self.name,
             category=self.category,
+            interpolation=self.interpolation,
             bad=bad,
             under=under,
             over=over,
