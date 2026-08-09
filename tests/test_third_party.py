@@ -68,7 +68,8 @@ def test_matplotlib() -> None:
 def test_napari(qapp: "QApplication") -> None:
     napari = pytest.importorskip("napari")
 
-    v = napari.view_image(IMG, colormap=CMAP.to_napari())
+    # napari.view_image was removed in napari 0.7
+    v, _ = napari.imshow(IMG, colormap=CMAP.to_napari())
     v.close()
 
 
