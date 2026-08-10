@@ -73,6 +73,19 @@ def test_napari(qapp: "QApplication") -> None:
     v.close()
 
 
+@pytest.mark.filterwarnings("ignore")
+def test_napari_extreme_colors() -> None:
+    # nan_color/low_color/high_color were added in napari 0.6.1
+    pytest.importorskip("napari", minversion="0.6.1")
+
+    bad = "yellow"
+    ncm = Colormap(["black", "white"], under=UNDER, over=OVER, bad=bad).to_napari()
+
+    np.testing.assert_allclose(ncm.low_color, Color(UNDER).rgba)
+    np.testing.assert_allclose(ncm.high_color, Color(OVER).rgba)
+    np.testing.assert_allclose(ncm.nan_color, Color(bad).rgba)
+
+
 @pytest.mark.skipif(
     sys.platform == "darwin" and sys.version_info >= (3, 13),
     reason="not yet working upstream",
