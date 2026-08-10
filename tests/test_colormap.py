@@ -187,6 +187,104 @@ def test_colormap_masked_array_with_unmasked_nan() -> None:
     npt.assert_array_equal(cmap(all_false), cmap(np.array([0.25, np.nan])))
 
 
+def test_exceptional_colors() -> None:
+    cmap = Colormap(
+        ["red", "blue"],
+        under="green",
+        over="yellow",
+        bad="black",
+        neg_inf="cyan",
+        pos_inf="magenta",
+        nan="white",
+        masked="orange",
+    )
+    mask = [False] * 6 + [True] * 3
+    data = np.ma.masked_array(
+        [-np.inf, -0.5, 0.5, 1.5, np.inf, np.nan, np.inf, np.nan, 0.25], mask=mask
+    )
+    expect = np.array(
+        [
+            Color("cyan").rgba,  # -inf
+            Color("green").rgba,  # under range, finite
+            Colormap(["red", "blue"])(0.5).rgba,  # in range
+            Color("yellow").rgba,  # over range, finite
+            Color("magenta").rgba,  # +inf
+            Color("white").rgba,  # nan, not masked
+            Color("orange").rgba,  # masked wins over +inf
+            Color("orange").rgba,  # masked wins over nan
+            Color("orange").rgba,  # masked
+        ]
+    )
+
+    npt.assert_array_equal(cmap(data), expect)
+    npt.assert_array_equal(cmap(data, bytes=True), (expect * 255).astype(np.uint8))
+    npt.assert_array_equal(data.mask, mask)
+
+
+def test_exceptional_colors_fall_back_to_the_legacy_extremes() -> None:
+    cmap = Colormap(["red", "blue"], under="green", over="yellow", bad="black")
+    data = np.ma.masked_array(
+        [-np.inf, np.inf, np.nan, 0.5], mask=[False, False, False, True]
+    )
+    legacy = [
+        Color("green").rgba,  # -inf -> under
+        Color("yellow").rgba,  # +inf -> over
+        Color("black").rgba,  # nan -> bad
+        Color("black").rgba,  # masked -> bad
+    ]
+    npt.assert_array_equal(cmap(data), legacy)
+
+    # setting one leaves the other three on their legacy destinations
+    one = cmap.with_extremes(under="green", over="yellow", bad="black", nan="white")
+    npt.assert_array_equal(one(data), [*legacy[:2], Color("white").rgba, legacy[3]])
+
+
+def test_finite_values_that_overflow_when_scaled_are_not_infinite() -> None:
+    # float16 65504 becomes inf once multiplied by N, but it is over-range, not infinite
+    cmap = Colormap(
+        ["red", "blue"], under="green", over="yellow", neg_inf="cyan", pos_inf="magenta"
+    )
+    data = np.array([65504, -65504, np.inf, -np.inf], dtype=np.float16)
+    with np.errstate(over="ignore"):
+        rgba = cmap(data)
+    npt.assert_array_equal(
+        rgba,
+        [
+            Color("yellow").rgba,
+            Color("green").rgba,
+            Color("magenta").rgba,
+            Color("cyan").rgba,
+        ],
+    )
+
+
+def test_masked_dtypes_keep_their_existing_behavior() -> None:
+    cmap = Colormap(["red", "blue"], bad="black")
+    bad = Color("black").rgba
+
+    npt.assert_array_equal(cmap(np.ma.masked_array([0, 1], mask=[True, False]))[0], bad)
+
+    obj = np.ma.masked_array(np.array([0.25, 0.5], dtype=object), mask=[True, False])
+    npt.assert_array_equal(cmap(obj)[0], bad)
+
+    # object dtype without a mask reaches np.isnan, which has never accepted it
+    with pytest.raises(TypeError):
+        cmap(np.ma.masked_array(np.array([0.25], dtype=object), mask=np.ma.nomask))
+
+    npt.assert_array_equal(cmap(np.ma.masked_array(0.5, mask=True)).rgba, bad)
+
+
+@pytest.mark.parametrize("field", ["neg_inf", "pos_inf", "nan", "masked"])
+def test_exceptional_colors_are_colormap_state(field: str) -> None:
+    plain = Colormap(["red", "blue"])
+    cmap = Colormap(["red", "blue"], **{field: "orange"})
+
+    assert cmap != plain
+    assert plain.with_extremes(**{field: "orange"}) == cmap
+    assert cmap.shifted(1) == cmap
+    assert field in cmap._repr_html_()
+
+
 def test_fill_stops() -> None:
     assert _fill_stops([None, None, None]) == [0, 0.5, 1.0]
     assert _fill_stops([None, 0.8, None]) == [0, 0.8, 1.0]
