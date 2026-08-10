@@ -87,10 +87,10 @@ def to_plotly(cm: Colormap) -> list[list[float | str]]:
 def _napari_colormap_param_names() -> set[str]:
     from napari.utils.colormaps import Colormap
 
-    if hasattr(Colormap, "__fields__"):
-        return set(Colormap.__fields__)
-    elif hasattr(Colormap, "model_fields"):
+    if hasattr(Colormap, "model_fields"):
         return set(Colormap.model_fields)
+    elif hasattr(Colormap, "__fields__"):
+        return set(Colormap.__fields__)
     return set()
 
 
