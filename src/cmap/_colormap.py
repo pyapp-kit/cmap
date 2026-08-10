@@ -1167,7 +1167,7 @@ class ColorStops(Sequence[ColorStop]):
                 rev_lutfunc = partial(self._reverser, lut_func)
             return type(self)(lut_func=rev_lutfunc)
         # invert the positions in the stops
-        rev_stops = self._stops[::-1]
+        rev_stops = self._stops[::-1].copy()
         rev_stops[:, 0] = 1 - rev_stops[:, 0]
         return type(self)(rev_stops, interpolation=self._interpolation)
 

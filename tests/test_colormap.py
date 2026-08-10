@@ -90,6 +90,15 @@ def test_colorstops() -> None:
     assert reversed(cmap.color_stops) == ColorStops.parse(["b", "m", "r"])
 
 
+def test_colorstops_reversed_does_not_mutate_source() -> None:
+    stops = ColorStops.parse(["red", "green", "blue"])
+    before = np.asarray(stops).copy()
+
+    stops.reversed()
+
+    npt.assert_array_equal(np.asarray(stops), before)
+
+
 def test_colormap_copy() -> None:
     """Test Colormap copy."""
     import pickle

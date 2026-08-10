@@ -87,10 +87,10 @@ def to_plotly(cm: Colormap) -> list[list[float | str]]:
 def _napari_colormap_param_names() -> set[str]:
     from napari.utils.colormaps import Colormap
 
-    if hasattr(Colormap, "__fields__"):
-        return set(Colormap.__fields__)
-    elif hasattr(Colormap, "model_fields"):
+    if hasattr(Colormap, "model_fields"):
         return set(Colormap.model_fields)
+    elif hasattr(Colormap, "__fields__"):
+        return set(Colormap.__fields__)
     return set()
 
 
@@ -112,7 +112,7 @@ def to_napari(cm: Colormap) -> NapariColormap:
         if "nan_color" in param_names and cm.bad_color is not None:
             kwargs["nan_color"] = cm.bad_color.rgba
         if "high_color" in param_names and cm.over_color is not None:
-            kwargs["nan_color"] = cm.over_color.rgba
+            kwargs["high_color"] = cm.over_color.rgba
         if "low_color" in param_names and cm.under_color is not None:
             kwargs["low_color"] = cm.under_color.rgba
     return Colormap(**kwargs)
