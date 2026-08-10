@@ -533,4 +533,4 @@ curl_turquoise = [
 ]
 
 
-curl = curl_turquoise[::1] + curl_pink[-2::-1]
+curl = curl_turquoise + curl_pink[::-1]

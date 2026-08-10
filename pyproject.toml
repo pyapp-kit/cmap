@@ -32,6 +32,8 @@ test = [{ include-group = "test_min" }, "pytest-cov"]
 test_thirdparty = [
     { include-group = "test" },
     "bokeh",
+    "cmcrameri",
+    "cmocean",
     "colorspacious",
     "colour",
     "matplotlib",

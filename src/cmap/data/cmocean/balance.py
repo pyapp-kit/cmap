@@ -532,4 +532,4 @@ balance_red = [
     [0.94634709, 0.92901013, 0.92575324],
 ]
 
-balance = balance_blue[::1] + balance_red[-2::-1]
+balance = balance_blue + balance_red[::-1]
