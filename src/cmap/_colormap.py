@@ -130,11 +130,16 @@ class Colormap:
         will use `"nearest"`.  Providing this value will override any interpolation
         from a catalog entry.
     under : ColorLike | None
-        The color to use for values below the colormap's range.
+        The color to use for values below the colormap's range, including negative
+        infinity.  When no under color is set, the first color in the colormap is
+        used.
     over : ColorLike | None
-        The color to use for values above the colormap's range.
+        The color to use for values above the colormap's range, including positive
+        infinity.  When no over color is set, the last color in the colormap is used.
     bad : ColorLike | None
-        The color to use for bad (NaN, inf) values.
+        The color to use for NaN and masked values.  When no bad color is set, they
+        are transparent.  Note that infinities are not bad values here: they use
+        `under` and `over`.
 
     Raises
     ------
@@ -200,21 +205,21 @@ class Colormap:
     """
 
     under_color: Color | None
-    """A color to use for values below 0 when converting scalars to colors.
+    """A color to use for values below 0, and for negative infinity.
 
     If provided, and `Colormap.lut` is called with `with_over_under=True`, `under_color`
     will be the third-to-last color in the LUT (`lut[-3]`).
     """
 
     over_color: Color | None
-    """A color to use for values above 1 when converting scalars to colors.
+    """A color to use for values above 1, and for positive infinity.
 
     If provided, and `Colormap.lut` is called with `with_over_under=True`, `over_color`
     will be the second-to-last color in the LUT (`lut[-2]`).
     """
 
     bad_color: Color | None
-    """A color to use for missing/bad values when converting scalars to colors.
+    """A color to use for NaN and masked values when converting scalars to colors.
 
     If provided, and `Colormap.lut` is called with `with_over_under=True`, `bad_color`
     will be the last color in the LUT (`lut[-1]`).
@@ -350,6 +355,20 @@ class Colormap:
         be a normalized value in [0, 1] and will be mapped linearly to the nearest color
         in the LUT (use a higher N for finer sampling).
 
+        For float input, values outside the [0, 1] range and values that are not
+        finite do not map into the ramp:
+
+        - values below 0, and negative infinity, use `under_color` (when unset, the
+          first color in the colormap).
+        - values above 1, and positive infinity, use `over_color` (when unset, the
+          last color in the colormap).
+        - NaN, and entries masked by a `numpy.ma` masked array, use `bad_color`
+          (when unset, transparent).
+
+        For integer input, which indexes the LUT directly, an index at or beyond N
+        uses `over_color`, and a negative index uses `under_color` rather than
+        wrapping around.
+
         Parameters
         ----------
         x : float | array-like
@@ -463,7 +482,8 @@ class Colormap:
         The returned LUT is a numpy array of RGBA values, with shape (N, 4), where N is
         the number of requested colors in the LUT. If `with_over_under`
         is `True` the returned shape will be (N + 3, 4), where index N is the under
-        color, index N + 1 is the over color, and index N + 2 is the bad (NaN) color.
+        color, index N + 1 is the over color, and index N + 2 is the bad color (used
+        for NaN and masked values).
 
         The LUT can be used to map scalar values (that have been normalized to 0-1) to
         colors, using fancy indexing or `np.take`.
