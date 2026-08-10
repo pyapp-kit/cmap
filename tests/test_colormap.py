@@ -144,6 +144,14 @@ def test_colormap_apply() -> None:
     assert cmap1(swapped).shape == (10, 10, 4)
 
 
+def test_non_native_byte_order_maps_the_same_colors() -> None:
+    cmap = Colormap(["red", "blue"], under="green", over="yellow", bad="black")
+    native = np.array([-0.5, 0.0, 0.5, 1.0, 1.5, np.nan])
+    non_native = native.astype(native.dtype.newbyteorder())
+
+    npt.assert_array_equal(cmap(non_native), cmap(native))
+
+
 def test_colormap_masked_array_with_unmasked_nan() -> None:
     cmap = Colormap("viridis", bad="red")
     mask = [True, False, False, False]
