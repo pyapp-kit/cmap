@@ -405,8 +405,14 @@ class Colormap:
 
         mask_under = xa < 0
         mask_over = xa >= N
-        # If input was masked, get the bad mask from it; else mask out nans.
-        mask_bad = x.mask if np.ma.is_masked(x) else np.isnan(xa)  # type: ignore
+        # If input was masked, start from its mask: a masked array can still carry
+        # unmasked nans.  `|` rather than `|=`, so x's own mask isn't written to.
+        if np.ma.is_masked(x):
+            mask_bad = x.mask  # type: ignore
+            if xa.dtype.kind == "f":
+                mask_bad = mask_bad | np.isnan(xa)
+        else:
+            mask_bad = np.isnan(xa)
 
         with np.errstate(invalid="ignore"):
             # We need this cast for unsigned ints as well as floats
