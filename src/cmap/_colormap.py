@@ -418,8 +418,7 @@ class Colormap:
         xa = np.array(x, copy=True)
         if not xa.dtype.isnative:
             # Native byteorder is faster.
-            native: Literal[">", "<"] = ">" if xa.dtype.byteorder in ("<", "=") else "<"
-            xa = xa.view(xa.dtype.newbyteorder(native))
+            xa = xa.byteswap().view(xa.dtype.newbyteorder())
         if xa.dtype.kind == "f":
             xa *= N
             # xa == 1 (== N after multiplication) is not out of range.
