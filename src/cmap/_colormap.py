@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import warnings
 from collections.abc import Iterable, Sequence
+from copy import copy
 from functools import partial
 from numbers import Number
 from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Union, cast, overload
@@ -306,7 +307,9 @@ class Colormap:
             name = value if isinstance(value, str) else "custom colormap"
 
         self.interpolation = _norm_interp(interpolation)
-        stops._interpolation = self.interpolation
+        if stops._interpolation != self.interpolation:
+            # stops may be owned by the caller: don't write the mode into it
+            stops = stops._with_interpolation(self.interpolation)
         self.color_stops = stops
         self.name = name
         self.identifier = _make_identifier(identifier or name)
@@ -455,6 +458,7 @@ class Colormap:
             self.color_stops,
             name=self.name,
             category=self.category,
+            interpolation=self.interpolation,
             bad=bad,
             under=under,
             over=over,
@@ -1173,6 +1177,16 @@ class ColorStops(Sequence[ColorStop]):
 
     def _is_reversed_lut_func(self, f: Callable) -> TypeGuard[partial]:
         return isinstance(f, partial) and f.func is self._reverser
+
+    def _with_interpolation(self, interpolation: Interpolation) -> ColorStops:
+        """Return a copy of self, with a different interpolation mode.
+
+        A shallow copy: rebuilding from `_lut_func` would call the user's callable
+        a second time, which is neither cheap nor guaranteed to be repeatable.
+        """
+        new = copy(self)
+        new._interpolation = interpolation
+        return new
 
     def reversed(self) -> ColorStops:
         """Return a new ColorStops object with reversed colors."""
