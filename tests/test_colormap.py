@@ -187,6 +187,104 @@ def test_colormap_masked_array_with_unmasked_nan() -> None:
     npt.assert_array_equal(cmap(all_false), cmap(np.array([0.25, np.nan])))
 
 
+def test_exceptional_colors() -> None:
+    cmap = Colormap(
+        ["red", "blue"],
+        under="green",
+        over="yellow",
+        bad="black",
+        neg_inf="cyan",
+        pos_inf="magenta",
+        nan="white",
+        masked="orange",
+    )
+    mask = [False] * 6 + [True] * 3
+    data = np.ma.masked_array(
+        [-np.inf, -0.5, 0.5, 1.5, np.inf, np.nan, np.inf, np.nan, 0.25], mask=mask
+    )
+    expect = np.array(
+        [
+            Color("cyan").rgba,  # -inf
+            Color("green").rgba,  # under range, finite
+            Colormap(["red", "blue"])(0.5).rgba,  # in range
+            Color("yellow").rgba,  # over range, finite
+            Color("magenta").rgba,  # +inf
+            Color("white").rgba,  # nan, not masked
+            Color("orange").rgba,  # masked wins over +inf
+            Color("orange").rgba,  # masked wins over nan
+            Color("orange").rgba,  # masked
+        ]
+    )
+
+    npt.assert_array_equal(cmap(data), expect)
+    npt.assert_array_equal(cmap(data, bytes=True), (expect * 255).astype(np.uint8))
+    npt.assert_array_equal(data.mask, mask)
+
+
+def test_exceptional_colors_fall_back_to_the_legacy_extremes() -> None:
+    cmap = Colormap(["red", "blue"], under="green", over="yellow", bad="black")
+    data = np.ma.masked_array(
+        [-np.inf, np.inf, np.nan, 0.5], mask=[False, False, False, True]
+    )
+    legacy = [
+        Color("green").rgba,  # -inf -> under
+        Color("yellow").rgba,  # +inf -> over
+        Color("black").rgba,  # nan -> bad
+        Color("black").rgba,  # masked -> bad
+    ]
+    npt.assert_array_equal(cmap(data), legacy)
+
+    # setting one leaves the other three on their legacy destinations
+    one = cmap.with_extremes(under="green", over="yellow", bad="black", nan="white")
+    npt.assert_array_equal(one(data), [*legacy[:2], Color("white").rgba, legacy[3]])
+
+
+def test_finite_values_that_overflow_when_scaled_are_not_infinite() -> None:
+    # float16 65504 becomes inf once multiplied by N, but it is over-range, not infinite
+    cmap = Colormap(
+        ["red", "blue"], under="green", over="yellow", neg_inf="cyan", pos_inf="magenta"
+    )
+    data = np.array([65504, -65504, np.inf, -np.inf], dtype=np.float16)
+    with np.errstate(over="ignore"):
+        rgba = cmap(data)
+    npt.assert_array_equal(
+        rgba,
+        [
+            Color("yellow").rgba,
+            Color("green").rgba,
+            Color("magenta").rgba,
+            Color("cyan").rgba,
+        ],
+    )
+
+
+def test_masked_dtypes_keep_their_existing_behavior() -> None:
+    cmap = Colormap(["red", "blue"], bad="black")
+    bad = Color("black").rgba
+
+    npt.assert_array_equal(cmap(np.ma.masked_array([0, 1], mask=[True, False]))[0], bad)
+
+    obj = np.ma.masked_array(np.array([0.25, 0.5], dtype=object), mask=[True, False])
+    npt.assert_array_equal(cmap(obj)[0], bad)
+
+    # object dtype without a mask reaches np.isnan, which has never accepted it
+    with pytest.raises(TypeError):
+        cmap(np.ma.masked_array(np.array([0.25], dtype=object), mask=np.ma.nomask))
+
+    npt.assert_array_equal(cmap(np.ma.masked_array(0.5, mask=True)).rgba, bad)
+
+
+@pytest.mark.parametrize("field", ["neg_inf", "pos_inf", "nan", "masked"])
+def test_exceptional_colors_are_colormap_state(field: str) -> None:
+    plain = Colormap(["red", "blue"])
+    cmap = Colormap(["red", "blue"], **{field: "orange"})
+
+    assert cmap != plain
+    assert plain.with_extremes(**{field: "orange"}) == cmap
+    assert cmap.shifted(1) == cmap
+    assert field in cmap._repr_html_()
+
+
 def test_fill_stops() -> None:
     assert _fill_stops([None, None, None]) == [0, 0.5, 1.0]
     assert _fill_stops([None, 0.8, None]) == [0, 0.8, 1.0]
@@ -269,6 +367,97 @@ def test_with_extremes() -> None:
 
     assert cm2.under_color == cm.under_color == Color("green")
     assert "under" in cm2._repr_html_()
+
+
+def _configured() -> Colormap:
+    return Colormap(
+        ["red", "blue"],
+        name="foo",
+        category="sequential",
+        interpolation="nearest",
+        under="green",
+        over="yellow",
+        bad="black",
+        neg_inf="cyan",
+        pos_inf="magenta",
+        nan="white",
+        masked="orange",
+    )
+
+
+def test_with_extremes_preserves_what_is_not_passed() -> None:
+    cm = Colormap(["red", "blue"], identifier="my_id", under="green", nan="white")
+
+    new = cm.with_extremes(over="yellow")
+
+    assert new.under_color == Color("green")
+    assert new.nan_color == Color("white")
+    assert new.over_color == Color("yellow")
+    assert new.identifier == "my_id"
+
+
+def test_reversed_preserves_state_and_swaps_the_directional_colors() -> None:
+    cm = _configured()
+
+    rev = cm.reversed()
+
+    assert rev.name == "foo_r"
+    assert rev.category == "sequential"
+    assert rev.interpolation == "nearest"
+    # under/over and neg_inf/pos_inf name the ends they extend, so they follow them
+    assert (rev.under_color, rev.over_color) == (Color("yellow"), Color("green"))
+    assert (rev.neg_inf_color, rev.pos_inf_color) == (Color("magenta"), Color("cyan"))
+    assert (rev.bad_color, rev.nan_color, rev.masked_color) == (
+        Color("black"),
+        Color("white"),
+        Color("orange"),
+    )
+    assert rev.reversed() == cm
+
+
+def test_reversed_agrees_with_the_r_suffix() -> None:
+    assert Colormap("napari:HiLo").reversed() == Colormap("napari:HiLo_r")
+    # the record's colors swap; an explicit argument names the end it lands on
+    assert Colormap("napari:HiLo_r", under="green").under_color == Color("green")
+
+
+def test_pickle_preserves_constructor_state() -> None:
+    import pickle
+
+    cm = _configured()
+
+    rt = pickle.loads(pickle.dumps(cm))  # noqa: S301
+
+    assert rt == cm
+    assert (rt.name, rt.identifier, rt.category, rt.interpolation) == (
+        cm.name,
+        cm.identifier,
+        cm.category,
+        cm.interpolation,
+    )
+
+
+def test_copies_of_a_callable_colormap_stay_callable() -> None:
+    import pickle
+    from copy import copy, deepcopy
+
+    # as_dict() samples the function into 256 stops; a copy must keep the function
+    cm = Colormap("cubehelix", cmap_kwargs={"start": 1.0, "rotation": -1.0})
+
+    for copied in (pickle.loads(pickle.dumps(cm)), copy(cm), deepcopy(cm)):  # noqa: S301
+        npt.assert_array_equal(copied.lut(17, gamma=2), cm.lut(17, gamma=2))
+
+
+def test_as_dict_round_trip() -> None:
+    plain = Colormap(["red", "blue"])
+    assert set(plain.as_dict()) == {"name", "identifier", "category", "value"}
+
+    cm = _configured()
+    d = cm.as_dict()
+
+    assert d["interpolation"] == "nearest"
+    assert d["masked"] == list(Color("orange"))
+    assert Colormap(**d) == cm
 
 
 def test_shifted() -> None:
