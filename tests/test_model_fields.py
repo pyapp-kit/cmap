@@ -85,3 +85,48 @@ def test_psygnal_serialization() -> None:
         assert MyModel.model_validate_json(data) == obj
     else:
         assert MyModel.parse_raw(data) == obj
+
+
+def test_pydantic_preserves_modified_catalog_colormaps() -> None:
+    class MyModel(BaseModel):
+        colormap: Colormap
+
+    def round_trip(cmap: Colormap) -> Colormap:
+        obj = MyModel(colormap=cmap)
+        data = obj.model_dump_json() if V2 else obj.json()
+        model = (
+            MyModel.model_validate_json(data)
+            if hasattr(MyModel, "model_validate_json")
+            else MyModel.parse_raw(data)
+        )
+        return model.colormap
+
+    # an unmodified catalog colormap still serializes to its qualified name alone
+    obj = MyModel(colormap=Colormap("viridis"))
+    assert '"colormap":"bids:viridis"' in (obj.model_dump_json() if V2 else obj.json())
+
+    assert round_trip(Colormap("viridis", under="red")).under_color == Color("red")
+    assert round_trip(Colormap("viridis", name="renamed")).name == "renamed"
+    assert round_trip(Colormap("viridis_r")) == Colormap("viridis_r")
+
+    # a parametrization too small for the tolerant __eq__ to see still must not
+    # collapse to the plain catalog name
+    tweaked = Colormap("cubehelix", cmap_kwargs={"start": 0.500001})
+    assert round_trip(tweaked).as_dict() == tweaked.as_dict()
+
+
+def test_psygnal_serialization_of_a_configured_colormap() -> None:
+    psygnal = pytest.importorskip("psygnal")
+
+    class MyModel(psygnal.EventedModel):  # type: ignore
+        colormap: Colormap
+
+    cmap = Colormap(["r", "b"], interpolation="nearest", under="green", masked="orange")
+    obj = MyModel(colormap=cmap)
+
+    data = obj.model_dump_json() if V2 else obj.json()
+
+    if hasattr(MyModel, "model_validate_json"):
+        assert MyModel.model_validate_json(data).colormap == cmap
+    else:
+        assert MyModel.parse_raw(data).colormap == cmap

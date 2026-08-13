@@ -369,6 +369,97 @@ def test_with_extremes() -> None:
     assert "under" in cm2._repr_html_()
 
 
+def _configured() -> Colormap:
+    return Colormap(
+        ["red", "blue"],
+        name="foo",
+        category="sequential",
+        interpolation="nearest",
+        under="green",
+        over="yellow",
+        bad="black",
+        neg_inf="cyan",
+        pos_inf="magenta",
+        nan="white",
+        masked="orange",
+    )
+
+
+def test_with_extremes_preserves_what_is_not_passed() -> None:
+    cm = Colormap(["red", "blue"], identifier="my_id", under="green", nan="white")
+
+    new = cm.with_extremes(over="yellow")
+
+    assert new.under_color == Color("green")
+    assert new.nan_color == Color("white")
+    assert new.over_color == Color("yellow")
+    assert new.identifier == "my_id"
+
+
+def test_reversed_preserves_state_and_swaps_the_directional_colors() -> None:
+    cm = _configured()
+
+    rev = cm.reversed()
+
+    assert rev.name == "foo_r"
+    assert rev.category == "sequential"
+    assert rev.interpolation == "nearest"
+    # under/over and neg_inf/pos_inf name the ends they extend, so they follow them
+    assert (rev.under_color, rev.over_color) == (Color("yellow"), Color("green"))
+    assert (rev.neg_inf_color, rev.pos_inf_color) == (Color("magenta"), Color("cyan"))
+    assert (rev.bad_color, rev.nan_color, rev.masked_color) == (
+        Color("black"),
+        Color("white"),
+        Color("orange"),
+    )
+    assert rev.reversed() == cm
+
+
+def test_reversed_agrees_with_the_r_suffix() -> None:
+    assert Colormap("napari:HiLo").reversed() == Colormap("napari:HiLo_r")
+    # the record's colors swap; an explicit argument names the end it lands on
+    assert Colormap("napari:HiLo_r", under="green").under_color == Color("green")
+
+
+def test_pickle_preserves_constructor_state() -> None:
+    import pickle
+
+    cm = _configured()
+
+    rt = pickle.loads(pickle.dumps(cm))  # noqa: S301
+
+    assert rt == cm
+    assert (rt.name, rt.identifier, rt.category, rt.interpolation) == (
+        cm.name,
+        cm.identifier,
+        cm.category,
+        cm.interpolation,
+    )
+
+
+def test_copies_of_a_callable_colormap_stay_callable() -> None:
+    import pickle
+    from copy import copy, deepcopy
+
+    # as_dict() samples the function into 256 stops; a copy must keep the function
+    cm = Colormap("cubehelix", cmap_kwargs={"start": 1.0, "rotation": -1.0})
+
+    for copied in (pickle.loads(pickle.dumps(cm)), copy(cm), deepcopy(cm)):  # noqa: S301
+        npt.assert_array_equal(copied.lut(17, gamma=2), cm.lut(17, gamma=2))
+
+
+def test_as_dict_round_trip() -> None:
+    plain = Colormap(["red", "blue"])
+    assert set(plain.as_dict()) == {"name", "identifier", "category", "value"}
+
+    cm = _configured()
+    d = cm.as_dict()
+
+    assert d["interpolation"] == "nearest"
+    assert d["masked"] == list(Color("orange"))
+    assert Colormap(**d) == cm
+
+
 def test_shifted() -> None:
     cm = Colormap(["red", "blue", "yellow"])
     assert cm.shifted(1) == cm
