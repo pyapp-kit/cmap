@@ -83,6 +83,12 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
 
         *(same as `['blue', (0.4, 'green'), (0.8, 'yellow'), 'red']`)*
 
+    A single color yields a constant colormap that returns that color for every
+    value of `x` (i.e. `f(x) = c`).  Any explicit stop position on the single
+    color is ignored, since position is meaningless for a constant mapping.
+
+    - `Colormap(['violet'])` {{ cmap_expr: ['violet'] }}
+
 ### `numpy.ndarray`
 
 A [`numpy.ndarray`][], in one of the following formats:
