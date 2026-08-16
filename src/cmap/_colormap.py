@@ -444,7 +444,12 @@ class Colormap:
         xa[mask_bad] = N + 2
 
         rgba = lut.take(xa, axis=0, mode="clip")
-        return rgba if np.iterable(x) else Color(rgba)
+        if np.iterable(x):
+            return rgba
+        if bytes:
+            # Normalize uint8 RGBA back to [0,1] float for Color constructor
+            return Color(rgba / 255)
+        return Color(rgba)
 
     def with_extremes(
         self,
