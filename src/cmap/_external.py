@@ -110,7 +110,7 @@ def to_napari(cm: Colormap) -> NapariColormap:
                 "zero" if cm.interpolation == "nearest" else "linear"
             )
         # napari's nan_color covers nan alone, so prefer cmap's nan color over bad
-        nan_color = cm.nan_color or cm.bad_color
+        nan_color = cm.nan_color if cm.nan_color is not None else cm.bad_color
         if "nan_color" in param_names and nan_color is not None:
             kwargs["nan_color"] = nan_color.rgba
         if "high_color" in param_names and cm.over_color is not None:

@@ -347,7 +347,7 @@ class Colormap:
         self.neg_inf_color = None if neg_inf is None else Color(neg_inf)
         self.pos_inf_color = None if pos_inf is None else Color(pos_inf)
         self.nan_color = None if nan is None else Color(nan)
-        # a colormap with none of these takes the same path it did before they existed
+        # unset: __call__ takes the same path it did before these colors existed
         self._has_exceptional = any(
             c is not None
             for c in (
@@ -449,10 +449,17 @@ class Colormap:
         >>> colored_img = cmap(data)
         """
         lut = self.lut(N=N, gamma=gamma, with_over_under=True)
-        # the lut will have three additional colors at the end for under, over, and bad
+        # N is re-derived because len(lut) can differ from the requested N (e.g. a
+        # "nearest" colormap returns one row per stop).  The lut has three additional
+        # colors at the end for under, over, and bad; this is taken before the
+        # exceptional rows are appended.
         N = len(lut) - 3
+        # row indices: N under, N + 1 over, N + 2 bad, then (only when exceptional
+        # colors are set) N + 3 neg_inf, N + 4 pos_inf, N + 5 nan
+        nan_row = N + 2
         if self._has_exceptional:
             lut = self._with_exceptional_colors(lut)
+            nan_row = N + 5
         if bytes:
             lut = (lut * 255).astype(np.uint8)
 
@@ -473,15 +480,12 @@ class Colormap:
 
         mask_under = xa < 0
         mask_over = xa >= N
-        # If input was masked, start from its mask: a masked array can still carry
-        # unmasked nans.  `|` rather than `|=`, so x's own mask isn't written to.
         if np.ma.is_masked(x):
             mask_masked = x.mask  # type: ignore
             mask_nan = np.isnan(xa) if is_float else False
-            mask_bad = (mask_masked | mask_nan) if is_float else mask_masked
         else:
             mask_masked = False
-            mask_nan = mask_bad = np.isnan(xa)
+            mask_nan = np.isnan(xa)
 
         with np.errstate(invalid="ignore"):
             # We need this cast for unsigned ints as well as floats
@@ -489,14 +493,12 @@ class Colormap:
 
         xa[mask_under] = N
         xa[mask_over] = N + 1
-        xa[mask_bad] = N + 2
-        if self._has_exceptional:
-            if is_float:
-                xa[mask_neg_inf] = N + 3
-                xa[mask_pos_inf] = N + 4
-            xa[mask_nan] = N + 5
-            # A masked entry remains bad whatever value it hides.
-            xa[mask_masked] = N + 2
+        if self._has_exceptional and is_float:
+            xa[mask_neg_inf] = N + 3
+            xa[mask_pos_inf] = N + 4
+        xa[mask_nan] = nan_row
+        # last, so a masked entry is bad whatever value it hides
+        xa[mask_masked] = N + 2
 
         rgba = lut.take(xa, axis=0, mode="clip")
         return rgba if np.iterable(x) else Color(rgba)
@@ -564,7 +566,8 @@ class Colormap:
         the number of requested colors in the LUT. If `with_over_under`
         is `True` the returned shape will be (N + 3, 4), where index N is the under
         color, index N + 1 is the over color, and index N + 2 is the bad color (used
-        for NaN and masked values).
+        for NaN and masked values).  The `neg_inf`, `pos_inf` and `nan` colors are
+        not part of the LUT; `__call__` applies them.
 
         The LUT can be used to map scalar values (that have been normalized to 0-1) to
         colors, using fancy indexing or `np.take`.

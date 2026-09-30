@@ -257,8 +257,10 @@ def test_finite_values_that_overflow_when_scaled_are_not_infinite() -> None:
     )
 
 
-def test_masked_dtypes_keep_their_existing_behavior() -> None:
-    cmap = Colormap(["red", "blue"], bad="black")
+@pytest.mark.parametrize("exceptional", [False, True])
+def test_masked_dtypes_keep_their_existing_behavior(exceptional: bool) -> None:
+    extra = {"neg_inf": "cyan", "pos_inf": "magenta", "nan": "white"}
+    cmap = Colormap(["red", "blue"], bad="black", **(extra if exceptional else {}))
     bad = Color("black").rgba
 
     npt.assert_array_equal(cmap(np.ma.masked_array([0, 1], mask=[True, False]))[0], bad)
@@ -266,11 +268,33 @@ def test_masked_dtypes_keep_their_existing_behavior() -> None:
     obj = np.ma.masked_array(np.array([0.25, 0.5], dtype=object), mask=[True, False])
     npt.assert_array_equal(cmap(obj)[0], bad)
 
-    # object dtype without a mask reaches np.isnan, which has never accepted it
-    with pytest.raises(TypeError):
-        cmap(np.ma.masked_array(np.array([0.25], dtype=object), mask=np.ma.nomask))
-
     npt.assert_array_equal(cmap(np.ma.masked_array(0.5, mask=True)).rgba, bad)
+    npt.assert_array_equal(cmap(np.ma.masked_array(np.inf, mask=True)).rgba, bad)
+    npt.assert_array_equal(cmap(np.ma.masked_array([-np.inf], mask=[True])), [bad])
+
+
+def test_exceptional_colors_scalar_input() -> None:
+    cmap = Colormap(
+        ["red", "blue"], neg_inf="cyan", pos_inf="magenta", nan="white", bad="black"
+    )
+    for value, name in [(-np.inf, "cyan"), (np.inf, "magenta"), (np.nan, "white")]:
+        result = cmap(value)
+        assert isinstance(result, Color)
+        assert result == Color(name)
+
+
+def test_exceptional_colors_do_not_affect_integer_input() -> None:
+    plain = Colormap(["red", "blue"], under="green", over="yellow")
+    cmap = Colormap(
+        ["red", "blue"],
+        under="green",
+        over="yellow",
+        neg_inf="cyan",
+        pos_inf="magenta",
+        nan="white",
+    )
+    data = np.array([-1, 0, 100, 255, 256, 1000])
+    npt.assert_array_equal(cmap(data), plain(data))
 
 
 @pytest.mark.parametrize("field", ["neg_inf", "pos_inf", "nan"])
