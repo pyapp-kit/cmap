@@ -78,8 +78,11 @@ def test_napari_name_parity() -> None:
     import napari.utils.colormaps.colormap_utils as ncm
 
     napari_cmaps: set[str] = set(ncm.AVAILABLE_COLORMAPS)
-    napari_cmaps.update(ncm._VISPY_COLORMAPS_ORIGINAL)
-    napari_cmaps.update(ncm._MATPLOTLIB_COLORMAP_NAMES)
+    vispy_cmaps = getattr(ncm, "_VISPY_COLORMAPS", None)
+    if vispy_cmaps is None:  # napari < 0.9
+        vispy_cmaps = ncm._VISPY_COLORMAPS_ORIGINAL
+    napari_cmaps.update(vispy_cmaps)
+    napari_cmaps.update(ncm.matplotlib_colormaps)
     # TODO: later it would be good to make sure we can accept all strings
     # without having to do any extra work
     napari_cmaps = {
