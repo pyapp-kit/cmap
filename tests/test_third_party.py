@@ -94,6 +94,10 @@ def test_napari_extreme_colors() -> None:
     np.testing.assert_allclose(ncm.high_color, Color(OVER).rgba)
     np.testing.assert_allclose(ncm.nan_color, Color(bad).rgba)
 
+    # a more specific nan color takes precedence over bad
+    specific = Colormap(["black", "white"], bad=bad, nan="magenta").to_napari()
+    np.testing.assert_allclose(specific.nan_color, Color("magenta").rgba)
+
 
 @pytest.mark.skipif(
     sys.platform == "darwin" and sys.version_info >= (3, 13),
