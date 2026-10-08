@@ -903,8 +903,8 @@ class ColorStops(Sequence[ColorStop]):
         The array must be an (N, 5) array, where the first column is the position
         (0-1) and the remaining columns are the color (RGBA, 0-1).
     lut_func : callable, optional
-        A callable that takes a single argument (an (N, 1) array of positions) and
-        returns an (N, 4) array of colors.  This will be used to generate the LUT
+        A callable that takes a single argument (an (N,) array of positions) and
+        returns an (N, 3) RGB or (N, 4) RGBA array.  This will generate the LUT
         instead of the stops array.  If provided, the stops argument will be ignored.
     interpolation : str, optional
         Interpolation mode.  Must be one of 'linear' (or `True`) or 'nearest' (or
@@ -1027,6 +1027,16 @@ class ColorStops(Sequence[ColorStop]):
     def color_array(self) -> np.ndarray:
         """Return an (N, 4) array of RGBA values."""
         return self._stops[:, 1:]
+
+    @property
+    def lut_func(self) -> LutCallable | None:
+        """Callable that generates this colormap's colors, or None if defined by stops.
+
+        Evaluating it gives exact colors at arbitrary positions, unlike `stops` and
+        `color_array`, which hold a 256-point sampling.  It is the stored callable,
+        so its output is not clipped and may be RGB rather than RGBA.
+        """
+        return self._lut_func
 
     def __len__(self) -> int:
         return len(self._stops)
