@@ -49,8 +49,10 @@ def to_mpl(
                 ) from e
             raise
 
+    # mpl's bad covers both nan and masked; fall back to nan_color so that a
+    # nan color set without bad isn't silently dropped
     return mpl_cm.with_extremes(
-        bad=cm.bad_color,
+        bad=cm.nan_color if cm.bad_color is None else cm.bad_color,
         over=cm.over_color,
         under=cm.under_color,
     )
