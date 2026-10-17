@@ -63,8 +63,63 @@ function sineramp([rows, cols], amp = 0.05, wavelen = 8, power = 2) {
   return { im, rows, cols };
 }
 
-let _sineramp;
-const getSineramp = () => (_sineramp ??= sineramp(SINERAMP_SHAPE));
+// Port of Peter Kovesi's circlesineramp: test image for cyclic colormaps. A sine
+// wave on a spiral ramp, values in [0, 1], NaN outside the annulus.
+// https://www.peterkovesi.com/matlabfns/Misc/circlesineramp.m
+function circlesineramp(size = 320, amp = Math.PI / 10, wavelen = 8, power = 2) {
+  const maxr = (size / 2) * 0.9;
+  const minr = 0.15 * size;
+  const cycles = Math.round((2 * Math.PI * ((maxr + minr) / 2)) / wavelen);
+  const im = new Float32Array(size * size);
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      const x = col - size / 2;
+      const y = row - size / 2;
+      const theta = (Math.atan2(-y, x) + 2 * Math.PI) % (2 * Math.PI);
+      const rad = (Math.hypot(x, y) - minr) / (maxr - minr);
+      const v = amp * rad ** power * Math.sin(cycles * theta) + theta;
+      const wrapped = ((v % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+      im[row * size + col] = rad < 0 || rad > 1 ? NaN : wrapped / (2 * Math.PI);
+    }
+  }
+  return { im, rows: size, cols: size };
+}
+
+// MATLAB's `peaks` surface over [-3, 3]^2, scaled so that 0 maps to the middle of
+// the colormap (for diverging colormaps).
+// https://www.mathworks.com/help/matlab/ref/peaks.html
+function peaks(size = 320) {
+  const z = new Float32Array(size * size);
+  let absmax = 0;
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      const x = -3 + (6 * col) / (size - 1);
+      const y = 3 - (6 * row) / (size - 1);
+      const v =
+        3 * (1 - x) ** 2 * Math.exp(-(x ** 2) - (y + 1) ** 2) -
+        10 * (x / 5 - x ** 3 - y ** 5) * Math.exp(-(x ** 2) - y ** 2) -
+        (1 / 3) * Math.exp(-((x + 1) ** 2) - y ** 2);
+      z[row * size + col] = v;
+      absmax = Math.max(absmax, Math.abs(v));
+    }
+  }
+  for (let i = 0; i < z.length; i++) z[i] = 0.5 + z[i] / (2 * absmax);
+  return { im: z, rows: size, cols: size };
+}
+
+const TEST_IMAGES = { sineramp: () => sineramp(SINERAMP_SHAPE), circlesineramp, peaks };
+// which extra (square) test image to show for each category
+const CATEGORY_TEST_IMAGE = { cyclic: "circlesineramp", diverging: "peaks" };
+const _testImages = new Map();
+function getTestImage(kind) {
+  if (!_testImages.has(kind)) _testImages.set(kind, TEST_IMAGES[kind]());
+  return _testImages.get(kind);
+}
+
+function paintTestImage(canvas, colors, kind) {
+  const { im, rows, cols } = getTestImage(kind);
+  paint(canvas, colors, im, rows, cols);
+}
 
 // Paint values in [0, 1] (row-major, `rows` x `cols`) through the LUT `colors`.
 function paint(canvas, colors, values, rows, cols) {
@@ -75,6 +130,7 @@ function paint(canvas, colors, values, rows, cols) {
   const ctx = canvas.getContext("2d");
   const img = ctx.createImageData(cols, rows);
   for (let i = 0; i < values.length; i++) {
+    if (Number.isNaN(values[i])) continue; // leave transparent
     const [r, g, b] = lut[Math.max(0, Math.min(n - 1, Math.floor(values[i] * n)))];
     img.data.set([r, g, b, 255], i * 4);
   }
@@ -149,9 +205,8 @@ async function initDetail(root) {
   const data = await fetchData(new URL(root.dataset.json, location.href));
   const bars = [...root.querySelectorAll(".cmap > img")];
   const originals = bars.map((img) => img.src);
-  const sine = root.querySelector(".cmap-sineramp");
+  const testImages = [...root.querySelectorAll("canvas[data-test-image]")];
   const charts = [...document.querySelectorAll(`canvas.cmap-chart[data-cmap-name="${name}"]`)];
-  const { im, rows, cols } = getSineramp();
 
   function render(cvd) {
     const d = data[cvd] ?? data.normal;
@@ -163,7 +218,7 @@ async function initDetail(root) {
       const url = tmp.toDataURL();
       bars.forEach((img) => (img.src = url));
     }
-    paint(sine, d.color, im, rows, cols);
+    for (const canvas of testImages) paintTestImage(canvas, d.color, canvas.dataset.testImage);
     for (const canvas of charts) drawChart(canvas, d);
   }
 
@@ -362,7 +417,6 @@ async function initCompare(root) {
     const datas = await Promise.all(
       selected.map((e) => fetchData(new URL(`${encodeURIComponent(e.path.split("/").pop())}.json`, base)))
     );
-    const { im, rows, cols } = getSineramp();
     rowsEl.replaceChildren(
       ...selected.map((e, i) => {
         const d = datas[i][cvd()] ?? datas[i].normal;
@@ -388,10 +442,15 @@ async function initCompare(root) {
         const bar = document.createElement("canvas");
         bar.className = "cmap-compare-bar";
         paintBar(bar, d.color);
-        const sine = document.createElement("canvas");
-        sine.className = "cmap-sineramp";
-        paint(sine, d.color, im, rows, cols);
-        row.append(head, bar, sine);
+        const tests = document.createElement("div");
+        tests.className = "cmap-test-images";
+        for (const kind of ["sineramp", CATEGORY_TEST_IMAGE[e.category]].filter(Boolean)) {
+          const canvas = document.createElement("canvas");
+          canvas.className = kind === "sineramp" ? "cmap-sineramp" : "cmap-test-square";
+          paintTestImage(canvas, d.color, kind);
+          tests.append(canvas);
+        }
+        row.append(head, bar, tests);
         return row;
       })
     );

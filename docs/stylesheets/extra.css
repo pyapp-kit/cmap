@@ -252,12 +252,26 @@ div.doc-contents:not(.first) {
   height: 30px;
 }
 
+.cmap-test-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: 2px;
+}
+
 .cmap-sineramp {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 826 / 96;
-  margin-top: 2px;
+}
+
+/* shown at (close to) native resolution: the test patterns depend on pixel scale */
+.cmap-test-square {
+  width: min(100%, 320px);
+  height: auto;
+  aspect-ratio: 1;
 }
 
 .md-typeset .cmap-cvd {
