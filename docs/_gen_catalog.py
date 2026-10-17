@@ -84,6 +84,8 @@ description: {{ description | tojson }}
 | --- | --- | --- | --- |
 | [{{ category | title }}](index.md) | {{ license }} | {{ authors }} | {{ source }} |
 
+<div class="cmap-snippets" data-search-exclude markdown>
+
 === "cmap"
 
     ```python
@@ -116,6 +118,8 @@ description: {{ description | tojson }}
     {{ css | indent(4) }}
     ```
 
+</div>
+
 <div class="cmap-detail" data-cmap-name="{{ name }}" data-json="{{ data_url }}">
 {{ bar }}
 {{ gray }}
@@ -127,7 +131,7 @@ description: {{ description | tojson }}
 
 [:lucide-git-compare: Compare with other colormaps](../../compare.md?cmaps={{ name | urlencode }}){ .md-button }
 
-## Perceptual lightness
+## Perceptual lightness { data-search-exclude }
 
 <div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="lightness" data-cmap-name="{{ name }}"></canvas></div>
 
@@ -136,11 +140,11 @@ Lightness (J&prime;) measured in
 <a href="https://onlinelibrary.wiley.com/doi/10.1002/col.20227">CAM02 Uniform Color Space (CAM02-UCS)</a>
 </p>
 
-## RGB components
+## RGB components { data-search-exclude }
 
 <div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="rgb" data-cmap-name="{{ name }}"></canvas></div>
 
-## Hue & saturation
+## Hue & saturation { data-search-exclude }
 
 <div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="hsl" data-cmap-name="{{ name }}"></canvas></div>
 

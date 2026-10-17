@@ -117,7 +117,7 @@ def catalog_grid(page: str, category: str | None = None) -> str:
         "</div>"
     )
     return (
-        f'<div class="cmap-catalog">{controls}'
+        f'<div class="cmap-catalog" data-search-exclude>{controls}'
         f'<div class="cmap-grid">{"".join(items)}</div>'
         '<p class="cmap-empty" hidden>No colormaps match these filters.</p></div>'
     )

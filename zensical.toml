@@ -146,4 +146,5 @@ parameter_headings = true
 separate_signature = true
 show_symbol_type_heading = true
 show_symbol_type_toc = true
-summary = true
+# no "Modules" section: `cmap.data` is the only submodule, and it has no public API
+summary = { attributes = true, functions = true, classes = true, modules = false }
