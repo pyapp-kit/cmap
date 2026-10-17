@@ -8,6 +8,7 @@ import pytest
 
 from cmap import Color, Colormap
 from cmap._colormap import ColorStop, ColorStops, _fill_stops
+from cmap.data.matlab import prism
 
 DATA = [
     [0.0, 1.0, 0.0, 0.0, 1.0],
@@ -88,6 +89,22 @@ def test_colorstops() -> None:
     )
 
     assert reversed(cmap.color_stops) == ColorStops.parse(["b", "m", "r"])
+
+
+def test_colorstops_lut_func() -> None:
+    def f(x: np.ndarray) -> np.ndarray:
+        return np.stack([x, 2 * x, -x], axis=-1)
+
+    cs = ColorStops(lut_func=f)
+    assert cs.lut_func is f
+    assert Colormap("prism").color_stops.lut_func is prism
+    assert Colormap("viridis").color_stops.lut_func is None
+    x = np.array([0.1234])
+    reversed_func = cs.reversed().lut_func
+    assert reversed_func is not None
+    npt.assert_allclose(reversed_func(x), f(1 - x), rtol=0, atol=1e-12)
+    with pytest.raises(AttributeError):
+        cs.lut_func = f
 
 
 def test_colorstops_reversed_does_not_mutate_source() -> None:
