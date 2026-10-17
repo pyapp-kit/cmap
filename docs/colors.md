@@ -2,6 +2,7 @@
 
 The `cmap.Color` type represents an individual color.
 
+<!-- fmt: off -->
 ```python
 from cmap import Color
 
@@ -17,6 +18,7 @@ red8  = Color(np.array([1.0, 0.0, 0.0]))
 red9  = Color(0xFF0000)
 red10 = Color(16711680)
 ```
+<!-- fmt: on -->
 
 
 ## `ColorLike` objects
@@ -135,13 +137,14 @@ See [Color class API][cmap.Color] for complete details, highlights are listed he
 ```python
 from cmap import Color
 
-trq = Color('turquoise')
+trq = Color("turquoise")
 ```
 
 ### Useful properties
 
 Convert to a variety of forms:
 
+<!-- fmt: off -->
 ```python
 trq.hex          # '#40E0D0'
 trq.rgba         # RGBA(r=0.2510, g=0.8784, b=0.8157, a=1)
@@ -151,14 +154,15 @@ trq.rgba8        # RGBA8(r=64, g=224, b=208, a=1)
 trq.rgba_string  # 'rgb(64, 224, 208)'
 trq.name         # 'turquoise'
 ```
+<!-- fmt: on -->
 
 ### Useful magic methods
 
 Comparing a color to anything will attempt to cast the other object:
 
 ```python
-trq == 'turquoise'  # True
-trq is 'turquoise'  # False ... naturally, it's not the same object
+trq == "turquoise"  # True
+trq is "turquoise"  # False ... naturally, it's not the same object
 ```
 
 !!!tip
@@ -192,7 +196,7 @@ instance is returned for equivalent inputs.  This means that you can use
 keys.
 
 ```python
-assert Color('red') is Color((255, 0, 0))
+assert Color("red") is Color((255, 0, 0))
 ```
 
 ## Immutability
@@ -200,7 +204,7 @@ assert Color('red') is Color((255, 0, 0))
 All colors are immutable and cannot be modified after instantiation.
 
 ```python
-trq.name = 'foo'  # AttributeError: Color is immutable
+trq.name = "foo"  # AttributeError: Color is immutable
 ```
 
 ## Usage with pydantic
@@ -212,12 +216,13 @@ trq.name = 'foo'  # AttributeError: Color is immutable
 from pydantic import BaseModel
 from cmap import Color
 
+
 class Foo(BaseModel):
     color: Color
 
 
-foo = Foo(color='red')
-foo.color is Color('red')  # True
+foo = Foo(color="red")
+foo.color is Color("red")  # True
 ```
 
 !!!tip "Serialization in pydantic"
@@ -233,7 +238,8 @@ foo.color is Color('red')  # True
         class Config:
             json_encoders = {Color: str}
 
-    #example
+
+    # example
     Foo(color=(0, 11, 23)).json()  # '{"color": "#000B17"}'
     ```
 

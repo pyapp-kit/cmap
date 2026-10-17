@@ -71,7 +71,7 @@ def test_colorstops() -> None:
     cmap = Colormap(["red", "magenta", "blue"])
     assert cmap.color_stops.stops == (0, 0.5, 1.0)
     assert cmap.color_stops != {"1234"}  # just check a random comparison
-    for x, e in zip(cmap.color_stops.colors, "rmb"):
+    for x, e in zip(cmap.color_stops.colors, "rmb", strict=False):
         assert isinstance(x, Color)
         assert x == e
 
