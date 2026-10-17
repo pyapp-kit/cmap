@@ -42,6 +42,7 @@ test_thirdparty = [
     "plotly",
     "pydantic-extra-types>=2,!=2.10.1",
     "pydantic",
+    "pydantic-compat",
     "pygfx",
     "pyqtgraph",
     "pytest-qt",

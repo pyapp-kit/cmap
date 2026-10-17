@@ -7,13 +7,10 @@ import pytest
 from cmap import Color, Colormap
 from cmap._colormap import ColorStops
 
-try:
-    import pydantic
-    from pydantic_compat import BaseModel
+pydantic = pytest.importorskip("pydantic")
+from pydantic_compat import BaseModel  # noqa: E402
 
-    V2 = int(pydantic.__version__.split(".")[0]) >= 2
-except ImportError:
-    pytest.skip("pydantic not installed", allow_module_level=True)
+V2 = int(pydantic.__version__.split(".")[0]) >= 2
 
 try:
     import pydantic_extra_types.color as pydantic_color
