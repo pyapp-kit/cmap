@@ -401,8 +401,11 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
 
 ## Usage with pydantic
 
-`Colormap` can be used as a field type in
-[pydantic](https://pydantic-docs.helpmanual.io/usage/types/). models.
+`Colormap` can be used as a field type in [pydantic](https://docs.pydantic.dev/)
+models. Fields accept any [`ColormapLike`](#colormaplike-objects) value.
+Colormaps from the catalog serialize to their name, and other colormaps
+serialize to the output of [`Colormap.as_dict`][cmap.Colormap.as_dict]. Either
+way, the result validates back to an equal colormap.
 
 ```python
 from pydantic import BaseModel
@@ -413,14 +416,20 @@ class Foo(BaseModel):
     colormap: Colormap
 
 
-foo = Foo(colormap="viridis")  # or any other ColormapLike
-foo.colormap
+Foo(colormap="viridis").model_dump_json()
+# '{"colormap":"bids:viridis"}'
+
+Foo(colormap=["red", "green"]).model_dump_json()
+# '{"colormap":{"name":"custom colormap","identifier":"custom_colormap",
+#   "category":null,"value":[[0.0,[1.0,0.0,0.0,1]],[1.0,[0.0,0.50196,0.0,1]]]}}'
 ```
 
-!!!tip "Serialization in pydantic"
-    Unfortunately, serialization with the `json` module is not easily
-    pluggable, so if you want to serialize a pydantic model with a `Colormap`
-    field to JSON, add the following encoder to your model:
+This also works in
+[`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/).
+
+??? note "pydantic v1"
+    With pydantic v1, `Colormap` fields validate the same way, but serializing
+    to JSON requires an encoder:
 
     ```python
     class Foo(BaseModel):
@@ -428,29 +437,7 @@ foo.colormap
 
         class Config:
             json_encoders = {Colormap: Colormap.as_dict}
-
-
-    # example
-    Foo(colormap=["red", "green"]).json()
     ```
-
-    results in
-
-    ```json
-    {"colormap":
-        {"name": "custom colormap",
-         "identifier": "custom_colormap",
-          "category": null,
-          "color_stops": [[0.0, [1.0, 0.0, 0.0, 1]], [1.0, [0.0, 0.5019607843137255, 0.0, 1]]]
-        }
-    }
-    ```
-
-!!!tip "Serialization in `psygnal.EventedModel`"
-    `Colormap` supports serialization in
-    [`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/)
-    out of the box.  The `json_encoders = {Colormap: Colormap.as_dict}` line in the `Config`
-    class mentioned above is not necessary.
 
 ## Rich repr
 

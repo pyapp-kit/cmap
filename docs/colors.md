@@ -40,7 +40,7 @@ Briefly, valid arguments are of type:
 - `None`
 - `int`
 - `cmap.Color`
-- `pydantic.color.Color`
+- `pydantic_extra_types.color.Color`
 - `colour.Color`
 
 In detail:
@@ -130,7 +130,7 @@ In detail:
 1. An instance of [`cmap.Color`][] itself: which is returned unchanged
     - `Color(Color('red')) is Color('red')`)
 
-1. (*Third-party object*): An instance of [`pydantic.color.Color`](https://docs.pydantic.dev/usage/types/#color-type).
+1. (*Third-party object*): An instance of [`pydantic_extra_types.color.Color`](https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/#pydantic_extra_types.color.Color).
 
 1. (*Third-party object*): An instance of [`colour.Color`](https://github.com/vaab/colour)
 
@@ -213,8 +213,8 @@ trq.name = "foo"  # AttributeError: Color is immutable
 
 ## Usage with pydantic
 
-`Color` can be used as a field type in
-[pydantic](https://pydantic-docs.helpmanual.io/usage/types/). models.
+`Color` can be used as a field type in [pydantic](https://docs.pydantic.dev/)
+models. Fields accept any `ColorLike` value, and serialize to a color string:
 
 ```python
 from pydantic import BaseModel
@@ -227,13 +227,16 @@ class Foo(BaseModel):
 
 foo = Foo(color="red")
 foo.color is Color("red")  # True
+
+Foo(color=(0, 11, 23)).model_dump_json()  # '{"color":"#000B17"}'
 ```
 
-!!!tip "Serialization in pydantic"
-    Unfortunately, serialization with the `json` module is not easily
-    pluggable, so if you want to serialize a pydantic model with a `Color`
-    field to JSON, add the following encoder to your model to cast
-    `Color` objects to strings:
+This also works in
+[`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/).
+
+??? note "pydantic v1"
+    With pydantic v1, `Color` fields validate the same way, but serializing to
+    JSON requires an encoder:
 
     ```python
     class Foo(BaseModel):
@@ -241,17 +244,7 @@ foo.color is Color("red")  # True
 
         class Config:
             json_encoders = {Color: str}
-
-
-    # example
-    Foo(color=(0, 11, 23)).json()  # '{"color": "#000B17"}'
     ```
-
-!!!tip "Serialization in `psygnal.EventedModel`"
-    Color supports serialization in
-    [`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/)
-    out of the box.  The `json_encoders = {Color: str}` line in the `Config`
-    class mentioned above is not necessary.
 
 ## Rich repr
 
