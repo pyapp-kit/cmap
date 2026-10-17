@@ -85,6 +85,13 @@ function paintBar(canvas, colors, width = 826) {
   paint(canvas, colors, linspace(width), 1, width);
 }
 
+// A small colorbar canvas, e.g. for chart legends.
+function swatch(colors, width = 32, height = 10) {
+  const canvas = document.createElement("canvas");
+  paint(canvas, colors, Array.from({ length: height }, () => linspace(width)).flat(), height, width);
+  return canvas;
+}
+
 // ---------------------------------------------------------------------------
 // Catalog grid filtering
 // ---------------------------------------------------------------------------
@@ -281,7 +288,7 @@ function drawChart(canvas, d) {
     });
     options.plugins.legend = {
       display: true,
-      labels: { boxHeight: 2, color: themeColors().fg },
+      labels: { usePointStyle: true, pointStyle: "line", color: themeColors().fg },
     };
     const line = (label, ys, axis = "y") => ({
       label,
@@ -393,7 +400,22 @@ async function initCompare(root) {
     const options = baseOptions({
       y: { min: 0, max: 100, title: { text: "Lightness J′", display: true } },
     });
-    options.plugins.legend = { display: true, labels: { color: themeColors().fg } };
+    // legend swatches are little colorbars of each colormap
+    const swatches = datas.map((data) => swatch((data[cvd()] ?? data.normal).color));
+    options.plugins.legend = {
+      display: true,
+      labels: {
+        color: themeColors().fg,
+        usePointStyle: true,
+        pointStyleWidth: 32,
+        boxHeight: 10,
+        padding: 16,
+        generateLabels: (c) =>
+          Chart.defaults.plugins.legend.labels
+            .generateLabels(c)
+            .map((item, i) => ({ ...item, pointStyle: swatches[i] })),
+      },
+    };
     new Chart(chart, {
       type: "scatter",
       data: {
@@ -407,6 +429,8 @@ async function initCompare(root) {
             showLine: true,
             pointRadius: 0,
             borderWidth: 5,
+            // round caps hide the seams between the separately-colored segments
+            borderCapStyle: "round",
             borderColor: colors[Math.floor(colors.length / 2)],
             // color each segment of the line by the colormap itself
             segment: { borderColor: (ctx) => colors[ctx.p0DataIndex] },

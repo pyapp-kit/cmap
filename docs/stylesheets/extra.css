@@ -170,8 +170,29 @@ div.doc-contents:not(.first) {
   border-radius: 0.3rem;
 }
 
+.cmap-filter input[type="search"],
+.cmap-filter select {
+  box-sizing: border-box;
+  height: 1.9rem;
+}
+
 .cmap-filter input[type="search"] {
   flex: 1 1 12rem;
+}
+
+/* custom chevron, so the native one isn't jammed against the right edge */
+.cmap-filter select {
+  padding-right: 1.8rem;
+  appearance: none;
+  cursor: pointer;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    right 0.85rem center,
+    right 0.6rem center;
+  background-size: 0.25rem 0.25rem;
+  background-repeat: no-repeat;
 }
 
 .cmap-filter input:focus,
