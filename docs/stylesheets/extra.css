@@ -252,26 +252,77 @@ div.doc-contents:not(.first) {
   height: 30px;
 }
 
+/* Colorbar(s) + sine ramp stacked on the left, with the square test image (cyclic
+   and diverging maps only) on the right at the same height as the stack.
+   Test images are rendered at their displayed size by cmap.js. */
+.cmap-detail {
+  --cmap-square: 170px;
+  container-type: inline-size;
+}
+
 .cmap-test-images {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: 0.8rem;
-  justify-content: center;
-  margin-top: 2px;
+}
+
+.cmap-test-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.md-typeset .cmap-test-stack > .cmap {
+  margin: 0;
 }
 
 .cmap-sineramp {
   display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 826 / 96;
+  height: 96px;
 }
 
-/* shown at (close to) native resolution: the test patterns depend on pixel scale */
 .cmap-test-square {
-  width: min(100%, 320px);
+  display: block;
+  width: var(--cmap-square);
   height: auto;
   aspect-ratio: 1;
+}
+
+.cmap-test-images:has(> .cmap-test-square) {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+/* the sine ramp takes whatever height is left after the colorbars */
+.cmap-test-images:has(> .cmap-test-square) .cmap-test-stack {
+  height: var(--cmap-square);
+}
+
+.cmap-test-images:has(> .cmap-test-square) .cmap-sineramp {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+
+/* too narrow for side by side: square goes below, centered and larger */
+@container (width < 560px) {
+  .cmap-test-images:has(> .cmap-test-square) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cmap-test-images:has(> .cmap-test-square) .cmap-test-stack {
+    height: auto;
+  }
+
+  .cmap-test-images:has(> .cmap-test-square) .cmap-sineramp {
+    flex: none;
+    height: 96px;
+  }
+
+  .cmap-test-square {
+    justify-self: center;
+    width: min(100%, 280px);
+  }
 }
 
 .md-typeset .cmap-cvd {
@@ -359,6 +410,7 @@ div.doc-contents:not(.first) {
   display: block;
   width: 100%;
   height: 32px;
+  margin-bottom: 2px;
 }
 
 /* ----------------------------------------------------------------------------

@@ -47,6 +47,11 @@ LICENSE_URL = {
     "BSD-2-Clause": "https://opensource.org/licenses/BSD-2-Clause",
     "PSF": "https://opensource.org/licenses/Python-2.0",
 }
+BAR_TITLE = "The colormap, from its lowest value (left) to its highest (right)"
+GRAY_TITLE = (
+    "Grayscale version, roughly how the colormap looks printed in black and white: "
+    "brightness should change smoothly, with no flat spots or sudden jumps"
+)
 # extra test image (rendered client-side, see cmap.js) per category
 SQUARE_TEST_IMAGES = {
     "cyclic": {
@@ -135,11 +140,13 @@ description: {{ description | tojson }}
 </div>
 
 <div class="cmap-detail" data-cmap-name="{{ name }}" data-json="{{ data_url }}">
+<div class="cmap-test-images">
+<div class="cmap-test-stack">
 {{ bar }}
 {{ gray }}
-<div class="cmap-test-images">
-<canvas class="cmap-sineramp" data-test-image="sineramp" width="826" height="96" title="Sine ramp test image (Kovesi): the sine wave at the top should be equally visible across the whole range" aria-label="{{ name }} applied to a sine ramp test image"></canvas>
-{% if square %}<canvas class="cmap-test-square" data-test-image="{{ square.kind }}" width="320" height="320" title="{{ square.title }}" aria-label="{{ name }} applied to the {{ square.label }} test image"></canvas>
+<canvas class="cmap-sineramp" data-test-image="sineramp" title="Sine ramp test image (Kovesi): the sine wave at the top should be equally visible across the whole range" aria-label="{{ name }} applied to a sine ramp test image"></canvas>
+</div>
+{% if square %}<canvas class="cmap-test-square" data-test-image="{{ square.kind }}" title="{{ square.title }}" aria-label="{{ name }} applied to the {{ square.label }} test image"></canvas>
 {% endif %}</div>
 <fieldset class="cmap-cvd" role="radiogroup" aria-label="Simulate color vision deficiency">
 {% for key, label in cvd_labels.items() %}<label><input type="radio" name="cvd" value="{{ key }}"{% if loop.first %} checked{% endif %}><span>{{ label }}</span></label>
@@ -313,8 +320,15 @@ def _render_page(
         authors=", ".join(info.authors),
         source=_md_link(info.source),
         css=cm.to_css(max_stops=32, as_hex=True).strip(),
-        bar=cmap_bar(name, page, height=40, link=False),
-        gray=cmap_bar(name, page, height=30, link=False, classes=["grayscale"]),
+        bar=cmap_bar(name, page, height=40, link=False, attrs=f' title="{BAR_TITLE}"'),
+        gray=cmap_bar(
+            name,
+            page,
+            height=30,
+            link=False,
+            classes=["grayscale"],
+            attrs=f' title="{GRAY_TITLE}"',
+        ),
         cvd_labels=CVD_LABELS,
         square=SQUARE_TEST_IMAGES.get(info.category),
         data_url=f"../../_data/{quote(Path(page).stem)}.json",

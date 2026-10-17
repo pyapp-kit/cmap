@@ -3,7 +3,6 @@
 // zensical emits on initial load and on every instant navigation.
 
 const CVD_TYPES = ["normal", "protan", "deutan", "tritan"];
-const SINERAMP_SHAPE = [96, 826];
 const dataCache = new Map();
 
 document$.subscribe(() => {
@@ -107,18 +106,41 @@ function peaks(size = 320) {
   return { im: z, rows: size, cols: size };
 }
 
-const TEST_IMAGES = { sineramp: () => sineramp(SINERAMP_SHAPE), circlesineramp, peaks };
-// which extra (square) test image to show for each category
-const CATEGORY_TEST_IMAGE = { cyclic: "circlesineramp", diverging: "peaks" };
+// Test images are generated at their displayed size in device pixels (`s` per CSS
+// pixel), so the 8px wavelength of the sine patterns is the same in every layout.
+const TEST_IMAGES = {
+  sineramp: (rows, cols, s) => sineramp([rows, cols], 0.05, 8 * s),
+  circlesineramp: (rows, cols, s) => circlesineramp(Math.min(rows, cols), Math.PI / 10, 8 * s),
+  peaks: (rows, cols) => peaks(Math.min(rows, cols)),
+};
 const _testImages = new Map();
-function getTestImage(kind) {
-  if (!_testImages.has(kind)) _testImages.set(kind, TEST_IMAGES[kind]());
-  return _testImages.get(kind);
+function getTestImage(kind, rows, cols, s) {
+  const key = `${kind}:${rows}x${cols}`;
+  if (_testImages.get(kind)?.key !== key) {
+    _testImages.set(kind, { key, value: TEST_IMAGES[kind](rows, cols, s) });
+  }
+  return _testImages.get(kind).value;
 }
 
-function paintTestImage(canvas, colors, kind) {
-  const { im, rows, cols } = getTestImage(kind);
-  paint(canvas, colors, im, rows, cols);
+const testImageColors = new WeakMap();
+const testImageObserver = new ResizeObserver((entries) => {
+  for (const { target } of entries) paintTestImage(target);
+});
+
+// Paint `canvas` (with a `data-test-image` kind) through `colors`, now and on resize.
+function setTestImageColors(canvas, colors) {
+  testImageColors.set(canvas, colors);
+  testImageObserver.observe(canvas);
+  paintTestImage(canvas);
+}
+
+function paintTestImage(canvas) {
+  const s = Math.max(1, Math.round(window.devicePixelRatio || 1));
+  const rows = Math.round(canvas.clientHeight * s);
+  const cols = Math.round(canvas.clientWidth * s);
+  if (!rows || !cols) return; // not laid out yet: the ResizeObserver will repaint
+  const { im, rows: r, cols: c } = getTestImage(canvas.dataset.testImage, rows, cols, s);
+  paint(canvas, testImageColors.get(canvas), im, r, c);
 }
 
 // Paint values in [0, 1] (row-major, `rows` x `cols`) through the LUT `colors`.
@@ -218,7 +240,7 @@ async function initDetail(root) {
       const url = tmp.toDataURL();
       bars.forEach((img) => (img.src = url));
     }
-    for (const canvas of testImages) paintTestImage(canvas, d.color, canvas.dataset.testImage);
+    for (const canvas of testImages) setTestImageColors(canvas, d.color);
     for (const canvas of charts) drawChart(canvas, d);
   }
 
@@ -442,15 +464,11 @@ async function initCompare(root) {
         const bar = document.createElement("canvas");
         bar.className = "cmap-compare-bar";
         paintBar(bar, d.color);
-        const tests = document.createElement("div");
-        tests.className = "cmap-test-images";
-        for (const kind of ["sineramp", CATEGORY_TEST_IMAGE[e.category]].filter(Boolean)) {
-          const canvas = document.createElement("canvas");
-          canvas.className = kind === "sineramp" ? "cmap-sineramp" : "cmap-test-square";
-          paintTestImage(canvas, d.color, kind);
-          tests.append(canvas);
-        }
-        row.append(head, bar, tests);
+        const sine = document.createElement("canvas");
+        sine.className = "cmap-sineramp";
+        sine.dataset.testImage = "sineramp";
+        row.append(head, bar, sine);
+        setTestImageColors(sine, d.color);
         return row;
       })
     );
