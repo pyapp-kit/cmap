@@ -114,7 +114,7 @@ def test_vispy(qapp: "QApplication") -> None:
 
 
 @pytest.mark.filterwarnings("ignore:\\*scattermapbox\\* is deprecated")
-@pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
+@pytest.mark.skipif(os.name == "nt", reason="segfaults")
 def test_plotly() -> None:
     px = pytest.importorskip("plotly.express")
 
@@ -159,7 +159,7 @@ def test_pygfx(qapp: "QApplication") -> None:
     canvas.deleteLater()
 
 
-@pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
+@pytest.mark.skipif(os.name == "nt", reason="segfaults")
 def test_bokeh() -> None:
     pytest.importorskip("bokeh")
     from bokeh.plotting import figure
