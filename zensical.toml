@@ -103,9 +103,6 @@ pymdownx.snippets = {}
 pymdownx.superfences = {}
 pymdownx.tabbed.alternate_style = true
 
-[project.plugins.search]
-separator = '[\s\-\_,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
-
 [project.plugins.autorefs]
 resolve_closest = true
 
