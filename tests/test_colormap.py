@@ -8,6 +8,7 @@ import pytest
 
 from cmap import Color, Colormap
 from cmap._colormap import ColorStop, ColorStops, _fill_stops
+from cmap.data.matlab import prism
 
 DATA = [
     [0.0, 1.0, 0.0, 0.0, 1.0],
@@ -71,7 +72,7 @@ def test_colorstops() -> None:
     cmap = Colormap(["red", "magenta", "blue"])
     assert cmap.color_stops.stops == (0, 0.5, 1.0)
     assert cmap.color_stops != {"1234"}  # just check a random comparison
-    for x, e in zip(cmap.color_stops.colors, "rmb"):
+    for x, e in zip(cmap.color_stops.colors, "rmb", strict=False):
         assert isinstance(x, Color)
         assert x == e
 
@@ -88,6 +89,22 @@ def test_colorstops() -> None:
     )
 
     assert reversed(cmap.color_stops) == ColorStops.parse(["b", "m", "r"])
+
+
+def test_colorstops_lut_func() -> None:
+    def f(x: np.ndarray) -> np.ndarray:
+        return np.stack([x, 2 * x, -x], axis=-1)
+
+    cs = ColorStops(lut_func=f)
+    assert cs.lut_func is f
+    assert Colormap("prism").color_stops.lut_func is prism
+    assert Colormap("viridis").color_stops.lut_func is None
+    x = np.array([0.1234])
+    reversed_func = cs.reversed().lut_func
+    assert reversed_func is not None
+    npt.assert_allclose(reversed_func(x), f(1 - x), rtol=0, atol=1e-12)
+    with pytest.raises(AttributeError):
+        cs.lut_func = f
 
 
 def test_colorstops_reversed_does_not_mutate_source() -> None:
@@ -257,8 +274,10 @@ def test_finite_values_that_overflow_when_scaled_are_not_infinite() -> None:
     )
 
 
-def test_masked_dtypes_keep_their_existing_behavior() -> None:
-    cmap = Colormap(["red", "blue"], bad="black")
+@pytest.mark.parametrize("exceptional", [False, True])
+def test_masked_dtypes_keep_their_existing_behavior(exceptional: bool) -> None:
+    extra = {"neg_inf": "cyan", "pos_inf": "magenta", "nan": "white"}
+    cmap = Colormap(["red", "blue"], bad="black", **(extra if exceptional else {}))
     bad = Color("black").rgba
 
     npt.assert_array_equal(cmap(np.ma.masked_array([0, 1], mask=[True, False]))[0], bad)
@@ -266,11 +285,33 @@ def test_masked_dtypes_keep_their_existing_behavior() -> None:
     obj = np.ma.masked_array(np.array([0.25, 0.5], dtype=object), mask=[True, False])
     npt.assert_array_equal(cmap(obj)[0], bad)
 
-    # object dtype without a mask reaches np.isnan, which has never accepted it
-    with pytest.raises(TypeError):
-        cmap(np.ma.masked_array(np.array([0.25], dtype=object), mask=np.ma.nomask))
-
     npt.assert_array_equal(cmap(np.ma.masked_array(0.5, mask=True)).rgba, bad)
+    npt.assert_array_equal(cmap(np.ma.masked_array(np.inf, mask=True)).rgba, bad)
+    npt.assert_array_equal(cmap(np.ma.masked_array([-np.inf], mask=[True])), [bad])
+
+
+def test_exceptional_colors_scalar_input() -> None:
+    cmap = Colormap(
+        ["red", "blue"], neg_inf="cyan", pos_inf="magenta", nan="white", bad="black"
+    )
+    for value, name in [(-np.inf, "cyan"), (np.inf, "magenta"), (np.nan, "white")]:
+        result = cmap(value)
+        assert isinstance(result, Color)
+        assert result == Color(name)
+
+
+def test_exceptional_colors_do_not_affect_integer_input() -> None:
+    plain = Colormap(["red", "blue"], under="green", over="yellow")
+    cmap = Colormap(
+        ["red", "blue"],
+        under="green",
+        over="yellow",
+        neg_inf="cyan",
+        pos_inf="magenta",
+        nan="white",
+    )
+    data = np.array([-1, 0, 100, 255, 256, 1000])
+    npt.assert_array_equal(cmap(data), plain(data))
 
 
 @pytest.mark.parametrize("field", ["neg_inf", "pos_inf", "nan"])

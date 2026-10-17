@@ -46,7 +46,9 @@ def plot_color_gradients(
         bottom, top = top, bottom
     fig.subplots_adjust(top=top, bottom=bottom, left=0.2, right=0.99)
 
-    for i, (ax, name) in enumerate(zip(axs[:: 2 if compare else 1], cmap_list)):
+    for i, (ax, name) in enumerate(
+        zip(axs[:: 2 if compare else 1], cmap_list, strict=False)
+    ):
         cm = _ensure_cmap(name).to_mpl()
         ax.imshow(gradient, aspect="auto", cmap=cm)
         ax.text(

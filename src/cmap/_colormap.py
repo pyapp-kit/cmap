@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import base64
+import itertools
 import warnings
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from copy import copy
 from functools import partial
 from numbers import Number
-from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Union, cast, overload
+from typing import TYPE_CHECKING, Any, NamedTuple, Union, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -19,7 +20,7 @@ from ._color import Color, ColorLike
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Literal
+    from typing import Literal, TypeAlias, TypeGuard
 
     import bokeh.models
     import matplotlib.colors
@@ -31,7 +32,7 @@ if TYPE_CHECKING:
     from numpy.typing import ArrayLike, NDArray
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import CoreSchema
-    from typing_extensions import TypeAlias, TypedDict, TypeGuard
+    from typing_extensions import TypedDict
 
     from ._catalog import CatalogItem
 
@@ -75,7 +76,7 @@ ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
 # All of the things that we can pass to the constructor of Colormap
 ColormapLike: TypeAlias = Union[
     str,  # colormap name, w/ optional "_r" suffix
-    Iterable[Union[ColorLike, ColorStopLike]],
+    Iterable[ColorLike | ColorStopLike],
     "NDArray",
     "MPLSegmentData",
     dict[float, ColorLike],
@@ -368,7 +369,7 @@ class Colormap:
         self.neg_inf_color = None if neg_inf is None else Color(neg_inf)
         self.pos_inf_color = None if pos_inf is None else Color(pos_inf)
         self.nan_color = None if nan is None else Color(nan)
-        # a colormap with none of these takes the same path it did before they existed
+        # unset: __call__ takes the same path it did before these colors existed
         self._has_exceptional = any(
             c is not None
             for c in (
@@ -470,10 +471,17 @@ class Colormap:
         >>> colored_img = cmap(data)
         """
         lut = self.lut(N=N, gamma=gamma, with_over_under=True)
-        # the lut will have three additional colors at the end for under, over, and bad
+        # N is re-derived because len(lut) can differ from the requested N (e.g. a
+        # "nearest" colormap returns one row per stop).  The lut has three additional
+        # colors at the end for under, over, and bad; this is taken before the
+        # exceptional rows are appended.
         N = len(lut) - 3
+        # row indices: N under, N + 1 over, N + 2 bad, then (only when exceptional
+        # colors are set) N + 3 neg_inf, N + 4 pos_inf, N + 5 nan
+        nan_row = N + 2
         if self._has_exceptional:
             lut = self._with_exceptional_colors(lut)
+            nan_row = N + 5
         if bytes:
             lut = (lut * 255).astype(np.uint8)
 
@@ -494,15 +502,12 @@ class Colormap:
 
         mask_under = xa < 0
         mask_over = xa >= N
-        # If input was masked, start from its mask: a masked array can still carry
-        # unmasked nans.  `|` rather than `|=`, so x's own mask isn't written to.
         if np.ma.is_masked(x):
             mask_masked = x.mask  # type: ignore
             mask_nan = np.isnan(xa) if is_float else False
-            mask_bad = (mask_masked | mask_nan) if is_float else mask_masked
         else:
             mask_masked = False
-            mask_nan = mask_bad = np.isnan(xa)
+            mask_nan = np.isnan(xa)
 
         with np.errstate(invalid="ignore"):
             # We need this cast for unsigned ints as well as floats
@@ -510,14 +515,12 @@ class Colormap:
 
         xa[mask_under] = N
         xa[mask_over] = N + 1
-        xa[mask_bad] = N + 2
-        if self._has_exceptional:
-            if is_float:
-                xa[mask_neg_inf] = N + 3
-                xa[mask_pos_inf] = N + 4
-            xa[mask_nan] = N + 5
-            # A masked entry remains bad whatever value it hides.
-            xa[mask_masked] = N + 2
+        if self._has_exceptional and is_float:
+            xa[mask_neg_inf] = N + 3
+            xa[mask_pos_inf] = N + 4
+        xa[mask_nan] = nan_row
+        # last, so a masked entry is bad whatever value it hides
+        xa[mask_masked] = N + 2
 
         rgba = lut.take(xa, axis=0, mode="clip")
         return rgba if np.iterable(x) else Color(rgba)
@@ -617,7 +620,8 @@ class Colormap:
         the number of requested colors in the LUT. If `with_over_under`
         is `True` the returned shape will be (N + 3, 4), where index N is the under
         color, index N + 1 is the over color, and index N + 2 is the bad color (used
-        for NaN and masked values).
+        for NaN and masked values).  The `neg_inf`, `pos_inf` and `nan` colors are
+        not part of the LUT; `__call__` applies them.
 
         The LUT can be used to map scalar values (that have been normalized to 0-1) to
         colors, using fancy indexing or `np.take`.
@@ -1083,8 +1087,8 @@ class ColorStops(Sequence[ColorStop]):
         The array must be an (N, 5) array, where the first column is the position
         (0-1) and the remaining columns are the color (RGBA, 0-1).
     lut_func : callable, optional
-        A callable that takes a single argument (an (N, 1) array of positions) and
-        returns an (N, 4) array of colors.  This will be used to generate the LUT
+        A callable that takes a single argument (an (N,) array of positions) and
+        returns an (N, 3) RGB or (N, 4) RGBA array.  This will generate the LUT
         instead of the stops array.  If provided, the stops argument will be ignored.
     interpolation : str, optional
         Interpolation mode.  Must be one of 'linear' (or `True`) or 'nearest' (or
@@ -1207,6 +1211,16 @@ class ColorStops(Sequence[ColorStop]):
     def color_array(self) -> np.ndarray:
         """Return an (N, 4) array of RGBA values."""
         return self._stops[:, 1:]
+
+    @property
+    def lut_func(self) -> LutCallable | None:
+        """Callable that generates this colormap's colors, or None if defined by stops.
+
+        Evaluating it gives exact colors at arbitrary positions, unlike `stops` and
+        `color_array`, which hold a 256-point sampling.  It is the stored callable,
+        so its output is not clipped and may be RGB rather than RGBA.
+        """
+        return self._lut_func
 
     def __len__(self) -> int:
         return len(self._stops)
@@ -1334,7 +1348,7 @@ class ColorStops(Sequence[ColorStop]):
             # to be a problem in practice)
             midpoints = np.linspace(0, 1, len(colors) + 1)[1:-1]
             _midstops = []
-            for m, (c1, c2) in zip(midpoints, zip(colors[:-1], colors[1:])):
+            for m, (c1, c2) in zip(midpoints, itertools.pairwise(colors), strict=False):
                 s1 = f"{c1.hex if as_hex else c1.rgba_string} {m * 100:g}%"
                 s2 = f"{c2.hex if as_hex else c2.rgba_string} {m * 100:g}%"
                 _midstops.extend([s1, s2])
@@ -1343,7 +1357,7 @@ class ColorStops(Sequence[ColorStop]):
             _stops = ", ".join(
                 [
                     f"{c.hex if as_hex else c.rgba_string} {s * 100:g}%"
-                    for c, s in zip(colors, stops)
+                    for c, s in zip(colors, stops, strict=False)
                 ]
             )
         angle_ = "" if radial else f"{angle}deg, "
@@ -1648,7 +1662,7 @@ def _mpl_segmentdata_to_stops(
         alpha = np.ones_like(all_positions)
 
     rgba = np.stack([*rgb, alpha], axis=1)
-    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist())]
+    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist(), strict=False)]
 
 
 def _make_identifier(name: str) -> str:
@@ -1743,7 +1757,7 @@ def _parse_colorstops(
         raise ValueError("Color stops must be in ascending position order")
 
     _stops = _fill_stops(_positions, "neighboring")  # TODO: expose fill_mode?
-    return cls(zip(_stops, _colors))
+    return cls(zip(_stops, _colors, strict=False))
 
 
 def _html_color_patch(color: Color | None) -> str:

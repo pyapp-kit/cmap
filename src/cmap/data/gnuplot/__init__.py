@@ -59,10 +59,10 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from typing import Callable
+    from collections.abc import Callable
+    from typing import TypeAlias
 
     from numpy.typing import NDArray
-    from typing_extensions import TypeAlias
 
     ArrayMapper: TypeAlias = Callable[[NDArray], NDArray]
 

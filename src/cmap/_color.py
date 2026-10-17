@@ -6,11 +6,10 @@ import colorsys
 import contextlib
 import re
 import sys
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     Literal,
     NamedTuple,
     SupportsFloat,
@@ -25,11 +24,11 @@ from . import _external
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from typing import TypeAlias
 
     import numpy.typing as npt
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import CoreSchema
-    from typing_extensions import TypeAlias
 
     rgba = Literal["r", "g", "b", "a"]
 
@@ -46,7 +45,7 @@ ColorLike: TypeAlias = Union[
     RGBATuple,  # 4-tuple of all floats, or 3 ints and 1 float
     np.ndarray,  # 3- or 4-element rgb(a) vector
     np.number,
-    list[Union[float, int]],  # 3- or 4-element rgb(a) vector
+    list[float | int],  # 3- or 4-element rgb(a) vector
     "Color",  # another color object
     None,  # casts to transparent
 ]
