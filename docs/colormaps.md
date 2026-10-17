@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Colormaps
 
 The [`cmap.Colormap`][cmap.Colormap] type represents a colormap.
@@ -32,8 +36,8 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
 
 - A `string` containing a [recognized colormap name](catalog/index.md).
 
-    - `Colormap('viridis')` {{ cmap_expr: 'viridis' }}
-    - `Colormap('batlow')` {{ cmap_expr: 'batlow' }}
+    - `Colormap('viridis')` {{ cmap_expr("'viridis'") }}
+    - `Colormap('batlow')` {{ cmap_expr("'batlow'") }}
 
     !!!note "Matplotlib names ✅"
         Any valid matplotlib colormap key that could be used in `matplotlib.colormaps[...]`
@@ -42,15 +46,15 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
 - A string containing a [recognized colormap name](catalog/index.md) suffixed with `"_r"`
    to reverse the colormap:
 
-    - `Colormap('viridis_r')` {{ cmap_expr: 'viridis_r' }}
-    - `Colormap('batlow_r')` {{ cmap_expr: 'batlow_r' }}
+    - `Colormap('viridis_r')` {{ cmap_expr("'viridis_r'") }}
+    - `Colormap('batlow_r')` {{ cmap_expr("'batlow_r'") }}
 
 ### `Iterable[ColorLike | tuple]`
 
 - An [`Iterable`][typing.Iterable] of [`ColorLike`](colors.md#colorlike-objects) objects:
 
-    - `Colormap(['blue', 'yellow', 'red'])` {{ cmap_expr: ['blue', 'yellow', 'red'] }}
-    - `Colormap([(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"])` {{ cmap_expr: [(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"] }}
+    - `Colormap(['blue', 'yellow', 'red'])` {{ cmap_expr("['blue', 'yellow', 'red']") }}
+    - `Colormap([(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"])` {{ cmap_expr('[(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"]') }}
 
     !!!note
         In the case of an iterable of colors, all colors are assumed to be
@@ -60,17 +64,17 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
    ColorLike]` objects, where the `float` represents the position of the color
    along the colormap from 0-1 (*aka* the "color stop"):
 
-    - `Colormap([(0, 'blue'), (0.8, 'yellow'), (1, 'red')])` {{ cmap_expr: [(0, 'blue'), (0.8, 'yellow'), (1, 'red')] }}
+    - `Colormap([(0, 'blue'), (0.8, 'yellow'), (1, 'red')])` {{ cmap_expr("[(0, 'blue'), (0.8, 'yellow'), (1, 'red')]") }}
 
     If omitted, the first and last color stops are assumed to be at 0 and 1,
     respectively.
 
-    - `Colormap(['blue', (0.8, 'yellow'), 'red'])` {{ cmap_expr: ['blue', (0.8, 'yellow'), 'red'] }}
+    - `Colormap(['blue', (0.8, 'yellow'), 'red'])` {{ cmap_expr("['blue', (0.8, 'yellow'), 'red']") }}
 
     If the first or last color stop is *not* at 0 or 1, the first/last color is
     repeated at the 0th or 1 position, respectively.
 
-    - `Colormap([(0.4, 'blue'), (0.8, 'yellow'), 'red'])` {{ cmap_expr: [(0.4, 'blue'), (0.8, 'yellow'), 'red'] }}
+    - `Colormap([(0.4, 'blue'), (0.8, 'yellow'), 'red'])` {{ cmap_expr("[(0.4, 'blue'), (0.8, 'yellow'), 'red']") }}
 
          *(same as `['blue', (0.4, 'blue'), (0.8, 'yellow'), 'red']`)*
 
@@ -79,7 +83,7 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
     (or 0 and 1, if none are provided).  They are **NOT** placed at their global
     `index / (len(colors) - 1)`.
 
-    - `Colormap(['blue', 'green', (0.8, 'yellow'), 'red'])` {{ cmap_expr: ['blue', 'green', (0.8, 'yellow'), 'red'] }}
+    - `Colormap(['blue', 'green', (0.8, 'yellow'), 'red'])` {{ cmap_expr("['blue', 'green', (0.8, 'yellow'), 'red']") }}
 
         *(same as `['blue', (0.4, 'green'), (0.8, 'yellow'), 'red']`)*
 
@@ -89,11 +93,11 @@ A [`numpy.ndarray`][], in one of the following formats:
 
 - an **`(N, 3)`** array of `N` RGB colors equally spaced along the colormap:
 
-    `Colormap(np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]]))` {{ cmap_expr: np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]]) }}
+    `Colormap(np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]]))` {{ cmap_expr("np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]])") }}
 
 - an **`(N, 4)`** array of `N` RGBA colors equally spaced along the colormap:
 
-    `Colormap(np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]]))` {{ cmap_expr: np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]]) }}
+    `Colormap(np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]]))` {{ cmap_expr("np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]])") }}
 
 - an **`(N, 5)`** array of color stops, where the first column is the position of the color stop
     and the remaining 4 columns are the RGBA colors:
@@ -110,14 +114,14 @@ A [`numpy.ndarray`][], in one of the following formats:
     )
     ```
 
-    {{ cmap_expr: np.array([[0, 0, 0, 1., 1.], [0.8, 1., 1., 0, 1.], [1., 1., 0, 0, 1.]]) }}
+    {{ cmap_expr("np.array([[0, 0, 0, 1., 1.], [0.8, 1., 1., 0, 1.], [1., 1., 0, 0, 1.]])") }}
 
 ### `dict`
 
 - A `{position -> color}` `dict` of color stops, where the keys are the positions of the color stops
    and the values are the colors:
 
-    - `Colormap({0: 'blue', 0.5: 'yellow', 1: 'red'})` {{ cmap_expr: {0: 'blue', 0.5: 'yellow', 1: 'red'} }}
+    - `Colormap({0: 'blue', 0.5: 'yellow', 1: 'red'})` {{ cmap_expr("{0: 'blue', 0.5: 'yellow', 1: 'red'}") }}
 
 - A [matplotlib-style `segmentdata`
    dict](https://matplotlib.org/stable/tutorials/colors/colormap-manipulation.html#creating-linear-segmented-colormaps),
@@ -144,19 +148,19 @@ A [`numpy.ndarray`][], in one of the following formats:
         ```
         <!-- fmt: on -->
 
-        {{ cmap_expr: {'red': [[0,0,0],[0.5,1.,1.],[1.,1.,1.]], 'green': [[0,0,0],[0.25,0,0],[0.75,1.,1.],[1.,1.,1.]], 'blue': [[0,0,0],[0.5,0,0],[1.,1.,1.]]} }}
+        {{ cmap_expr("{'red': [[0,0,0],[0.5,1.,1.],[1.,1.,1.]], 'green': [[0,0,0],[0.25,0,0],[0.75,1.,1.],[1.,1.,1.]], 'blue': [[0,0,0],[0.5,0,0],[1.,1.,1.]]}") }}
 
     - a callable that accepts an array of 0-1 values and returns another array of 0-1 values:
 
         `Colormap({"red": lambda x: x, "green": lambda x: x**2, "blue": lambda x: x**0.5})`
-        {{ cmap_expr: {"red": lambda x: x, "green": lambda x: x\*\*2, "blue": lambda x: x\*\*0.5} }}
+        {{ cmap_expr('{"red": lambda x: x, "green": lambda x: x**2, "blue": lambda x: x**0.5}') }}
 
 ### `Callable`
 
 - A single [`Callable`][typing.Callable], object which must accept an array of
   values and return an `(N, 3)` or `(N, 4)` array of colors
     - `Colormap(lambda x: np.stack([x, np.sin(x*10), np.cos(x*10)], axis=1))`
-      {{ cmap_expr: lambda x: np.stack([x, np.sin(x\*10), np.cos(x\*10)], axis=1) }}
+      {{ cmap_expr("lambda x: np.stack([x, np.sin(x*10), np.cos(x*10)], axis=1)") }}
 
 ## Usage
 

@@ -67,6 +67,15 @@ Once you have picked a namespace:
 When opening a PR, please include a screenshot of the colormap, along
 with a brief description of the colormap design and its intended use.
 
+!!!tip "Previewing the docs"
+    To see your colormap in the catalog locally, generate the catalog pages and
+    start the docs server:
+
+    ```bash
+    uv run --group docs python docs/_gen_catalog.py
+    uv run --group docs zensical serve
+    ```
+
 !!!info "Licensing"
     Please ensure that the colormap you are adding is available
     under a permissive license.  Note that namespaces share a license, so if you

@@ -97,7 +97,7 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
+# docs build output
 /site
 
 # mypy
@@ -112,3 +112,7 @@ docs/assets/_data/
 
 .ruff_cache/
 uv.lock
+
+# generated docs (see docs/_gen_catalog.py)
+docs/catalog/*/
+.cache/

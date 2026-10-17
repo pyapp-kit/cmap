@@ -62,17 +62,10 @@ dev = [
     "pyqt6",
 ]
 docs = [
-    'colorcet',
     'colorspacious',
-    'imageio',
-    'mkdocs-gen-files',
-    'mkdocs-literate-nav',
-    'mkdocs-api-autonav',
-    'mkdocs-material',
-    'mkdocs-minify-plugin',
-    'mkdocs',
     'mkdocstrings-python',
     'natsort',
+    'zensical',
 ]
 
 [tool.uv.sources]
@@ -200,7 +193,7 @@ ignore = [
     "tests/**/*",
     "setup.py",
     "docs/**/*",
-    "mkdocs.yml",
+    "zensical.toml",
     ".readthedocs.yaml",
 ]
 

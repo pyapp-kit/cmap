@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Colormap Catalog
 
 To use any colormap in the catalog, you can pass its name to the [`Colormap`][cmap.Colormap]
@@ -42,17 +46,17 @@ view_image(img, colormap=cmap.to_napari())
     You can append `'_r'` to any of the colormap names listed below to get a
     reversed version of that colormap. For example, `'viridis_r'`
 
-    {{ cmap: viridis }}
-    {{ cmap: viridis_r }}
+    {{ cmap("viridis") }}
+    {{ cmap("viridis_r") }}
 
     This works with function based colormaps as well:
 
-    {{ cmap: cubehelix }}
-    {{ cmap: cubehelix_r }}
+    {{ cmap("cubehelix") }}
+    {{ cmap("cubehelix_r") }}
 
-## Colormaps by category { data-search-exclude }
+## All colormaps
 
-{{ CMAP_CATALOG }}
+Filter by name, source, or lightness profile below, or
+[compare colormaps side by side](../compare.md).
 
-<!-- Note: this is here because of `navigation.instant` in the mkdocs settings -->
-<script>typeof(initFilters) !== 'undefined' && initFilters();</script>
+{{ cmap_catalog() }}

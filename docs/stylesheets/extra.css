@@ -1,51 +1,10 @@
-.md-typeset .admonition,
-.md-typeset details {
-  border-width: 0;
-  border-left-width: 4px;
-}
-
-.md-typeset .doc-children {
-  font-size: 0.7rem;
-}
-
-/* name of a method */
-code.highlight span.n:first-child {
-  color: red;
-}
-code.highlight span.n:not(:first-child) {
-  color: #666;
-}
-
-/* Indentation. */
-div.doc-contents:not(.first) {
-  padding-left: 25px;
-  border-left: 0.05rem solid var(--md-typeset-table-color);
-}
-
-/* Mark external links as such. */
-a.autorefs-external::after {
-  /* https://primer.style/octicons/arrow-up-right-24 */
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="rgb(0, 0, 0)" d="M18.25 15.5a.75.75 0 00.75-.75v-9a.75.75 0 00-.75-.75h-9a.75.75 0 000 1.5h7.19L6.22 16.72a.75.75 0 101.06 1.06L17.5 7.56v7.19c0 .414.336.75.75.75z"></path></svg>');
-  content: " ";
-
-  display: inline-block;
-  position: relative;
-  top: 0.1em;
-  margin-left: 0.2em;
-  margin-right: 0.1em;
-
-  height: 1em;
-  width: 1em;
-  border-radius: 100%;
-  background-color: var(--md-typeset-a-color);
-}
-a.autorefs-external:hover::after {
-  background-color: var(--md-accent-fg-color);
-}
+/* ----------------------------------------------------------------------------
+   Theme
+   ------------------------------------------------------------------------- */
 
 .md-header {
-  background: rgba(0, 0, 4, 1);
   /* magma ... generated with Colormap('magma').to_css() */
+  background: rgb(0, 0, 4);
   background: linear-gradient(
     90deg,
     rgba(0, 0, 4, 1) 0%,
@@ -58,107 +17,318 @@ a.autorefs-external:hover::after {
     rgba(254, 195, 135, 1) 87.5%,
     rgba(252, 253, 191, 1) 100%
   );
-}
-
-nav.md-header__inner {
-  min-height: 72px;
-}
-
-nav .md-header__source {
-  mix-blend-mode: difference;
-}
-
-nav > label.md-header__button[for="__search"] {
-  mix-blend-mode: difference;
-}
-
-div.cmap {
-  position: relative;
-  margin: 0;
-}
-div.cmap-bar {
-  height: 30px;
-}
-
-div.cmap-expr > .cmap-bar {
-  height: 24px;
-}
-
-div.cmap.grayscale > .cmap-bar, div.cmap.grayscale > img {
-  filter: grayscale(100%);
-}
-
-a div.cmap-bar:hover {
-  cursor: pointer;
-  filter: drop-shadow(0 0 0.4rem gray);
-}
-
-div.cmap-name {
-  position: absolute;
-  vertical-align: middle;
-  line-height: 30px; /* same as cmap-bar */
-  margin: 0 0.8rem;
-  font-weight: bold;
-  font-size: 0.75rem;
-  text-shadow: #000 0 1px 2px;
-  color: white;
-  mix-blend-mode: difference;
-}
-div.cmap:hover .cmap-name {
-  color: red;
-}
-
-.container {
-  overflow: hidden;
-}
-
-.filterDiv {
-  width: 100%;
-  display: none; /* Hidden by default */
-}
-
-/* The "show" class is added to the filtered elements */
-.show {
-  display: block;
-}
-
-/* Style the buttons */
-.btn {
-  border: none;
-  outline: none;
-  padding: 8px 16px;
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
-body[data-md-color-scheme="slate"] .btn {
-  background-color: #414352;
   color: white;
 }
 
-body[data-md-color-scheme="slate"] {
-  /* default is  hsla(var(--md-hue),75%,95%,1) */
-  --md-default-fg-color: hsla(var(--md-hue),40%,95%,.75);
-  /* default is  hsla(var(--md-hue), 15%, 21%, 1); */
+.md-header__source,
+.md-header [for="__search"] {
+  mix-blend-mode: difference;
+}
+
+[data-md-color-scheme="slate"] {
   --md-default-bg-color: hsla(var(--md-hue), 15%, 10%, 1);
 }
 
-/* Add a light grey background on mouse-over */
-.btn:hover {
-  background-color: #ddd;
-}
-body[data-md-color-scheme="slate"] .btn:hover {
-  background-color: #a3a5b1;
+#readthedocs-ea,
+.ethical-alabaster {
+  display: none;
 }
 
-/* Add a dark background to the active button */
-.btn.active {
-  background-color: #666;
+.md-typeset .admonition,
+.md-typeset details {
+  border-width: 0;
+  border-left-width: 4px;
+}
+
+/* ----------------------------------------------------------------------------
+   API docs (mkdocstrings)
+   ------------------------------------------------------------------------- */
+
+/* name of a method */
+code.highlight span.n:first-child {
+  color: red;
+}
+code.highlight span.n:not(:first-child) {
+  color: #666;
+}
+
+/* Mark external links as such. */
+a.autorefs-external::after {
+  /* https://primer.style/octicons/arrow-up-right-24 */
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="rgb(0, 0, 0)" d="M18.25 15.5a.75.75 0 00.75-.75v-9a.75.75 0 00-.75-.75h-9a.75.75 0 000 1.5h7.19L6.22 16.72a.75.75 0 101.06 1.06L17.5 7.56v7.19c0 .414.336.75.75.75z"></path></svg>');
+  content: " ";
+  display: inline-block;
+  position: relative;
+  top: 0.1em;
+  margin-left: 0.2em;
+  margin-right: 0.1em;
+  height: 1em;
+  width: 1em;
+  border-radius: 100%;
+  background-color: var(--md-typeset-a-color);
+}
+a.autorefs-external:hover::after {
+  background-color: var(--md-accent-fg-color);
+}
+
+.md-typeset .doc-children {
+  font-size: 0.7rem;
+}
+
+div.doc-contents:not(.first) {
+  padding-left: 25px;
+  border-left: 0.05rem solid var(--md-typeset-table-color);
+}
+
+/* ----------------------------------------------------------------------------
+   Colorbars ({{ cmap(...) }} macros and the catalog grid)
+   ------------------------------------------------------------------------- */
+
+.md-typeset .cmap {
+  position: relative;
+  display: block;
+  margin: 0 0 2px;
+  line-height: 0;
+}
+
+.md-typeset .cmap[hidden] {
+  display: none;
+}
+
+.md-typeset .cmap img {
+  display: block;
+  width: 100%;
+  height: 32px;
+}
+
+.md-typeset .cmap.grayscale img {
+  filter: grayscale(100%);
+}
+
+.md-typeset .cmap-expr {
+  display: inline-block;
+  vertical-align: middle;
+  width: min(100%, 20rem);
+  margin: 0.2rem 0;
+}
+
+.md-typeset .cmap-expr img {
+  height: 20px;
+}
+
+.md-typeset .cmap-name {
+  position: absolute;
+  inset: 0 auto 0 0.8rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
   color: white;
+  text-shadow: #000 0 1px 2px;
+  mix-blend-mode: difference;
+  pointer-events: none;
 }
-body[data-md-color-scheme="slate"] .btn.active {
-  background-color: #a0a3b7;
-  color: black;
+
+.md-typeset a.cmap {
+  transition: transform 0.1s, box-shadow 0.1s;
 }
+
+.md-typeset a.cmap:hover,
+.md-typeset a.cmap:focus-visible {
+  z-index: 1;
+  transform: scaleY(1.15);
+  box-shadow: 0 0 0.4rem var(--md-default-fg-color--light);
+}
+
+/* ----------------------------------------------------------------------------
+   Catalog filter
+   ------------------------------------------------------------------------- */
+
+.cmap-filter {
+  position: sticky;
+  top: 2.4rem;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.8rem;
+  align-items: center;
+  padding: 0.6rem 0;
+  margin-bottom: 0.4rem;
+  background: var(--md-default-bg-color);
+  font-size: 0.7rem;
+}
+
+.cmap-filter input[type="search"],
+.cmap-filter select,
+.cmap-compare-input {
+  padding: 0.35rem 0.6rem;
+  font: inherit;
+  color: var(--md-default-fg-color);
+  background: var(--md-default-fg-color--lightest);
+  border: 1px solid transparent;
+  border-radius: 0.3rem;
+}
+
+.cmap-filter input[type="search"] {
+  flex: 1 1 12rem;
+}
+
+.cmap-filter input:focus,
+.cmap-filter select:focus,
+.cmap-compare-input:focus {
+  outline: none;
+  border-color: var(--md-accent-fg-color);
+}
+
+.cmap-filter-mono {
+  display: inline-flex;
+  gap: 0.3rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.cmap-filter-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.cmap-filter-cats button,
+.cmap-cvd label {
+  padding: 0.25rem 0.7rem;
+  font: inherit;
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+  background: var(--md-default-fg-color--lightest);
+  border-radius: 1rem;
+}
+
+.cmap-filter-cats button[aria-pressed="true"],
+.cmap-cvd label:has(input:checked) {
+  color: var(--md-accent-bg-color);
+  background: var(--md-accent-fg-color);
+}
+
+.cmap-filter-count {
+  margin-left: auto;
+  color: var(--md-default-fg-color--light);
+}
+
+.cmap-empty {
+  color: var(--md-default-fg-color--light);
+}
+
+/* ----------------------------------------------------------------------------
+   Colormap detail page
+   ------------------------------------------------------------------------- */
+
+.md-typeset .cmap-detail .cmap img {
+  height: 40px;
+}
+
+.md-typeset .cmap-detail .cmap.grayscale img {
+  height: 30px;
+}
+
+.cmap-sineramp {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 826 / 96;
+  margin-top: 2px;
+}
+
+.md-typeset .cmap-cvd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0;
+  margin: 0.8rem 0;
+  font-size: 0.65rem;
+  border: 0;
+}
+
+.cmap-cvd input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cmap-cvd label:has(input:focus-visible) {
+  outline: 2px solid var(--md-accent-fg-color);
+}
+
+.cmap-chart-wrap {
+  position: relative;
+  height: 350px;
+}
+
+.md-typeset .cmap-chart-caption {
+  font-size: 0.65rem;
+  font-style: italic;
+  color: var(--md-default-fg-color--light);
+  text-align: center;
+}
+
+.md-typeset .cmap-pager {
+  display: flex;
+  justify-content: space-between;
+}
+
+.md-typeset .cmap-pager a:only-child:last-child {
+  margin-left: auto;
+}
+
+/* ----------------------------------------------------------------------------
+   Compare page
+   ------------------------------------------------------------------------- */
+
+.cmap-compare-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cmap-compare-input {
+  flex: 1;
+  font-size: 0.8rem;
+}
+
+.md-typeset .cmap-compare-form .md-button {
+  padding: 0.35rem 1rem;
+  margin: 0;
+}
+
+.cmap-compare-row {
+  margin-bottom: 1rem;
+}
+
+.cmap-compare-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+
+.cmap-compare-remove {
+  color: var(--md-default-fg-color--light);
+  cursor: pointer;
+}
+
+.cmap-compare-remove:hover {
+  color: var(--md-accent-fg-color);
+}
+
+.cmap-compare-bar {
+  display: block;
+  width: 100%;
+  height: 32px;
+}
+
+/* ----------------------------------------------------------------------------
+   Named colors (colors.md)
+   ------------------------------------------------------------------------- */
 
 .colorlist {
   display: flex;
@@ -166,59 +336,11 @@ body[data-md-color-scheme="slate"] .btn.active {
   justify-content: center;
   font-size: 0.7rem;
 }
+
 .colorbox {
   width: 7rem;
   height: 3.8rem;
   padding-top: 0.22rem;
   margin: 0.2rem;
   text-align: center;
-}
-#readthedocs-ea, .ethical-alabaster {
-  display: none;
-}
-
-.radio-group {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.radio-option {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5em;
-  border-radius: 0.5em;
-  cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
-}
-
-.radio-option input[type="radio"] {
-  appearance: none;
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.radio-option .material-icons {
-  font-size: 1rem;
-  color: var(--md-default-fg-color);
-  transition: color 0.2s;
-}
-
-.radio-option input[type="radio"]:checked ~ .material-icons,
-.radio-option input[type="radio"]:checked ~ .radio-label {
-  color: var(--md-accent-fg-color);
-}
-
-
-.radio-option:hover {
-  background-color: var(--md-default-bg-color--lighter);
-  box-shadow: 0 0 0 2px var(--md-accent-fg-color);
-}
-
-.radio-option .radio-label {
-  font-size: 0.65rem;
-  color: var(--md-default-fg-color);
 }

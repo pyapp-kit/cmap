@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Colors
 
 The `cmap.Color` type represents an individual color.
@@ -269,4 +273,4 @@ The following names may be used as string inputs to the `Color` constructor.
 
 (case insensitive; spaces, dashes, and underscores are ignored)
 
-{{ COLOR_LIST }}
+{{ color_list() }}
