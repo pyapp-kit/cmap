@@ -19,8 +19,10 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 import cmap.data
 
 if TYPE_CHECKING:
+    from typing import NotRequired, Required, TypeAlias
+
     from _typeshed import FileDescriptorOrPath
-    from typing_extensions import NotRequired, Required, TypeAlias, TypedDict
+    from typing_extensions import TypedDict
 
     from ._colormap import ColormapLike, Interpolation
 

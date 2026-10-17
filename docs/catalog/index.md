@@ -6,7 +6,7 @@ constructor:
 ```python
 from cmap import Colormap
 
-cmap = Colormap('viridis')
+cmap = Colormap("viridis")
 ```
 
 !!!note  "Coming from matplotlib?"

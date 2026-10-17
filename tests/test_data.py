@@ -179,6 +179,6 @@ def test_mpl_conversion() -> None:
     ]
 
     result = _mpl_segmentdata_to_stops(data)
-    for (rstop, rcolor), (estop, ecolor) in zip(result, expected):
+    for (rstop, rcolor), (estop, ecolor) in zip(result, expected, strict=False):
         assert rstop == estop
         assert np.allclose(rcolor, ecolor)

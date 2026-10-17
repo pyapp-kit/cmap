@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import base64
+import itertools
 import warnings
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from copy import copy
 from functools import partial
 from numbers import Number
-from typing import TYPE_CHECKING, Any, Callable, NamedTuple, Union, cast, overload
+from typing import TYPE_CHECKING, Any, NamedTuple, Union, cast, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -19,7 +20,7 @@ from ._color import Color, ColorLike
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Literal
+    from typing import Literal, TypeAlias, TypeGuard
 
     import bokeh.models
     import matplotlib.colors
@@ -31,7 +32,7 @@ if TYPE_CHECKING:
     from numpy.typing import ArrayLike, NDArray
     from pydantic import GetCoreSchemaHandler
     from pydantic_core import CoreSchema
-    from typing_extensions import TypeAlias, TypedDict, TypeGuard
+    from typing_extensions import TypedDict
 
     from ._catalog import CatalogItem
 
@@ -60,7 +61,7 @@ ColorStopLike: TypeAlias = Union[tuple[float, ColorLike], "NDArray"]
 # All of the things that we can pass to the constructor of Colormap
 ColormapLike: TypeAlias = Union[
     str,  # colormap name, w/ optional "_r" suffix
-    Iterable[Union[ColorLike, ColorStopLike]],
+    Iterable[ColorLike | ColorStopLike],
     "NDArray",
     "MPLSegmentData",
     dict[float, ColorLike],
@@ -1003,8 +1004,8 @@ class ColorStops(Sequence[ColorStop]):
         The array must be an (N, 5) array, where the first column is the position
         (0-1) and the remaining columns are the color (RGBA, 0-1).
     lut_func : callable, optional
-        A callable that takes a single argument (an (N, 1) array of positions) and
-        returns an (N, 4) array of colors.  This will be used to generate the LUT
+        A callable that takes a single argument (an (N,) array of positions) and
+        returns an (N, 3) RGB or (N, 4) RGBA array.  This will generate the LUT
         instead of the stops array.  If provided, the stops argument will be ignored.
     interpolation : str, optional
         Interpolation mode.  Must be one of 'linear' (or `True`) or 'nearest' (or
@@ -1127,6 +1128,16 @@ class ColorStops(Sequence[ColorStop]):
     def color_array(self) -> np.ndarray:
         """Return an (N, 4) array of RGBA values."""
         return self._stops[:, 1:]
+
+    @property
+    def lut_func(self) -> LutCallable | None:
+        """Callable that generates this colormap's colors, or None if defined by stops.
+
+        Evaluating it gives exact colors at arbitrary positions, unlike `stops` and
+        `color_array`, which hold a 256-point sampling.  It is the stored callable,
+        so its output is not clipped and may be RGB rather than RGBA.
+        """
+        return self._lut_func
 
     def __len__(self) -> int:
         return len(self._stops)
@@ -1254,7 +1265,7 @@ class ColorStops(Sequence[ColorStop]):
             # to be a problem in practice)
             midpoints = np.linspace(0, 1, len(colors) + 1)[1:-1]
             _midstops = []
-            for m, (c1, c2) in zip(midpoints, zip(colors[:-1], colors[1:])):
+            for m, (c1, c2) in zip(midpoints, itertools.pairwise(colors), strict=False):
                 s1 = f"{c1.hex if as_hex else c1.rgba_string} {m * 100:g}%"
                 s2 = f"{c2.hex if as_hex else c2.rgba_string} {m * 100:g}%"
                 _midstops.extend([s1, s2])
@@ -1263,7 +1274,7 @@ class ColorStops(Sequence[ColorStop]):
             _stops = ", ".join(
                 [
                     f"{c.hex if as_hex else c.rgba_string} {s * 100:g}%"
-                    for c, s in zip(colors, stops)
+                    for c, s in zip(colors, stops, strict=False)
                 ]
             )
         angle_ = "" if radial else f"{angle}deg, "
@@ -1568,7 +1579,7 @@ def _mpl_segmentdata_to_stops(
         alpha = np.ones_like(all_positions)
 
     rgba = np.stack([*rgb, alpha], axis=1)
-    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist())]
+    return [(a, tuple(b)) for a, b in zip(all_positions, rgba.tolist(), strict=False)]
 
 
 def _make_identifier(name: str) -> str:
@@ -1663,7 +1674,7 @@ def _parse_colorstops(
         raise ValueError("Color stops must be in ascending position order")
 
     _stops = _fill_stops(_positions, "neighboring")  # TODO: expose fill_mode?
-    return cls(zip(_stops, _colors))
+    return cls(zip(_stops, _colors, strict=False))
 
 
 def _html_color_patch(color: Color | None) -> str:
