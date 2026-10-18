@@ -98,10 +98,10 @@ div.doc-contents:not(.first) {
 .md-typeset .cmap-name {
 	position: absolute;
 	top: 50%;
-	left: 0.4rem;
+	left: 0.6rem;
 	z-index: 1;
-	padding: 0.2em 0.45em;
-	font-size: 0.75rem;
+	padding: 0.15em 0.4em;
+	font-size: 0.65rem;
 	font-weight: 500;
 	line-height: 1;
 	color: white;
