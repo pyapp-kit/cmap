@@ -30,23 +30,9 @@ div.ethical-sidebar, div.ethical-footer {
     display: none !important;
 }
 
-.md-typeset .admonition,
-.md-typeset details {
-  border-width: 0;
-  border-left-width: 4px;
-}
-
 /* ----------------------------------------------------------------------------
    API docs (mkdocstrings)
    ------------------------------------------------------------------------- */
-
-/* name of a method */
-code.highlight span.n:first-child {
-  color: red;
-}
-code.highlight span.n:not(:first-child) {
-  color: #666;
-}
 
 /* Mark external links as such. */
 a.autorefs-external::after {
@@ -65,10 +51,6 @@ a.autorefs-external::after {
 }
 a.autorefs-external:hover::after {
   background-color: var(--md-accent-fg-color);
-}
-
-.md-typeset .doc-children {
-  font-size: 0.7rem;
 }
 
 div.doc-contents:not(.first) {
