@@ -72,6 +72,12 @@ CVD_LABELS = {
     "deutan": "Deuteranopia",
     "tritan": "Tritanopia",
 }
+# the cone type that each simulated deficiency is missing
+CVD_CONES = {
+    "protan": ("L", "long-wavelength, red"),
+    "deutan": ("M", "medium-wavelength, green"),
+    "tritan": ("S", "short-wavelength, blue"),
+}
 # (key in report, key in output json, decimals)
 REPORT_FIELDS = (
     ("J", "J", 1),
@@ -154,7 +160,7 @@ breadcrumbs:
 {% if square %}<canvas class="cmap-test-square" data-test-image="{{ square.kind }}" title="{{ square.title }}" aria-label="{{ name }} applied to the {{ square.label }} test image"></canvas>
 {% endif %}</div>
 <fieldset class="cmap-cvd" role="radiogroup" aria-label="Simulate color vision deficiency">
-{% for key, label in cvd_labels.items() %}<label><input type="radio" name="cvd" value="{{ key }}"{% if loop.first %} checked{% endif %}><span>{{ label }}</span></label>
+{% for key, label in cvd_labels.items() %}{% set cone = cvd_cones.get(key) %}<label{% if cone %} title="Simulates missing {{ cone[0] }} ({{ cone[1] }}) cones"{% endif %}><input type="radio" name="cvd" value="{{ key }}"{% if loop.first %} checked{% endif %}>{% if cone %}<span class="cmap-cvd-cone" aria-hidden="true">{{ cone[0] }}</span>{% endif %}<span>{{ label }}</span></label>
 {% endfor %}</fieldset>
 </div>
 
@@ -339,6 +345,7 @@ def _render_page(
             attrs=f' title="{GRAY_TITLE}"',
         ),
         cvd_labels=CVD_LABELS,
+        cvd_cones=CVD_CONES,
         square=SQUARE_TEST_IMAGES.get(info.category),
         data_url=f"../../_data/{quote(Path(page).stem)}.json",
         prev=_link(prev),

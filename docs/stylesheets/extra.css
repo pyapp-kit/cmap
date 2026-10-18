@@ -321,6 +321,19 @@ div.doc-contents:not(.first) {
 	border: 0;
 }
 
+/* L / M / S: the cone type that each deficiency is missing */
+.cmap-cvd-cone {
+  display: inline-block;
+  min-width: 1.1em;
+  margin-right: 0.35em;
+  font-family: var(--md-code-font-family);
+  font-weight: 700;
+  line-height: 1.1em;
+  text-align: center;
+  border: 1px solid currentColor;
+  border-radius: 0.2em;
+}
+
 .cmap-cvd input {
 	position: absolute;
 	opacity: 0;

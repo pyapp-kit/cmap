@@ -21,9 +21,9 @@ The URL updates as you go, so you can share a comparison.
 </form>
 <fieldset class="cmap-cvd" role="radiogroup" aria-label="Simulate color vision deficiency">
 <label><input type="radio" name="cvd" value="normal" checked><span>Normal vision</span></label>
-<label><input type="radio" name="cvd" value="protan"><span>Protanopia</span></label>
-<label><input type="radio" name="cvd" value="deutan"><span>Deuteranopia</span></label>
-<label><input type="radio" name="cvd" value="tritan"><span>Tritanopia</span></label>
+<label title="Simulates missing L (long-wavelength, red) cones"><input type="radio" name="cvd" value="protan"><span class="cmap-cvd-cone" aria-hidden="true">L</span><span>Protanopia</span></label>
+<label title="Simulates missing M (medium-wavelength, green) cones"><input type="radio" name="cvd" value="deutan"><span class="cmap-cvd-cone" aria-hidden="true">M</span><span>Deuteranopia</span></label>
+<label title="Simulates missing S (short-wavelength, blue) cones"><input type="radio" name="cvd" value="tritan"><span class="cmap-cvd-cone" aria-hidden="true">S</span><span>Tritanopia</span></label>
 </fieldset>
 <div class="cmap-compare-rows"></div>
 <div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="compare"></canvas></div>
