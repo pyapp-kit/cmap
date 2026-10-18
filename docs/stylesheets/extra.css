@@ -29,9 +29,9 @@
   --md-default-bg-color: hsla(var(--md-hue), 15%, 10%, 1);
 }
 
-#readthedocs-ea,
-.ethical-alabaster {
-  display: none;
+
+div.ethical-sidebar, div.ethical-footer {
+    display: none !important;
 }
 
 .md-typeset .admonition,
