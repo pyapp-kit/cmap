@@ -182,11 +182,3 @@ SPDX-License-Identifier = "CC0-1.0"
 # freely shared with an attribution request (not a formal license). The matlab
 # colormaps are trivial mathematical formulas independently re-implemented across
 # many projects. Both fall through to the project default for now.
-
-# --- Docs assets ---
-
-[[annotations]]
-path = "docs/images/favicon.svg"
-precedence = "override"
-SPDX-FileCopyrightText = "2026 Lucide Icons and Contributors"
-SPDX-License-Identifier = "ISC"
