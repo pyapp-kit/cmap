@@ -25,10 +25,6 @@
   mix-blend-mode: difference;
 }
 
-[data-md-color-scheme="slate"] {
-  --md-default-bg-color: hsla(var(--md-hue), 15%, 10%, 1);
-}
-
 
 div.ethical-sidebar, div.ethical-footer {
     display: none !important;
