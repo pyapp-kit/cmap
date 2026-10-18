@@ -49,8 +49,10 @@ def to_mpl(
                 ) from e
             raise
 
+    # mpl's bad covers both nan and masked; fall back to nan_color so that a
+    # nan color set without bad isn't silently dropped
     return mpl_cm.with_extremes(
-        bad=cm.bad_color,
+        bad=cm.nan_color if cm.bad_color is None else cm.bad_color,
         over=cm.over_color,
         under=cm.under_color,
     )
@@ -109,8 +111,10 @@ def to_napari(cm: Colormap) -> NapariColormap:
             kwargs["interpolation"] = (
                 "zero" if cm.interpolation == "nearest" else "linear"
             )
-        if "nan_color" in param_names and cm.bad_color is not None:
-            kwargs["nan_color"] = cm.bad_color.rgba
+        # napari's nan_color covers nan alone, so prefer cmap's nan color over bad
+        nan_color = cm.nan_color if cm.nan_color is not None else cm.bad_color
+        if "nan_color" in param_names and nan_color is not None:
+            kwargs["nan_color"] = nan_color.rgba
         if "high_color" in param_names and cm.over_color is not None:
             kwargs["high_color"] = cm.over_color.rgba
         if "low_color" in param_names and cm.under_color is not None:
