@@ -94,18 +94,20 @@ div.doc-contents:not(.first) {
 	height: 20px;
 }
 
+/* a dark pill keeps the name legible on any colormap */
 .md-typeset .cmap-name {
 	position: absolute;
-	inset: 0 auto 0 0.8rem;
+	top: 50%;
+	left: 0.4rem;
 	z-index: 1;
-	display: flex;
-	align-items: center;
+	padding: 0.2em 0.45em;
 	font-size: 0.75rem;
 	font-weight: 700;
 	line-height: 1;
 	color: white;
-	text-shadow: #000 0 1px 2px;
-	mix-blend-mode: difference;
+	background: rgb(0 0 0 / 0.55);
+	border-radius: 0.25em;
+	transform: translateY(-50%);
 	pointer-events: none;
 }
 
