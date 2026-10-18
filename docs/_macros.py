@@ -76,7 +76,11 @@ def catalog_grid(page: str, category: str | None = None) -> str:
         raise FileNotFoundError(
             f"{CATALOG_INDEX} not found. Run `python docs/_gen_catalog.py` first."
         )
-    entries = json.loads(CATALOG_INDEX.read_text())
+    entries = natsort.natsorted(
+        json.loads(CATALOG_INDEX.read_text()),
+        key=lambda e: e["name"],
+        alg=natsort.ns.IGNORECASE,
+    )
     if category:
         entries = [e for e in entries if e["category"] == category]
 

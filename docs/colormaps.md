@@ -164,6 +164,40 @@ A [`numpy.ndarray`][], in one of the following formats:
 
 ## Usage
 
+### Mapping data to colors
+
+Call a colormap with an array of values to get an array of RGBA colors, with
+shape `data.shape + (4,)`. Float values are expected to be normalized to
+[0, 1]:
+
+```python
+import numpy as np
+from cmap import Colormap
+
+cm = Colormap("viridis")
+data = np.random.random((64, 64))
+
+cm(data)  # float RGBA array, shape (64, 64, 4)
+cm(data, bytes=True)  # uint8 RGBA array, shape (64, 64, 4)
+cm(0.5)  # a single Color
+```
+
+Values below 0, above 1, and NaN use the colormap's `under`, `over`, and
+`bad` colors. By default these are the first color, the last color, and
+transparent:
+
+```python
+cm = Colormap("viridis", under="black", over="white", bad="gray")
+cm([-0.1, 0.5, 1.2, np.nan], bytes=True)
+# array([[  0,   0,   0, 255],
+#        [ 32, 144, 140, 255],
+#        [255, 255, 255, 255],
+#        [128, 128, 128, 255]], dtype=uint8)
+```
+
+Integer arrays are used as indices directly into the colormap's lookup table
+(LUT). See [`Colormap.__call__`][cmap.Colormap.__call__] for details.
+
 ### Using qualitative colormaps
 
 Consider a ColorBrewer qualitative colormap from the default catalog with eight color stops
@@ -421,7 +455,7 @@ Foo(colormap="viridis").model_dump_json()
 
 Foo(colormap=["red", "green"]).model_dump_json()
 # '{"colormap":{"name":"custom colormap","identifier":"custom_colormap",
-#   "category":null,"value":[[0.0,[1.0,0.0,0.0,1]],[1.0,[0.0,0.50196,0.0,1]]]}}'
+#   "category":null,"value":[[0.0,[1.0,0.0,0.0,1]],[1.0,[0.0,0.5019607843137255,0.0,1]]]}}'
 ```
 
 This also works in

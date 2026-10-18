@@ -341,7 +341,8 @@ div.doc-contents:not(.first) {
   text-align: center;
 }
 
-.md-typeset .cmap-pager {
+/* (the links are wrapped in a <p> by markdown) */
+.md-typeset .cmap-pager > p {
   display: flex;
   justify-content: space-between;
 }

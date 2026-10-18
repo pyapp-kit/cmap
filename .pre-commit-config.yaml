@@ -12,6 +12,12 @@ repos:
       - id: pretty-format-json
         args: [--autofix]
 
+  - repo: https://github.com/adhtruong/mirrors-typos
+    rev: v1.50.2
+    hooks:
+      - id: typos
+        args: [--force-exclude] # omitting --write-changes
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.17.1
     hooks:

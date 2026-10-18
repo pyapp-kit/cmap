@@ -23,6 +23,7 @@ new MutationObserver(() => {
 // ---------------------------------------------------------------------------
 
 function fetchData(url) {
+  url = String(url); // (URL objects are compared by identity)
   if (!dataCache.has(url)) {
     dataCache.set(
       url,
@@ -436,12 +437,12 @@ async function initCompare(root) {
 
   async function render() {
     syncUrl();
-    const datas = await Promise.all(
+    const allData = await Promise.all(
       selected.map((e) => fetchData(new URL(`${encodeURIComponent(e.path.split("/").pop())}.json`, base)))
     );
     rowsEl.replaceChildren(
       ...selected.map((e, i) => {
-        const d = datas[i][cvd()] ?? datas[i].normal;
+        const d = allData[i][cvd()] ?? allData[i].normal;
         const row = document.createElement("div");
         row.className = "cmap-compare-row";
         const head = document.createElement("div");
@@ -478,7 +479,7 @@ async function initCompare(root) {
       y: { min: 0, max: 100, title: { text: "Lightness J′", display: true } },
     });
     // legend swatches are little colorbars of each colormap
-    const swatches = datas.map((data) => swatch((data[cvd()] ?? data.normal).color));
+    const swatches = allData.map((data) => swatch((data[cvd()] ?? data.normal).color));
     options.plugins.legend = {
       display: true,
       labels: {
@@ -497,7 +498,7 @@ async function initCompare(root) {
       type: "scatter",
       data: {
         datasets: selected.map((e, i) => {
-          const d = datas[i][cvd()] ?? datas[i].normal;
+          const d = allData[i][cvd()] ?? allData[i].normal;
           const x = linspace(d.color.length);
           const colors = d.color.map((c) => `#${c}`);
           return {

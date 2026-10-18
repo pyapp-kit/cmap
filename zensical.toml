@@ -8,10 +8,9 @@
 [project]
 site_name = "cmap"
 site_description = "Colors and scientific colormaps for python, no dependencies"
-site_url = "https://cmap-docs.readthedocs.io/"
+site_url = "https://cmap-docs.readthedocs.io/en/stable/"
 repo_name = "pyapp-kit/cmap"
 repo_url = "https://github.com/pyapp-kit/cmap"
-edit_uri = "edit/main/docs/"
 
 extra_css = ["stylesheets/extra.css"]
 extra_javascript = [
@@ -22,11 +21,15 @@ extra_javascript = [
 exclude_docs = """
 _*.py
 __pycache__/
+overrides/
 """
 # colormap pages are reached from the catalog / category pages and search
 not_in_nav = """
 catalog/*/*.md
 """
+
+# rebuild when docstrings change
+watch = ["src"]
 
 nav = [
   { "Overview" = "index.md" },
@@ -46,9 +49,9 @@ nav = [
 
 [project.theme]
 language = "en"
-favicon = "images/favicon.ico"
+favicon = "images/favicon.svg"
+custom_dir = "docs/overrides"
 features = [
-  "content.action.edit",
   "content.code.annotate",
   "content.code.copy",
   "content.tabs.link",
@@ -75,8 +78,11 @@ accent = "pink"
 toggle.icon = "lucide/moon"
 toggle.name = "Switch to light mode"
 
+# (pink links are too low-contrast on white)
 [[project.theme.palette]]
 scheme = "default"
+primary = "deep purple"
+accent = "deep purple"
 toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
@@ -117,6 +123,8 @@ on_undefined = "strict"
 minify_html = true
 minify_js = true
 minify_css = true
+js_files = ["javascripts/cmap.js"]
+css_files = ["stylesheets/extra.css"]
 
 [project.plugins.mkdocstrings.handlers.python]
 inventories = [

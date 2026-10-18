@@ -108,7 +108,6 @@ ENV/
 
 cmap/_version.py
 src/cmap/_version.py
-docs/assets/_data/
 
 .ruff_cache/
 uv.lock

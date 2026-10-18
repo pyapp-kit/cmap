@@ -577,7 +577,7 @@ def to_mpl(
     N: int = 256,
     gamma: float = 1.0,
 ) -> matplotlib.colors.Colormap:
-    """Convienence function to create a matplotlib colormap.
+    """Convenience function to create a matplotlib colormap.
 
     Arguments are the same as for [cmap.Colormap][]. This simply creates the
     colormap instance and returns the value of `to_matplotlib()`.

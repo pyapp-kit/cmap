@@ -186,6 +186,19 @@ source = ["src"]
 
 
 # https://github.com/mgedmin/check-manifest#configuration
+[tool.typos.files]
+extend-exclude = ["CHANGELOG.md", "src/cmap/data/**/*.py"]
+
+[tool.typos.default]
+extend-ignore-identifiers-re = []
+
+[tool.typos.default.extend-words]
+ser = "ser"  # pydantic's `..._ser_schema`
+datas = "datas"  # pyinstaller's `collect_data_files(include_datas=...)`
+arange = "arange"  # `np.arange`
+buda = "buda"  # crameri colormap name
+OPF = "OPF"  # chrisluts colormap names
+
 [tool.check-manifest]
 ignore = [
     ".github_changelog_generator",

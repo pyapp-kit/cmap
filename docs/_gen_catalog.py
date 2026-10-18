@@ -91,6 +91,11 @@ PAGE = jinja2.Template(
 ---
 title: {{ name | tojson }}
 description: {{ description | tojson }}
+# rendered by overrides/partials/path.html (these pages aren't in the nav)
+breadcrumbs:
+  - {title: Overview, url: ""}
+  - {title: Colormap Catalog, url: catalog/}
+  - {title: {{ category | title }}, url: catalog/{{ category }}/}
 ---
 
 # {{ name }}
@@ -139,7 +144,7 @@ description: {{ description | tojson }}
 
 </div>
 
-<div class="cmap-detail" data-cmap-name="{{ name }}" data-json="{{ data_url }}">
+<div class="cmap-detail" data-cmap-name="{{ name }}" data-json="{{ data_url }}" data-search-exclude>
 <div class="cmap-test-images">
 <div class="cmap-test-stack">
 {{ bar }}
@@ -153,7 +158,11 @@ description: {{ description | tojson }}
 {% endfor %}</fieldset>
 </div>
 
+<div data-search-exclude markdown>
+
 [:lucide-git-compare: Compare with other colormaps](../../compare.md?cmaps={{ name | urlencode }}){ .md-button }
+
+</div>
 
 ## Perceptual lightness { data-search-exclude }
 

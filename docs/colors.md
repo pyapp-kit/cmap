@@ -85,7 +85,7 @@ In detail:
     !!!warning "Ambiguities with tuples of 0 and 1"
 
         While it's nice to support both the 8-bit and float inputs, there is
-        amgiguity in the case of a tuple of integers containing only zeros
+        ambiguity in the case of a tuple of integers containing only zeros
         and ones (e.g. `(0, 0, 1)`).  The convention in `cmap` is to treat a
         tuple of *all* integers as 8-bit RGB values, and a tuple with *any*
         floats (excepting the 4th alpha value) as float RGB values, so
@@ -125,10 +125,10 @@ In detail:
     !!!Note
         [Base-16 integers](https://docs.python.org/3/library/functions.html#int)
         look the same as their hexadecimal color string representation, but
-        lacks the quotes, and are preceded by `0x` instead of `#`.
+        lack the quotes, and are preceded by `0x` instead of `#`.
 
 1. An instance of [`cmap.Color`][] itself: which is returned unchanged
-    - `Color(Color('red')) is Color('red')`)
+    - `Color(Color('red')) is Color('red')`
 
 1. (*Third-party object*): An instance of [`pydantic_extra_types.color.Color`](https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/#pydantic_extra_types.color.Color).
 
@@ -166,7 +166,9 @@ Comparing a color to anything will attempt to cast the other object:
 
 ```python
 trq == "turquoise"  # True
-trq is "turquoise"  # False ... naturally, it's not the same object
+trq is Color(
+    (64, 224, 208)
+)  # True ... colors are cached, so equal colors are the same object
 ```
 
 !!!tip
