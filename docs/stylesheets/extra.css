@@ -115,6 +115,7 @@ div.doc-contents:not(.first) {
 .md-typeset .cmap-name {
   position: absolute;
   inset: 0 auto 0 0.8rem;
+  z-index: 1;
   display: flex;
   align-items: center;
   font-size: 0.75rem;
@@ -126,13 +127,18 @@ div.doc-contents:not(.first) {
   pointer-events: none;
 }
 
-.md-typeset a.cmap {
+/* grow only the bar (not the label) on hover */
+.md-typeset a.cmap img {
   transition: transform 0.1s, box-shadow 0.1s;
 }
 
 .md-typeset a.cmap:hover,
 .md-typeset a.cmap:focus-visible {
   z-index: 1;
+}
+
+.md-typeset a.cmap:hover img,
+.md-typeset a.cmap:focus-visible img {
   transform: scaleY(1.15);
   box-shadow: 0 0 0.4rem var(--md-default-fg-color--light);
 }
