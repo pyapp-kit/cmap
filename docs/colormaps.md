@@ -26,11 +26,11 @@ The following objects can be interpreted as a colormap, and used as the first ar
 to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectively as
 ["`ColormapLike`"][cmap.ColormapLike].  Briefly, valid arguments are of type:
 
-- [⬇️ `str`](#str)
-- [⬇️ `Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](colors.md#colorlike-objects))*
-- [⬇️ `numpy.ndarray`](#numpyndarray)
-- [⬇️ `dict`](#dict)
-- [⬇️ `Callable[[ArrayLike], ArrayLike]`](#callable)
+- [`str`](#str)
+- [`Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](colors.md#colorlike-objects))*
+- [`numpy.ndarray`](#numpyndarray)
+- [`dict`](#dict)
+- [`Callable[[ArrayLike], ArrayLike]`](#callable)
 
 ### `str`
 
@@ -39,7 +39,7 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
     - `Colormap('viridis')` {{ cmap_expr("'viridis'") }}
     - `Colormap('batlow')` {{ cmap_expr("'batlow'") }}
 
-    !!!note "Matplotlib names ✅"
+    !!!note "Matplotlib names"
         Any valid matplotlib colormap key that could be used in `matplotlib.colormaps[...]`
         is also a valid `cmap` colormap name.
 
@@ -102,17 +102,16 @@ A [`numpy.ndarray`][], in one of the following formats:
 - an **`(N, 5)`** array of color stops, where the first column is the position of the color stop
     and the remaining 4 columns are the RGBA colors:
 
+    <!-- fmt: off -->
     ```python
-    Colormap(
-        np.array(
-            [
-                [0.0, 0.0, 0.0, 1.0, 1.0],
-                [0.8, 1.0, 1.0, 0.0, 1.0],
-                [1.0, 1.0, 0.0, 0.0, 1.0],
-            ]
-        )
-    )
+    Colormap(np.array([
+        # pos, r,   g,   b,   a
+        [0.0, 0.0, 0.0, 1.0, 1.0],
+        [0.8, 1.0, 1.0, 0.0, 1.0],
+        [1.0, 1.0, 0.0, 0.0, 1.0],
+    ]))
     ```
+    <!-- fmt: on -->
 
     {{ cmap_expr("np.array([[0, 0, 0, 1., 1.], [0.8, 1., 1., 0, 1.], [1., 1., 0, 0, 1.]])") }}
 
@@ -134,16 +133,19 @@ A [`numpy.ndarray`][], in one of the following formats:
 
         <!-- fmt: off -->
         ```python
-        cdict = {'red':  [[0.0,  0.0, 0.0],
-                        [0.5,  1.0, 1.0],
-                        [1.0,  1.0, 1.0]],
-                'green': [[0.0,  0.0, 0.0],
-                        [0.25, 0.0, 0.0],
-                        [0.75, 1.0, 1.0],
-                        [1.0,  1.0, 1.0]],
-                'blue':  [[0.0,  0.0, 0.0],
-                        [0.5,  0.0, 0.0],
-                        [1.0,  1.0, 1.0]]}
+        cdict = {
+            #         x     y0   y1
+            "red":   [[0.0,  0.0, 0.0],
+                      [0.5,  1.0, 1.0],
+                      [1.0,  1.0, 1.0]],
+            "green": [[0.0,  0.0, 0.0],
+                      [0.25, 0.0, 0.0],
+                      [0.75, 1.0, 1.0],
+                      [1.0,  1.0, 1.0]],
+            "blue":  [[0.0,  0.0, 0.0],
+                      [0.5,  0.0, 0.0],
+                      [1.0,  1.0, 1.0]],
+        }
         Colormap(cdict)
         ```
         <!-- fmt: on -->

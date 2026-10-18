@@ -159,7 +159,7 @@ breadcrumbs:
 </div>
 {% if square %}<canvas class="cmap-test-square" data-test-image="{{ square.kind }}" title="{{ square.title }}" aria-label="{{ name }} applied to the {{ square.label }} test image"></canvas>
 {% endif %}</div>
-<fieldset class="cmap-cvd" role="radiogroup" aria-label="Simulate color vision deficiency">
+<fieldset class="cmap-pills cmap-cvd" role="radiogroup" aria-label="Simulate color vision deficiency">
 {% for key, label in cvd_labels.items() %}{% set cone = cvd_cones.get(key) %}<label{% if cone %} title="Simulates missing {{ cone[0] }} ({{ cone[1] }}) cones"{% endif %}><input type="radio" name="cvd" value="{{ key }}"{% if loop.first %} checked{% endif %}>{% if cone %}<span class="cmap-cvd-cone" aria-hidden="true">{{ cone[0] }}</span>{% endif %}<span>{{ label }}</span></label>
 {% endfor %}</fieldset>
 </div>
@@ -204,8 +204,26 @@ render_macros: true
 
 # {title} colormaps
 
+{intro}
+
 {{{{ cmap_catalog("{category}") }}}}
 """
+
+CATEGORY_INTROS = {
+    "sequential": "Sequential colormaps run from low to high, usually with steadily "
+    "changing lightness. Use them for ordered data, like intensity, density or "
+    "temperature.",
+    "diverging": "Diverging colormaps have two contrasting hues that meet at a "
+    "neutral midpoint. Use them for data that deviates in both directions from a "
+    "meaningful center, like differences or anomalies around zero.",
+    "cyclic": "Cyclic colormaps start and end on the same color. Use them for data "
+    "that wraps around, like phase, angle, direction or time of day.",
+    "qualitative": "Qualitative colormaps are sets of distinct colors with no "
+    "implied order. Use them to label categories.",
+    "miscellaneous": "Colormaps that don't fit the other categories, including "
+    "many classic and specialty maps. Check a colormap's lightness plot before "
+    "using it for quantitative data.",
+}
 
 REDIRECT = """<!doctype html>
 <html lang="en">
@@ -369,7 +387,10 @@ def build() -> None:
     for category, cat_items in by_category.items():
         title = category.title()
         write(
-            f"{category}/index.md", CATEGORY_PAGE.format(title=title, category=category)
+            f"{category}/index.md",
+            CATEGORY_PAGE.format(
+                title=title, category=category, intro=CATEGORY_INTROS[category]
+            ),
         )
         names = [n for n, _ in cat_items]
         for i, (name, info) in enumerate(cat_items):

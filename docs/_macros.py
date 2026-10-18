@@ -111,8 +111,8 @@ def catalog_grid(page: str, category: str | None = None) -> str:
         '<div class="cmap-filter">'
         '<input type="search" class="cmap-filter-text" placeholder="Filter by name…"'
         ' aria-label="Filter colormaps by name">'
-        '<select class="cmap-filter-ns" aria-label="Filter by source">'
-        f'<option value="">All sources</option>{ns_options}</select>'
+        '<select class="cmap-filter-ns" aria-label="Filter by collection">'
+        f'<option value="">All collections</option>{ns_options}</select>'
         '<label class="cmap-filter-mono" title="Lightness (CAM02-UCS J) only ever '
         'increases or only ever decreases (tolerance: 0.5 per step)">'
         '<input type="checkbox"> Monotonic lightness</label>'
@@ -129,20 +129,42 @@ def catalog_grid(page: str, category: str | None = None) -> str:
 
 COLORBOX = (
     '<div class="colorbox" style="background-color: {hex}; color: {text}">'
-    "<strong>{name}</strong><br><span>{hex}</span><br><span>{rgb}</span></div>"
+    "<strong>{name}</strong><code>{hex}</code><span>{rgb}</span>{aliases}</div>"
 )
 
 
+def _luminance(r: int, g: int, b: int) -> float:
+    """Return the WCAG relative luminance of an 8-bit sRGB color."""
+    lin = [
+        (v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4)
+        for v in (r / 255, g / 255, b / 255)
+    ]
+    return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2]
+
+
 def color_list() -> str:
-    """Return HTML for the list of named colors."""
-    boxes = []
+    """Return HTML for the list of named colors (aliases share a box)."""
+    names: dict[Any, list[str]] = {}
     for name, c in NAME_TO_RGB.items():
-        if (hsl := c.to_hsl()).l == 0.5:
-            text = "#000" if hsl.h <= 0.5 else "#FFF"
+        names.setdefault(c, []).append(name)
+
+    boxes = []
+    for c, (name, *aliases) in names.items():
+        if not c.a:
+            text = "inherit"  # transparent: use the page's text color
         else:
-            text = "#000" if hsl.l > 0.50 or not c.a else "#FFF"
+            # whichever of black or white text has the higher contrast
+            lum = _luminance(c.r, c.g, c.b)
+            text = "#000" if (lum + 0.05) / 0.05 > 1.05 / (lum + 0.05) else "#FFF"
+        also = f'<span class="colorbox-aliases">also: {", ".join(aliases)}</span>'
         boxes.append(
-            COLORBOX.format(name=name, hex=c.to_hex(), text=text, rgb=c.rgba_string())
+            COLORBOX.format(
+                name=name,
+                hex=c.to_hex(),
+                text=text,
+                rgb=c.rgba_string(),
+                aliases=also if aliases else "",
+            )
         )
     return f'<div class="colorlist">{"".join(boxes)}</div>'
 

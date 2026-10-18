@@ -34,23 +34,18 @@ html body div.ethical-footer {
    API docs (mkdocstrings)
    ------------------------------------------------------------------------- */
 
-/* Mark external links as such. */
+/* Mark external links as such (a small arrow, in the link's color). */
 a.autorefs-external::after {
 	/* https://primer.style/octicons/arrow-up-right-24 */
-	background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="rgb(0, 0, 0)" d="M18.25 15.5a.75.75 0 00.75-.75v-9a.75.75 0 00-.75-.75h-9a.75.75 0 000 1.5h7.19L6.22 16.72a.75.75 0 101.06 1.06L17.5 7.56v7.19c0 .414.336.75.75.75z"></path></svg>');
-	content: " ";
+	mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.25 15.5a.75.75 0 00.75-.75v-9a.75.75 0 00-.75-.75h-9a.75.75 0 000 1.5h7.19L6.22 16.72a.75.75 0 101.06 1.06L17.5 7.56v7.19c0 .414.336.75.75.75z"></path></svg>')
+		center / contain no-repeat;
+	content: "";
 	display: inline-block;
-	position: relative;
-	top: 0.1em;
-	margin-left: 0.2em;
-	margin-right: 0.1em;
-	height: 1em;
-	width: 1em;
-	border-radius: 100%;
-	background-color: var(--md-typeset-a-color);
-}
-a.autorefs-external:hover::after {
-	background-color: var(--md-accent-fg-color);
+	width: 0.75em;
+	height: 0.75em;
+	margin-left: 0.15em;
+	vertical-align: 0.05em;
+	background-color: currentColor;
 }
 
 div.doc-contents:not(.first) {
@@ -83,15 +78,16 @@ div.doc-contents:not(.first) {
 	filter: grayscale(100%);
 }
 
+/* example bars under their code, aligned with it */
 .md-typeset .cmap-expr {
-	display: inline-block;
-	vertical-align: middle;
-	width: min(100%, 20rem);
-	margin: 0.2rem 0;
+	display: block;
+	width: min(100%, 24rem);
+	margin: 0.35rem 0 0.6rem;
 }
 
 .md-typeset .cmap-expr img {
 	height: 20px;
+	border-radius: 0.15rem;
 }
 
 /* a dark pill keeps the name legible on any colormap */
@@ -145,6 +141,13 @@ div.doc-contents:not(.first) {
 	margin-bottom: 0.4rem;
 	background: var(--md-default-bg-color);
 	font-size: 0.7rem;
+}
+
+/* on small screens, a sticky filter bar would cover too much of the page */
+@media (max-width: 600px) {
+	.cmap-filter {
+		position: static;
+	}
 }
 
 .cmap-filter input[type="search"],
@@ -204,19 +207,20 @@ div.doc-contents:not(.first) {
 }
 
 .cmap-filter-cats button,
-.cmap-cvd label {
+.cmap-pills label {
 	padding: 0.25rem 0.7rem;
 	font: inherit;
-	color: var(--md-default-fg-color--light);
+	color: var(--md-default-fg-color);
 	cursor: pointer;
 	background: var(--md-default-fg-color--lightest);
 	border-radius: 1rem;
 }
 
 .cmap-filter-cats button[aria-pressed="true"],
-.cmap-cvd label:has(input:checked) {
+.cmap-pills label:has(input:checked) {
 	color: var(--md-accent-bg-color);
-	background: var(--md-accent-fg-color);
+	/* (darkened a little, for white text) */
+	background: color-mix(in srgb, var(--md-accent-fg-color) 85%, black);
 }
 
 .cmap-filter-count {
@@ -313,7 +317,7 @@ div.doc-contents:not(.first) {
 	}
 }
 
-.md-typeset .cmap-cvd {
+.md-typeset .cmap-pills {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.3rem;
@@ -336,13 +340,13 @@ div.doc-contents:not(.first) {
   border-radius: 0.2em;
 }
 
-.cmap-cvd input {
+.cmap-pills input {
 	position: absolute;
 	opacity: 0;
 	pointer-events: none;
 }
 
-.cmap-cvd label:has(input:focus-visible) {
+.cmap-pills label:has(input:focus-visible) {
 	outline: 2px solid var(--md-accent-fg-color);
 }
 
@@ -420,16 +424,34 @@ div.doc-contents:not(.first) {
    ------------------------------------------------------------------------- */
 
 .colorlist {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	font-size: 0.7rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+	gap: 0.4rem;
+	font-size: 0.65rem;
 }
 
 .colorbox {
-	width: 7rem;
-	height: 3.8rem;
-	padding-top: 0.22rem;
-	margin: 0.2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+	justify-content: center;
+	min-height: 4.4rem;
+	padding: 0.4rem;
+	line-height: 1.3;
 	text-align: center;
+	border-radius: 0.3rem;
+	/* outline, so that white / transparent boxes are visible */
+	box-shadow: inset 0 0 0 1px rgb(127 127 127 / 0.25);
+}
+
+.md-typeset .colorbox code {
+	padding: 0;
+	font-size: inherit;
+	color: inherit;
+	background: none;
+}
+
+.colorbox-aliases {
+	font-style: italic;
+	opacity: 0.8;
 }

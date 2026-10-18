@@ -142,6 +142,9 @@ show_bases = false
 show_source = false
 docstring_section_style = "list"
 merge_init_into_class = true
+# module members in `__all__` order (most important first), class members alphabetical
+members_order = ["__all__", "alphabetical"]
+group_by_category = false
 filters = ['(__call__|^[^_])']
 heading_level = 1
 parameter_headings = false

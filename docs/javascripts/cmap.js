@@ -164,13 +164,6 @@ function paintBar(canvas, colors, width = 826) {
   paint(canvas, colors, linspace(width), 1, width);
 }
 
-// A small colorbar canvas, e.g. for chart legends.
-function swatch(colors, width = 32, height = 10) {
-  const canvas = document.createElement("canvas");
-  paint(canvas, colors, Array.from({ length: height }, () => linspace(width)).flat(), height, width);
-  return canvas;
-}
-
 // ---------------------------------------------------------------------------
 // Catalog grid filtering
 // ---------------------------------------------------------------------------
@@ -278,7 +271,24 @@ function baseOptions(yScales) {
     maintainAspectRatio: false,
     animation: false,
     interaction: { mode: "index", intersect: false },
-    plugins: { legend: { display: false } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        boxPadding: 4,
+        callbacks: {
+          title: (items) => `x = ${items[0].parsed.x.toFixed(3)}`,
+          label: ({ dataset, parsed }) =>
+            `${dataset.label}: ${parsed.y == null ? "–" : Number(parsed.y.toPrecision(3))}`,
+          // a solid swatch of the line's color (or, for lines colored by the colormap,
+          // of the color at that point)
+          labelColor: ({ dataset, dataIndex }) => {
+            let color = dataset.tooltipColors?.[dataIndex] ?? dataset.borderColor;
+            if (typeof color !== "string") color = themeColors().fg;
+            return { borderColor: color, backgroundColor: color, borderWidth: 0, borderRadius: 2 };
+          },
+        },
+      },
+    },
     scales,
   };
 }
@@ -312,6 +322,7 @@ function drawChart(canvas, d) {
             label: "J′",
             data: points(x, d.J),
             backgroundColor: colors,
+            tooltipColors: colors,
             pointRadius: 10,
             pointHoverRadius: 12,
             borderWidth: 0,
@@ -397,6 +408,39 @@ function drawChart(canvas, d) {
 // ---------------------------------------------------------------------------
 
 const COMPARE_MAX = 6;
+// one dash pattern per line, so lines can be told apart even when the colormaps are
+// similar. (with round caps, each dash grows by the line width and each gap shrinks)
+const COMPARE_DASHES = [[], [12, 10], [0.1, 9], [18, 9, 0.1, 9], [6, 9], [26, 10]];
+const COMPARE_LINE_WIDTH = 5;
+// petroff:petroff6 from the catalog: six colors chosen to stay distinguishable,
+// including with color vision deficiencies (https://arxiv.org/abs/2107.02270)
+const COMPARE_COLORS = ["5790FC", "F89C20", "E42536", "964A8B", "9C9CA1", "7A21DD"];
+
+// A horizontal gradient through `colors`, spanning `x0` to `x1` on `ctx`.
+function lutGradient(ctx, colors, x0, x1) {
+  const gradient = ctx.createLinearGradient(x0, 0, x1, 0);
+  const n = Math.max(colors.length - 1, 1);
+  colors.forEach((c, i) => gradient.addColorStop(i / n, `#${c}`));
+  return gradient;
+}
+
+// A small dashed line in the colormap's colors, for the chart legend.
+function lineSwatch(colors, dash, width = 40, height = 10) {
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  const lineWidth = 4;
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = "round";
+  ctx.setLineDash(dash.map((d) => d * (lineWidth / COMPARE_LINE_WIDTH)));
+  ctx.strokeStyle = lutGradient(ctx, colors, 0, width);
+  ctx.beginPath();
+  ctx.moveTo(lineWidth / 2, height / 2);
+  ctx.lineTo(width - lineWidth / 2, height / 2);
+  ctx.stroke();
+  return canvas;
+}
 
 async function initCompare(root) {
   if (root.dataset.ready) return;
@@ -428,6 +472,12 @@ async function initCompare(root) {
     .filter(Boolean);
 
   const cvd = () => cvdGroup.querySelector("input:checked")?.value ?? "normal";
+  const lineColorsGroup = root.querySelector(".cmap-line-colors");
+  // the colors of the i-th line: its colormap's, or one distinct color
+  const lineColors = (data, i) =>
+    lineColorsGroup.querySelector("input:checked")?.value === "distinct"
+      ? [COMPARE_COLORS[i % COMPARE_COLORS.length]]
+      : (data[cvd()] ?? data.normal).color;
 
   function syncUrl() {
     const url = new URL(location.href);
@@ -478,14 +528,14 @@ async function initCompare(root) {
     const options = baseOptions({
       y: { min: 0, max: 100, title: { text: "Lightness J′", display: true } },
     });
-    // legend swatches are little colorbars of each colormap
-    const swatches = allData.map((data) => swatch((data[cvd()] ?? data.normal).color));
+    // legend swatches are little dashed lines in each colormap's colors
+    const swatches = allData.map((data, i) => lineSwatch(lineColors(data, i), COMPARE_DASHES[i]));
     options.plugins.legend = {
       display: true,
       labels: {
         color: themeColors().fg,
         usePointStyle: true,
-        pointStyleWidth: 32,
+        pointStyleWidth: 40,
         boxHeight: 10,
         padding: 16,
         generateLabels: (c) =>
@@ -500,18 +550,25 @@ async function initCompare(root) {
         datasets: selected.map((e, i) => {
           const d = allData[i][cvd()] ?? allData[i].normal;
           const x = linspace(d.color.length);
-          const colors = d.color.map((c) => `#${c}`);
+          const colors = lineColors(allData[i], i);
           return {
             label: e.name,
             data: points(x, d.J),
             showLine: true,
             pointRadius: 0,
-            borderWidth: 5,
-            // round caps hide the seams between the separately-colored segments
+            borderWidth: COMPARE_LINE_WIDTH,
             borderCapStyle: "round",
-            borderColor: colors[Math.floor(colors.length / 2)],
-            // color each segment of the line by the colormap itself
-            segment: { borderColor: (ctx) => colors[ctx.p0DataIndex] },
+            borderDash: COMPARE_DASHES[i],
+            tooltipColors: x.map((v) => `#${colors[Math.round(v * (colors.length - 1))]}`),
+            // color the line by the colormap itself (one gradient for the whole line,
+            // rather than per-segment colors, so that the dash pattern is continuous)
+            borderColor: ({ chart }) => {
+              const x0 = chart.scales.x?.getPixelForValue(0);
+              const x1 = chart.scales.x?.getPixelForValue(1);
+              // (before the first layout, there are no pixel positions yet)
+              if (!Number.isFinite(x0) || !Number.isFinite(x1)) return `#${colors[0]}`;
+              return lutGradient(chart.ctx, colors, x0, x1);
+            },
           };
         }),
       },
@@ -521,13 +578,21 @@ async function initCompare(root) {
 
   chart.addEventListener("cmap:rerender", render);
   cvdGroup.addEventListener("change", render);
+  lineColorsGroup.addEventListener("change", render);
+  // (a custom validity message blocks submitting the form until it's cleared)
+  input.addEventListener("input", () => input.setCustomValidity(""));
   root.querySelector(".cmap-compare-form").addEventListener("submit", (ev) => {
     ev.preventDefault();
     const e = resolve(input.value);
     input.setCustomValidity(e ? "" : "Unknown colormap");
     input.reportValidity();
     if (!e) return;
-    if (!selected.includes(e)) selected = [...selected, e].slice(-COMPARE_MAX);
+    if (!selected.includes(e) && selected.length >= COMPARE_MAX) {
+      input.setCustomValidity(`Up to ${COMPARE_MAX} colormaps: remove one first`);
+      input.reportValidity();
+      return;
+    }
+    if (!selected.includes(e)) selected = [...selected, e];
     input.value = "";
     render();
   });
