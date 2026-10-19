@@ -1,18 +1,17 @@
 {
-  "authors": [
-    "Maureen Stone",
-    "Cristy Miller"
-  ],
   "category": "qualitative",
   "colormaps": {
     "tab10": {
+      "authors": [
+        "Maureen Stone"
+      ],
       "data": "cmap.data.tableau:Tableau10",
-      "info": "Tableau's classic \"Tableau 10\" palette, designed by Maureen Stone for Tableau 1.5. Also d3's `category10` and matplotlib's `tab10` (its default color cycle).",
+      "info": "Tableau's classic \"Tableau 10\" palette, designed by Maureen Stone in 2004 for Tableau 1.5. Also d3's `category10` and matplotlib's `tab10` (its default color cycle).",
       "interpolation": false
     },
     "tab10_colorblind": {
       "data": "cmap.data.tableau:ColorBlind10",
-      "info": "Tableau's \"Color Blind 10\" palette. Also matplotlib's `tableau-colorblind10` style.",
+      "info": "Tableau's \"Color Blind 10\" palette. Nearly identical to matplotlib's `tableau-colorblind10` style.",
       "interpolation": false
     },
     "tab10_light": {
@@ -26,11 +25,18 @@
       "interpolation": false
     },
     "tab10_new": {
+      "authors": [
+        "Maureen Stone",
+        "Cristy Miller"
+      ],
       "data": "cmap.data.tableau:Tableau10_New",
-      "info": "The \"Tableau 10\" palette as redesigned for Tableau 10 (2016) by Maureen Stone and Cristy Miller. Also d3's `schemeTableau10`.",
+      "info": "The \"Tableau 10\" palette as redesigned for Tableau 10 (2016) by Maureen Stone and Cristy Miller. Nearly identical to d3's `schemeTableau10`.",
       "interpolation": false
     },
     "tab20": {
+      "authors": [
+        "Maureen Stone"
+      ],
       "data": "cmap.data.tableau:Tableau20",
       "info": "Tableau's classic \"Tableau 20\" palette: light and dark pairs of the Tableau 10 hues. Also d3's `category20` and matplotlib's `tab20`.",
       "interpolation": false
@@ -55,7 +61,7 @@
       "interpolation": false
     }
   },
-  "info": "Categorical palettes from Tableau. The basic palettes (like Tableau 10 and Tableau 20) date from Tableau 1.5 (2004), and all of them were redesigned for Tableau 10 (2016): https://www.tableau.com/blog/colors-upgrade-tableau-10-56782",
+  "info": "Categorical palettes from Tableau. The basic palettes (like Tableau 10 and Tableau 20) were designed by Maureen Stone in 2004 for Tableau 1.5 (https://www.tableau.com/research/people/maureen-stone), and all of them were redesigned for Tableau 10 in 2016 (https://www.tableau.com/blog/colors-upgrade-tableau-10-56782).",
   "license": "UNKNOWN",
   "namespace": "tableau",
   "source": "https://public.tableau.com/app/profile/chris.gerrard/viz/TableauColors/ColorPaletteswithRGBValues"

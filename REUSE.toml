@@ -137,12 +137,6 @@ SPDX-FileCopyrightText = "Michael Waskom"
 SPDX-License-Identifier = "BSD-3-Clause"
 
 [[annotations]]
-path = "src/cmap/data/tableau/**"
-precedence = "override"
-SPDX-FileCopyrightText = "Maureen Stone, Cristy Miller"
-SPDX-License-Identifier = "BSD-3-Clause"
-
-[[annotations]]
 path = "src/cmap/data/tol/**"
 precedence = "override"
 SPDX-FileCopyrightText = "2022 Paul Tol"

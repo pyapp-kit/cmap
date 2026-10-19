@@ -166,7 +166,7 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
                 if NAMESPACE_DELIMITER not in v["alias"]:  # pragma: no cover
                     raise ValueError(f"{namespaced!r} alias is not namespaced")
                 ctlg[namespaced] = v
-                ctlg[name] = v  # FIXME
+                ctlg[name] = {**v}  # FIXME
                 continue
 
             # here we add any global keys to the colormap that are not already there.

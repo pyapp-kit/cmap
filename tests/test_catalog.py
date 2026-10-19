@@ -72,9 +72,11 @@ def test_catalog_names() -> None:
 
 
 @pytest.mark.parametrize("name", ["tab10", "seaborn:tab10", "tableau:tab10"])
-def test_tableau_names(name: str, recwarn: pytest.WarningsRecorder) -> None:
+def test_tableau_names(name: str, caplog: pytest.LogCaptureFixture) -> None:
     # the tableau colormaps used to be (mistakenly) in the seaborn namespace:
-    # the old names still work, without any ambiguity warning
-    assert catalog.resolve(name) == "tableau:tab10"
-    assert Colormap(name).name == "tableau:tab10"
-    assert not recwarn.list
+    # the old names still work, without any ambiguity warning.
+    # (a fresh catalog: the ambiguity warning is logged on the first load only)
+    cat = Catalog()
+    assert cat.resolve(name) == "tableau:tab10"
+    assert cat[name].qualified_name == "tableau:tab10"
+    assert not caplog.records
