@@ -7,13 +7,13 @@ We welcome contributions!
 To add a colormap: you first need to pick a namespace for your colormap.
 Namespaces are directories in the `src/cmap/data` folder.
 
-- If the colormap is part of known broader collection (e.g., `cet`, `cmocean`,
+- If the colormap is part of a known broader collection (e.g., `cet`, `cmocean`,
   `colorbrewer`, etc.), please check to see whether the collection already
   exists in the [`cmap/data`
   directory](https://github.com/pyapp-kit/cmap/tree/main/src/cmap/data).  If so,
   please extend that collection. If not, please create a new namespace and
   directory for that collection.
-- If you would like to contribute a colormap that doesn't nicely fit into an
+- If you would like to contribute a colormap that doesn't nicely fit into a
   broader collection of colormaps (regardless of whether that collection exists
   in `cmap`), please contribute to the `cmap/contrib` namespace.
 
@@ -35,11 +35,10 @@ Once you have picked a namespace:
 
       _The following keys are optional_:
 
-      - `tags`: a list of tags to help categorize the colormap.  These appear on
-         the website.
+      - `tags`: a list of tags to help categorize the colormap.
       - `info`: a brief description of the colormap.  This appears on the
          website (recommended).
-      - `interpolation`: whether the colormap should be interpolated, between
+      - `interpolation`: whether the colormap should be interpolated between
          stops. If not provided, the assumption is `True`.
       - `aliases`: a list of alternative names for the colormap.
       - `over`: color to show when values are over the range.
@@ -66,6 +65,15 @@ Once you have picked a namespace:
 
 When opening a PR, please include a screenshot of the colormap, along
 with a brief description of the colormap design and its intended use.
+
+!!!tip "Previewing the docs"
+    To see your colormap in the catalog locally, generate the catalog pages and
+    start the docs server:
+
+    ```bash
+    uv run --group docs python docs/_gen_catalog.py
+    uv run --group docs zensical serve
+    ```
 
 !!!info "Licensing"
     Please ensure that the colormap you are adding is available

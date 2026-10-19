@@ -64,18 +64,19 @@ if TYPE_CHECKING:
 else:
     from ._catalog import Catalog, CatalogItem
 
-__all__ = [
-    "HSLA",
-    "HSVA",
-    "RGBA",
-    "RGBA8",
+# (in order of importance: this sets the order of the API docs)
+__all__ = [  # noqa: RUF022
+    "Colormap",
+    "Color",
+    "ColormapLike",
+    "ColorLike",
+    "ColorStops",
+    "ColorStop",
     "Catalog",
     "CatalogItem",
-    "Color",
-    "ColorLike",
-    "ColorStop",
-    "ColorStops",
-    "Colormap",
-    "ColormapLike",
     "to_mpl",
+    "RGBA",
+    "RGBA8",
+    "HSLA",
+    "HSVA",
 ]
