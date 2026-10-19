@@ -26,6 +26,7 @@ overrides/
 # colormap pages are reached from the catalog / category pages and search
 not_in_nav = """
 catalog/*/*.md
+catalog/collections/*/index.md
 """
 
 # rebuild when docstrings change
@@ -42,6 +43,7 @@ nav = [
     { "Cyclic" = "catalog/cyclic/index.md" },
     { "Qualitative" = "catalog/qualitative/index.md" },
     { "Miscellaneous" = "catalog/miscellaneous/index.md" },
+    { "Collections" = "catalog/collections/index.md" },
   ] },
   { "Compare" = "compare.md" },
   { "FAQ" = "faq.md" },

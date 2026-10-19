@@ -27,6 +27,7 @@ import natsort
 import numpy as np
 
 from cmap import Colormap
+from cmap._catalog import DATA_ROOT
 from cmap._util import report_cvds
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -110,9 +111,9 @@ breadcrumbs:
 {% endif %}
 {{ info }}
 
-| category | license | authors | source |
-| --- | --- | --- | --- |
-| [{{ category | title }}](index.md) | {{ license }} | {{ authors }} | {{ source }} |
+| collection | category | license | authors | source |
+| --- | --- | --- | --- | --- |
+| [{{ namespace }}](../collections/{{ namespace }}/index.md) | [{{ category | title }}](index.md) | {{ license }} | {{ authors }} | {{ source }} |
 
 <div class="cmap-snippets" data-search-exclude markdown>
 
@@ -225,6 +226,42 @@ CATEGORY_INTROS = {
     "using it for quantitative data.",
 }
 
+COLLECTION_PAGE = """\
+---
+title: {title}
+description: {description}
+render_macros: true
+# rendered by overrides/partials/path.html (these pages aren't in the nav)
+breadcrumbs:
+  - {{title: Overview, url: ""}}
+  - {{title: Colormap Catalog, url: catalog/}}
+  - {{title: Collections, url: catalog/collections/}}
+---
+
+# {heading}
+
+{about}
+
+{{{{ cmap_catalog(namespace="{namespace}") }}}}
+"""
+
+COLLECTIONS_INDEX = """\
+---
+title: Collections
+description: The collections of colormaps in the cmap catalog.
+---
+
+# Collections
+
+Every colormap in the catalog belongs to a collection: the part of its name before
+the colon, like `bids` in `bids:viridis`. Each collection has its own source and
+license.
+
+| collection | colormaps | license | authors |
+| --- | --- | --- | --- |
+{rows}
+"""
+
 REDIRECT = """<!doctype html>
 <html lang="en">
 <head>
@@ -272,6 +309,12 @@ def _fix_info_links(info: str, page: str) -> str:
     return CATALOG_LINK.sub(_sub, info)
 
 
+def _license_link(license_: str | None) -> str:
+    if license_ in LICENSE_URL:
+        return f"[{license_}]({LICENSE_URL[license_]})"
+    return license_ or ""
+
+
 def _md_link(url: str) -> str:
     return f"[{url}]({url})" if url.startswith("http") else f"`{url}`"
 
@@ -309,7 +352,7 @@ class _Writer:
         path.write_text(content, encoding="utf-8")
 
     def prune(self) -> None:
-        for d in (*CATEGORIES, "_data"):
+        for d in (*CATEGORIES, "collections", "_data"):
             for path in sorted((OUT / d).rglob("*"), reverse=True):
                 if path.is_file() and path not in self.written:
                     path.unlink()
@@ -340,16 +383,14 @@ def _render_page(
             return None
         return {"name": other, "href": relative(page, cmap_page(Colormap(other)))}
 
-    license_ = info.license
-    if license_ in LICENSE_URL:
-        license_ = f"[{license_}]({LICENSE_URL[license_]})"
     return PAGE.render(
         name=name,
+        namespace=info.namespace,
         description=f"{name}: a {info.category} colormap from {info.namespace}.",
         aliases=", ".join(f"`{a}`" for a in info.aliases if a != info.name),
         info=_fix_info_links(info.info, page),
         category=info.category,
-        license=license_,
+        license=_license_link(info.license),
         authors=", ".join(info.authors),
         source=_md_link(info.source),
         css=cm.to_css(max_stops=32, as_hex=True).strip(),
@@ -372,6 +413,58 @@ def _render_page(
         prev=_link(prev),
         next=_link(next_),
     )
+
+
+def _collections() -> dict[str, list[dict[str, Any]]]:
+    """Return the catalog's records (collection-level metadata), by namespace."""
+    records: dict[str, list[dict[str, Any]]] = {}
+    for path in sorted(DATA_ROOT.rglob("record.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        records.setdefault(record["namespace"], []).append(record)
+    return records
+
+
+def _authors(record: dict[str, Any]) -> str:
+    return ", ".join(a for a in record.get("authors") or () if a)
+
+
+def _write_collections(write: _Writer, index: list[dict[str, Any]]) -> None:
+    """Write a page for each collection, and an index of collections."""
+    counts: dict[str, int] = {}
+    for entry in index:
+        counts[entry["namespace"]] = counts.get(entry["namespace"], 0) + 1
+
+    records = _collections()
+    rows = []
+    for ns in natsort.natsorted(counts, alg=natsort.ns.IGNORECASE):
+        recs = records.get(ns, [])
+        infos = dict.fromkeys(r["info"] for r in recs if r.get("info"))
+        table = [
+            f"| {_license_link(r.get('license'))} | {_authors(r)} "
+            f"| {_md_link(r['source']) if r.get('source') else ''} |"
+            for r in recs
+        ]
+        about = "\n\n".join(infos)
+        if table:
+            about += "\n\n| license | authors | source |\n| --- | --- | --- |\n"
+            about += "\n".join(dict.fromkeys(table))
+        n = counts[ns]
+        write(
+            f"collections/{ns}/index.md",
+            COLLECTION_PAGE.format(
+                title=json.dumps(f"{ns} colormaps"),
+                description=json.dumps(f"The {n} colormaps in the {ns} collection."),
+                heading=ns,
+                about=about.strip(),
+                namespace=ns,
+            ),
+        )
+        licenses = ", ".join(
+            dict.fromkeys(_license_link(r.get("license")) for r in recs)
+        )
+        authors = ", ".join(dict.fromkeys(a for r in recs if (a := _authors(r))))
+        rows.append(f"| [{ns}]({ns}/index.md) | {n} | {licenses} | {authors} |")
+    write("collections/index.md", COLLECTIONS_INDEX.format(rows="\n".join(rows)))
 
 
 def build() -> None:
@@ -418,6 +511,7 @@ def build() -> None:
             write(page, _render_page(name, info, prev, next_))
 
     write("_data/index.json", json.dumps(index, separators=(",", ":")))
+    _write_collections(write, index)
     _write_redirects(write)
     write.prune()
     print(f"Generated {len(index)} colormap pages in {OUT}")

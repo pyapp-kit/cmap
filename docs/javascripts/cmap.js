@@ -196,13 +196,36 @@ function initCatalogFilter(root) {
   if (root.dataset.ready) return;
   root.dataset.ready = "1";
   const text = root.querySelector(".cmap-filter-text");
-  const ns = root.querySelector(".cmap-filter-ns");
+  const ns = root.querySelector(".cmap-filter-ns"); // (absent on collection pages)
   const mono = root.querySelector(".cmap-filter-mono input");
   const catButtons = [...root.querySelectorAll(".cmap-filter-cats button")];
   const count = root.querySelector(".cmap-filter-count");
   const empty = root.querySelector(".cmap-empty");
   const items = [...root.querySelectorAll(".cmap-grid > .cmap")];
   let category = "all";
+
+  // the filters are kept in the URL, so that a filtered view can be linked to:
+  // ?q=<text>&collection=<namespace>&category=<category>&monotonic=1
+  const params = new URLSearchParams(location.search);
+  text.value = params.get("q") ?? "";
+  if (ns && [...ns.options].some((o) => o.value === params.get("collection"))) {
+    ns.value = params.get("collection");
+  }
+  mono.checked = params.get("monotonic") === "1";
+  const requested = catButtons.find((b) => b.dataset.category === params.get("category"));
+  if (requested) category = requested.dataset.category;
+  catButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.category === category)));
+
+  function syncUrl() {
+    const url = new URL(location.href);
+    const set = (key, value) =>
+      value ? url.searchParams.set(key, value) : url.searchParams.delete(key);
+    set("q", text.value.trim());
+    set("collection", ns?.value);
+    set("category", category === "all" ? "" : category);
+    set("monotonic", mono.checked ? "1" : "");
+    history.replaceState(history.state, "", url);
+  }
 
   function apply() {
     const words = text.value.toLowerCase().split(/\s+/).filter(Boolean);
@@ -211,7 +234,7 @@ function initCatalogFilter(root) {
       const d = el.dataset;
       const visible =
         (category === "all" || d.category === category) &&
-        (!ns.value || d.namespace === ns.value) &&
+        (!ns?.value || d.namespace === ns.value) &&
         (!mono.checked || d.monotonic === "1") &&
         words.every((w) => d.search.includes(w));
       el.hidden = !visible;
@@ -219,6 +242,7 @@ function initCatalogFilter(root) {
     }
     count.textContent = `${shown} of ${items.length} colormaps`;
     empty.hidden = shown > 0;
+    syncUrl();
   }
 
   for (const btn of catButtons) {
@@ -229,7 +253,7 @@ function initCatalogFilter(root) {
     });
   }
   text.addEventListener("input", apply);
-  ns.addEventListener("change", apply);
+  ns?.addEventListener("change", apply);
   mono.addEventListener("change", apply);
   apply();
 }

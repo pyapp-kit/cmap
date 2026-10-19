@@ -70,7 +70,9 @@ def cmap_bar(
     return f'<a class="{cls}" href="{href}"{attrs}>{label}{img}</a>'
 
 
-def catalog_grid(page: str, category: str | None = None) -> str:
+def catalog_grid(
+    page: str, category: str | None = None, namespace: str | None = None
+) -> str:
     """Return HTML for the filterable grid of catalog colormaps."""
     if not CATALOG_INDEX.exists():
         raise FileNotFoundError(
@@ -83,6 +85,8 @@ def catalog_grid(page: str, category: str | None = None) -> str:
     )
     if category:
         entries = [e for e in entries if e["category"] == category]
+    if namespace:
+        entries = [e for e in entries if e["namespace"] == namespace]
 
     items = []
     for e in entries:
@@ -98,8 +102,8 @@ def catalog_grid(page: str, category: str | None = None) -> str:
     namespaces = natsort.natsorted({e["namespace"] for e in entries})
     ns_options = "".join(f'<option value="{n}">{n}</option>' for n in namespaces)
     cat_buttons = ""
-    if not category:
-        cats = [c for c in CATEGORIES if any(e["category"] == c for e in entries)]
+    cats = [c for c in CATEGORIES if any(e["category"] == c for e in entries)]
+    if not category and len(cats) > 1:
         cat_buttons = '<div class="cmap-filter-cats" role="group">' + "".join(
             f'<button type="button" data-category="{c}"'
             f' aria-pressed="{str(c == "all").lower()}">{c.title()}</button>'
@@ -107,12 +111,17 @@ def catalog_grid(page: str, category: str | None = None) -> str:
         )
         cat_buttons += "</div>"
 
+    ns_select = ""
+    if not namespace:
+        ns_select = (
+            '<select class="cmap-filter-ns" aria-label="Filter by collection">'
+            f'<option value="">All collections</option>{ns_options}</select>'
+        )
     controls = (
         '<div class="cmap-filter">'
         '<input type="search" class="cmap-filter-text" placeholder="Filter by name…"'
         ' aria-label="Filter colormaps by name">'
-        '<select class="cmap-filter-ns" aria-label="Filter by collection">'
-        f'<option value="">All collections</option>{ns_options}</select>'
+        f"{ns_select}"
         # (the title is on the text, not the label: clicking a label focuses its
         # input, and zensical's tooltips also open on focus, so they'd stay open)
         '<label class="cmap-filter-mono"><input type="checkbox">'
@@ -192,7 +201,7 @@ def define_env(env: Any) -> None:
         return f'<div class="cmap cmap-expr">{img}</div>'
 
     @env.macro
-    def cmap_catalog(category: str | None = None) -> str:
-        return catalog_grid(_page(), category)
+    def cmap_catalog(category: str | None = None, namespace: str | None = None) -> str:
+        return catalog_grid(_page(), category, namespace)
 
     env.macro(color_list)
