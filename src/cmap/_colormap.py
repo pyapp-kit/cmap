@@ -563,7 +563,7 @@ class Colormap:
         """Return a copy of the colormap with new extreme values.
 
         Colors that are not passed are carried over from this colormap, as in
-        matplotlib.  To clear one, construct a new `Colormap`.
+        matplotlib.
         """
         return type(self)(
             self.color_stops,
