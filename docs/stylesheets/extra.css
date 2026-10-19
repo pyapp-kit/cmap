@@ -305,6 +305,10 @@ div.doc-contents:not(.first) {
 	height: auto;
 }
 
+.cmap-test-images:not(:has(.cmap-sineramp)) .cmap-test-square {
+	justify-self: center;
+}
+
 /* too narrow for side by side: square goes below, centered and larger */
 @container (width < 560px) {
 	.cmap-test-images:has(> .cmap-test-square) {
