@@ -75,6 +75,12 @@ def test_pydantic_preserves_modified_catalog_colormaps() -> None:
     assert round_trip(Colormap("viridis", under="red")).under_color == Color("red")
     assert round_trip(Colormap("viridis", name="renamed")).name == "renamed"
     assert round_trip(Colormap("viridis_r")) == Colormap("viridis_r")
+    # ... and the reversed name alone rebuilds it, so it serializes to that
+    obj = MyModel(colormap=Colormap("viridis_r"))
+    assert '"colormap":"bids:viridis_r"' in obj.model_dump_json()
+    # a falsy argument is still an override: False is "nearest", viridis is linear
+    nearest = Colormap("viridis", interpolation=False)
+    assert round_trip(nearest).interpolation == "nearest"
 
     # a parametrization too small for the tolerant __eq__ to see still must not
     # collapse to the plain catalog name

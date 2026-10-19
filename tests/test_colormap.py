@@ -1,3 +1,4 @@
+import inspect
 import pickle
 import sys
 from copy import copy, deepcopy
@@ -488,6 +489,44 @@ def test_pickle_preserves_constructor_state() -> None:
         cm.category,
         cm.interpolation,
     )
+
+
+@pytest.mark.parametrize("name", ["viridis", "viridis_r", "napari:HiLo_r"])
+def test_copies_of_a_catalog_colormap_keep_its_info(name: str) -> None:
+    cm = Colormap(name)
+
+    for copied in (pickle.loads(pickle.dumps(cm)), copy(cm), deepcopy(cm)):  # noqa: S301
+        assert copied == cm
+        assert copied.name == cm.name
+        assert copied.info is not None and copied.info == cm.info
+
+
+# a sample for every constructor argument besides `value`.  A new argument fails the
+# test below until it has a sample here, and that sample fails it until the argument
+# is in the overrides that `Colormap.__init__` checks before recording a catalog name.
+_ARGUMENT_SAMPLES: dict[str, Any] = {
+    "name": "renamed",
+    "identifier": "renamed",
+    "category": "sequential",
+    "interpolation": False,
+    "under": "red",
+    "over": "red",
+    "bad": "red",
+    "neg_inf": "red",
+    "pos_inf": "red",
+    "nan": "red",
+    "cmap_kwargs": {"start": 1.0},
+}
+
+
+def test_any_constructor_argument_disables_the_catalog_name() -> None:
+    params = set(inspect.signature(Colormap).parameters) - {"value"}
+    assert params == set(_ARGUMENT_SAMPLES)
+
+    assert Colormap("cubehelix")._catalog_name == "cubehelix:cubehelix"
+    for arg, sample in _ARGUMENT_SAMPLES.items():
+        cm = Colormap("cubehelix", **{arg: sample})
+        assert cm._catalog_name is None, f"{arg}= is not treated as an override"
 
 
 def test_copies_of_a_callable_colormap_stay_callable() -> None:

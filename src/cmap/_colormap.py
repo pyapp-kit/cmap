@@ -175,6 +175,7 @@ class Colormap:
 
     __slots__ = (
         "__weakref__",
+        "_catalog_name",
         "_has_exceptional",
         "_initialized",
         "_lut_cache",
@@ -289,10 +290,19 @@ class Colormap:
         cmap_kwargs: dict[str, Any] | None = None,
     ) -> None:
         self.info: CatalogItem | None = None
+        # the catalog name that alone rebuilds this colormap, if nothing overrode it
+        self._catalog_name: str | None = None
 
         if isinstance(value, str):
             rev = value.endswith("_r")
             info = self.catalog()[value[:-2] if rev else value]
+            # every other constructor argument must be listed here: one that is
+            # missed is silently dropped when this colormap serializes or pickles
+            # as its bare name
+            overrides = (name, identifier, category, interpolation, cmap_kwargs)
+            extremes = (under, over, bad, neg_inf, pos_inf, nan)
+            if all(v is None for v in (*overrides, *extremes)):
+                self._catalog_name = info.qualified_name + ("_r" if rev else "")
             name = name or f"{info.namespace}:{info.name}"
             category = category or info.category
             # the record's directional colors follow the ends they extend, so a "_r"
@@ -805,22 +815,16 @@ class Colormap:
         object.__setattr__(self, _name, _value)
 
     def __reduce__(self) -> str | tuple[Any, ...]:
-        # for pickle.  The stops go through as the object rather than as as_dict()'s
-        # samples, so a colormap backed by a lut function keeps the function.
+        # for pickle. An unmodified catalog colormap goes through as its name, which
+        # also restores `info`.
+        if self._catalog_name is not None:
+            return self.__class__, (self._catalog_name,)
+        # The stops go through as the object rather than as as_dict()'s samples, so a
+        # colormap backed by a lut function keeps the function.
         return _rebuild_colormap, (
             self.__class__,
             self.color_stops,
             self._constructor_kwargs(),
-        )
-
-    def _is_identical(self, other: Colormap) -> bool:
-        """Whether `other` has exactly the state that `as_dict()` would write."""
-        # unlike `__eq__`, which ignores the names and compares stops with allclose
-        return (
-            (self.name, self.identifier, self.category, self.interpolation)
-            == (other.name, other.identifier, other.category, other.interpolation)
-            and self._extremes == other._extremes
-            and np.array_equal(self.color_stops._stops, other.color_stops._stops)
         )
 
     def __eq__(self, other: object) -> bool:
@@ -916,12 +920,7 @@ class Colormap:
         schema = handler(Any)
 
         def _serialize(obj: Colormap) -> Any:
-            if obj.info is not None and (qualified := obj.info.qualified_name):
-                # the name alone is a complete serialization only when it rebuilds the
-                # same colormap; "viridis_r" and a modified viridis both fail that
-                if obj._is_identical(Colormap(qualified)):
-                    return qualified
-            return obj.as_dict()
+            return obj._catalog_name or obj.as_dict()
 
         ser = core_schema.plain_serializer_function_ser_schema(_serialize)
         return core_schema.no_info_after_validator_function(
