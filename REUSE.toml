@@ -178,7 +178,9 @@ precedence = "override"
 SPDX-FileCopyrightText = "Matthew A. Petroff"
 SPDX-License-Identifier = "CC0-1.0"
 
-# NOTE: okabeito and matlab have no formal license. Okabe-Ito color values are
-# freely shared with an attribution request (not a formal license). The matlab
+# NOTE: okabeito, matlab and tableau have no formal license. Okabe-Ito color values
+# are freely shared with an attribution request (not a formal license). The matlab
 # colormaps are trivial mathematical formulas independently re-implemented across
-# many projects. Both fall through to the project default for now.
+# many projects. Tableau has not published a license for its palettes (which are
+# also redistributed by d3, Vega and matplotlib). All fall through to the project
+# default for now.

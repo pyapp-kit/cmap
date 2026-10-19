@@ -183,9 +183,12 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
                 ctlg[name] = {"alias": namespaced, "conflicts": []}
             else:
                 # if the short name is already in the catalog, we have a conflict.
-                # add the fully namespaced name to the conflicts list.
+                # add the fully namespaced name to the conflicts list (unless the
+                # short name is already an alias for this very colormap, e.g. from
+                # another namespace's backwards-compatibility alias).
                 entry = cast("UnloadedCatalogAlias", ctlg[name])
-                entry.setdefault("conflicts", []).append(namespaced)
+                if entry.get("alias") != namespaced:
+                    entry.setdefault("conflicts", []).append(namespaced)
 
             # lastly, the `aliases` key of a colormap refers to aliases within the
             # namespace.  These are keys that *must* be accessed using the fully

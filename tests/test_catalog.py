@@ -69,3 +69,12 @@ def test_catalog_names() -> None:
     assert "viridis" in catalog.unique_keys(categories=("sequential",))
     assert "viridis" not in catalog.unique_keys(interpolation="nearest")
     assert "viridis" in catalog.unique_keys(interpolation="linear")
+
+
+@pytest.mark.parametrize("name", ["tab10", "seaborn:tab10", "tableau:tab10"])
+def test_tableau_names(name: str, recwarn: pytest.WarningsRecorder) -> None:
+    # the tableau colormaps used to be (mistakenly) in the seaborn namespace:
+    # the old names still work, without any ambiguity warning
+    assert catalog.resolve(name) == "tableau:tab10"
+    assert Colormap(name).name == "tableau:tab10"
+    assert not recwarn.list

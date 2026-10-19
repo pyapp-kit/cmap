@@ -7,43 +7,56 @@
   "colormaps": {
     "tab10": {
       "data": "cmap.data.tableau:Tableau10",
+      "info": "Tableau's classic \"Tableau 10\" palette, designed by Maureen Stone for Tableau 1.5. Also d3's `category10` and matplotlib's `tab10` (its default color cycle).",
       "interpolation": false
     },
     "tab10_colorblind": {
       "data": "cmap.data.tableau:ColorBlind10",
+      "info": "Tableau's \"Color Blind 10\" palette, designed to be distinguishable with color vision deficiencies. Also matplotlib's `tableau-colorblind10` style.",
       "interpolation": false
     },
     "tab10_light": {
       "data": "cmap.data.tableau:Tableau10_Light",
+      "info": "Tableau's classic \"Tableau 10 Light\" palette.",
       "interpolation": false
     },
     "tab10_medium": {
       "data": "cmap.data.tableau:Tableau10_Medium",
+      "info": "Tableau's classic \"Tableau 10 Medium\" palette.",
       "interpolation": false
     },
     "tab10_new": {
       "data": "cmap.data.tableau:Tableau10_New",
+      "info": "The \"Tableau 10\" palette as redesigned for Tableau 10 (2016) by Maureen Stone and Cristy Miller. Also d3's `schemeTableau10`.",
       "interpolation": false
     },
     "tab20": {
       "data": "cmap.data.tableau:Tableau20",
+      "info": "Tableau's classic \"Tableau 20\" palette: light and dark pairs of the Tableau 10 hues. Also d3's `category20` and matplotlib's `tab20`.",
       "interpolation": false
     },
     "tab20b": {
+      "authors": [],
       "data": "cmap.data.tableau:Tableau20b",
-      "interpolation": false
+      "info": "d3's `category20b` palette (also matplotlib's `tab20b`).",
+      "interpolation": false,
+      "source": "https://github.com/d3/d3-3.x-api-reference/blob/master/Ordinal-Scales.md"
     },
     "tab20c": {
+      "authors": [],
       "data": "cmap.data.tableau:Tableau20c",
-      "interpolation": false
+      "info": "d3's `category20c` palette (also matplotlib's `tab20c`).",
+      "interpolation": false,
+      "source": "https://github.com/d3/d3-3.x-api-reference/blob/master/Ordinal-Scales.md"
     },
     "tab_traffic_light": {
       "data": "cmap.data.tableau:Traffic_Light",
+      "info": "Tableau's \"Traffic Light\" palette.",
       "interpolation": false
     }
   },
-  "info": "This is a test dataset",
-  "license": "BSD-3-Clause",
-  "namespace": "seaborn",
-  "source": "https://public.tableau.com/views/TableauColors/ColorPaletteswithRGBValues"
+  "info": "Categorical palettes from Tableau. The classic palettes date from Tableau 1.5 (2004); \"tab10_new\" is the current \"Tableau 10\", redesigned for Tableau 10 (2016): https://www.tableau.com/blog/colors-upgrade-tableau-10-56782",
+  "license": "UNKNOWN",
+  "namespace": "tableau",
+  "source": "https://public.tableau.com/app/profile/chris.gerrard/viz/TableauColors/ColorPaletteswithRGBValues"
 }
