@@ -40,6 +40,7 @@ test_thirdparty = [
     "PyQt6==6.8.1",
     "numba>=0.60",
     "plotly",
+    "psygnal",
     "pydantic-extra-types>=2,!=2.10.1",
     "pydantic",
     "pygfx",
