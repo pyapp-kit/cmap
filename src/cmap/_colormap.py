@@ -813,6 +813,16 @@ class Colormap:
             self._constructor_kwargs(),
         )
 
+    def _is_identical(self, other: Colormap) -> bool:
+        """Whether `other` has exactly the state that `as_dict()` would write."""
+        # unlike `__eq__`, which ignores the names and compares stops with allclose
+        return (
+            (self.name, self.identifier, self.category, self.interpolation)
+            == (other.name, other.identifier, other.category, other.interpolation)
+            and self._extremes == other._extremes
+            and np.array_equal(self.color_stops._stops, other.color_stops._stops)
+        )
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Colormap):
             try:
@@ -906,13 +916,12 @@ class Colormap:
         schema = handler(Any)
 
         def _serialize(obj: Colormap) -> Any:
-            state = obj.as_dict()
             if obj.info is not None and (qualified := obj.info.qualified_name):
                 # the name alone is a complete serialization only when it rebuilds the
                 # same colormap; "viridis_r" and a modified viridis both fail that
-                if state == Colormap(qualified).as_dict():
+                if obj._is_identical(Colormap(qualified)):
                     return qualified
-            return state
+            return obj.as_dict()
 
         ser = core_schema.plain_serializer_function_ser_schema(_serialize)
         return core_schema.no_info_after_validator_function(

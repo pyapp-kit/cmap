@@ -1,4 +1,6 @@
+import pickle
 import sys
+from copy import copy, deepcopy
 from functools import partial
 from typing import Any
 
@@ -136,9 +138,6 @@ def test_with_extremes_preserves_interpolation() -> None:
 
 def test_colormap_copy() -> None:
     """Test Colormap copy."""
-    import pickle
-    from copy import copy, deepcopy
-
     cmap1 = Colormap(["red", "magenta", "blue"])
     cmap2 = Colormap(["r", (0.5, "magenta"), "b"])
     assert cmap1 == cmap2
@@ -457,8 +456,6 @@ def test_reversed_agrees_with_the_r_suffix() -> None:
 
 
 def test_pickle_preserves_constructor_state() -> None:
-    import pickle
-
     cm = _configured()
 
     rt = pickle.loads(pickle.dumps(cm))  # noqa: S301
@@ -473,9 +470,6 @@ def test_pickle_preserves_constructor_state() -> None:
 
 
 def test_copies_of_a_callable_colormap_stay_callable() -> None:
-    import pickle
-    from copy import copy, deepcopy
-
     # as_dict() samples the function into 256 stops; a copy must keep the function
     cm = Colormap("cubehelix", cmap_kwargs={"start": 1.0, "rotation": -1.0})
 
