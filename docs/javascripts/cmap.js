@@ -27,13 +27,29 @@ function fetchData(url) {
   if (!dataCache.has(url)) {
     dataCache.set(
       url,
-      fetch(url).then((r) => {
-        if (!r.ok) throw new Error(`${r.status} fetching ${url}`);
-        return r.json();
-      })
+      fetch(url)
+        .then((r) => {
+          if (!r.ok) throw new Error(`${r.status} fetching ${url}`);
+          return r.json();
+        })
+        .catch((err) => {
+          dataCache.delete(url); // (so that it's retried next time)
+          throw err;
+        })
     );
   }
   return dataCache.get(url);
+}
+
+// Replace the contents of `el` with an error message.
+function showError(el, message) {
+  el.replaceChildren(Object.assign(document.createElement("p"), { className: "cmap-error", textContent: message }));
+}
+
+// A colormap's data (one CVD type), for the reversed colormap.
+function reverseData(d) {
+  const reversed = (k, v) => (k === "dJ" ? v.map((x) => (x == null ? x : -x)) : [...v]).reverse();
+  return Object.fromEntries(Object.entries(d).map(([k, v]) => [k, reversed(k, v)]));
 }
 
 const hexToRgb = (hex) => [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
@@ -266,7 +282,15 @@ async function initDetail(root) {
   if (root.dataset.ready) return;
   root.dataset.ready = "1";
   const name = root.dataset.cmapName;
-  const data = await fetchData(new URL(root.dataset.json, location.href));
+  let data;
+  try {
+    data = await fetchData(new URL(root.dataset.json, location.href));
+  } catch (err) {
+    const message = document.createElement("div");
+    showError(message, `Couldn't load this colormap's data (${err.message})`);
+    root.prepend(message);
+    return;
+  }
   const bars = [...root.querySelectorAll(".cmap > img")];
   const originals = bars.map((img) => img.src);
   const testImages = [...root.querySelectorAll("canvas[data-test-image]")];
@@ -286,8 +310,11 @@ async function initDetail(root) {
     for (const canvas of charts) drawChart(canvas, d);
   }
 
+  // (only the charts depend on the color scheme)
   for (const canvas of charts) {
-    canvas.addEventListener("cmap:rerender", () => render(currentCvd()));
+    canvas.addEventListener("cmap:rerender", () =>
+      drawChart(canvas, data[currentCvd()] ?? data.normal)
+    );
   }
   const currentCvd = () => root.querySelector('.cmap-cvd input:checked')?.value ?? "normal";
   root.querySelector(".cmap-cvd").addEventListener("change", () => render(currentCvd()));
@@ -565,7 +592,13 @@ async function initCompare(root) {
   if (root.dataset.ready) return;
   root.dataset.ready = "1";
   const base = new URL(root.dataset.base, location.href);
-  const index = await fetchData(new URL("index.json", base));
+  let index;
+  try {
+    index = await fetchData(new URL("index.json", base));
+  } catch (err) {
+    showError(root.querySelector(".cmap-compare-rows"), `Couldn't load the catalog (${err.message})`);
+    return;
+  }
   const byName = new Map(index.map((e) => [e.name.toLowerCase(), e]));
   for (const e of index) {
     for (const a of e.aliases) byName.set(a.toLowerCase(), e);
@@ -580,15 +613,18 @@ async function initCompare(root) {
   const chart = root.querySelector("canvas.cmap-chart");
   const cvdGroup = root.querySelector(".cmap-cvd");
   const params = new URLSearchParams(location.search);
-  const resolve = (n) => byName.get(n.trim().toLowerCase().replace(/_r$/, ""));
-  let selected = (params.get("cmaps") ?? "")
-    .split(",")
-    .map(resolve)
-    .filter(Boolean)
-    .slice(0, COMPARE_MAX);
-  if (!selected.length) selected = ["bids:viridis", "cmocean:thermal", "crameri:batlow"]
-    .map(resolve)
-    .filter(Boolean);
+  // a colormap name or alias (optionally reversed, with "_r") to
+  // { name, entry, reversed }, or undefined if it isn't in the catalog
+  const resolve = (n) => {
+    const key = n.trim().toLowerCase();
+    const reversed = key.endsWith("_r") && !byName.has(key);
+    const entry = byName.get(reversed ? key.slice(0, -2) : key);
+    return entry && { name: entry.name + (reversed ? "_r" : ""), entry, reversed };
+  };
+  let selected = params.has("cmaps")
+    ? params.get("cmaps").split(",").filter(Boolean).map(resolve).filter(Boolean)
+    : ["bids:viridis", "cmocean:thermal", "crameri:batlow"].map(resolve);
+  selected = selected.slice(0, COMPARE_MAX);
 
   const cvd = () => cvdGroup.querySelector("input:checked")?.value ?? "normal";
   const lineColorsGroup = root.querySelector(".cmap-line-colors");
@@ -600,8 +636,19 @@ async function initCompare(root) {
 
   function syncUrl() {
     const url = new URL(location.href);
-    url.searchParams.set("cmaps", selected.map((e) => e.name).join(","));
+    url.searchParams.delete("cmaps");
+    // (":" and "," are fine in a query string, and easier to read unescaped)
+    const cmaps = selected.map((s) => encodeURIComponent(s.name).replace(/%3A/gi, ":"));
+    url.search += `${url.search ? "&" : "?"}cmaps=${cmaps.join(",")}`;
     history.replaceState(history.state, "", url);
+  }
+
+  // the catalog data of a selected colormap (reversed, for a reversed colormap)
+  async function loadData(s) {
+    const file = `${encodeURIComponent(s.entry.path.split("/").pop())}.json`;
+    const data = await fetchData(new URL(file, base));
+    if (!s.reversed) return data;
+    return Object.fromEntries(Object.entries(data).map(([k, d]) => [k, reverseData(d)]));
   }
 
   // The image section: a sample image, or one of the user's own, shown in grayscale
@@ -659,7 +706,7 @@ async function initCompare(root) {
       userImage = { ...(await loadImage(src)), name: file.name };
       sampleInput.checked = false;
     } catch {
-      userImage = null;
+      // (whatever was shown before stays shown)
       imageName.textContent = `Couldn't read ${file.name}`;
       imageName.hidden = false;
       return;
@@ -713,57 +760,50 @@ async function initCompare(root) {
   };
   document.addEventListener("paste", onPaste);
 
-  async function render() {
-    syncUrl();
-    const allData = await Promise.all(
-      selected.map((e) => fetchData(new URL(`${encodeURIComponent(e.path.split("/").pop())}.json`, base)))
-    );
-    rowsEl.replaceChildren(
-      ...selected.map((e, i) => {
-        const d = allData[i][cvd()] ?? allData[i].normal;
-        const row = document.createElement("div");
-        row.className = "cmap-compare-row";
-        const head = document.createElement("div");
-        head.className = "cmap-compare-head";
-        const link = Object.assign(document.createElement("a"), {
-          href: new URL(`../${e.path}/`, base).href,
-          textContent: e.name,
-        });
-        const remove = Object.assign(document.createElement("button"), {
-          type: "button",
-          className: "cmap-compare-remove",
-          title: `Remove ${e.name}`,
-          textContent: "✕",
-        });
-        remove.addEventListener("click", () => {
-          selected = selected.filter((s) => s !== e);
-          render();
-        });
-        head.append(link, remove);
-        const bar = document.createElement("canvas");
-        bar.className = "cmap-compare-bar";
-        paintBar(bar, d.color);
-        row.append(head, bar);
-        // (a sine ramp means nothing for a discrete colormap)
-        if (!e.discrete) {
-          const sine = document.createElement("canvas");
-          sine.className = "cmap-sineramp";
-          sine.dataset.testImage = "sineramp";
-          row.append(sine);
-          setTestImageColors(sine, d.color);
-        }
-        return row;
-      })
-    );
-    maps = selected.map((e, i) => ({ name: e.name, data: allData[i] }));
-    renderImages();
+  function row({ name, entry, data }) {
+    const d = data[cvd()] ?? data.normal;
+    const el = document.createElement("div");
+    el.className = "cmap-compare-row";
+    const head = document.createElement("div");
+    head.className = "cmap-compare-head";
+    const link = Object.assign(document.createElement("a"), {
+      href: new URL(`../${entry.path}/`, base).href,
+      textContent: name,
+    });
+    const remove = Object.assign(document.createElement("button"), {
+      type: "button",
+      className: "cmap-compare-remove",
+      title: `Remove ${name}`,
+      textContent: "✕",
+    });
+    remove.setAttribute("aria-label", `Remove ${name}`);
+    remove.addEventListener("click", () => {
+      selected = selected.filter((s) => s.name !== name);
+      render();
+    });
+    head.append(link, remove);
+    const bar = document.createElement("canvas");
+    bar.className = "cmap-compare-bar";
+    paintBar(bar, d.color);
+    el.append(head, bar);
+    // (a sine ramp means nothing for a discrete colormap)
+    if (!entry.discrete) {
+      const sine = document.createElement("canvas");
+      sine.className = "cmap-sineramp";
+      sine.dataset.testImage = "sineramp";
+      el.append(sine);
+      setTestImageColors(sine, d.color);
+    }
+    return el;
+  }
 
+  function drawCompareChart() {
     Chart.getChart(chart)?.destroy();
     const options = baseOptions({
       y: { min: 0, max: 100, title: { text: "Lightness J′", display: true } },
     });
     // legend swatches are little dashed lines in each colormap's colors
-    const swatches = allData.map((data, i) => lineSwatch(lineColors(data, i), COMPARE_DASHES[i]));
+    const swatches = maps.map(({ data }, i) => lineSwatch(lineColors(data, i), COMPARE_DASHES[i]));
     options.plugins.legend = {
       display: true,
       labels: {
@@ -781,12 +821,12 @@ async function initCompare(root) {
     new Chart(chart, {
       type: "scatter",
       data: {
-        datasets: selected.map((e, i) => {
-          const d = allData[i][cvd()] ?? allData[i].normal;
+        datasets: maps.map(({ name, data }, i) => {
+          const d = data[cvd()] ?? data.normal;
           const x = linspace(d.color.length);
-          const colors = lineColors(allData[i], i);
+          const colors = lineColors(data, i);
           return {
-            label: e.name,
+            label: name,
             data: points(x, d.J),
             showLine: true,
             pointRadius: 0,
@@ -810,23 +850,44 @@ async function initCompare(root) {
     });
   }
 
-  chart.addEventListener("cmap:rerender", render);
+  let renderId = 0;
+  async function render() {
+    syncUrl();
+    const id = ++renderId;
+    const shown = [...selected];
+    let allData;
+    try {
+      allData = await Promise.all(shown.map(loadData));
+    } catch (err) {
+      if (id === renderId) showError(rowsEl, `Couldn't load colormap data (${err.message})`);
+      return;
+    }
+    if (id !== renderId) return; // (the selection changed while loading: a newer render wins)
+    maps = shown.map((s, i) => ({ ...s, data: allData[i] }));
+    rowsEl.replaceChildren(...maps.map(row));
+    renderImages();
+    drawCompareChart();
+  }
+
+  // (only the chart depends on the color scheme)
+  chart.addEventListener("cmap:rerender", drawCompareChart);
   cvdGroup.addEventListener("change", render);
-  lineColorsGroup.addEventListener("change", render);
+  lineColorsGroup.addEventListener("change", drawCompareChart);
   // (a custom validity message blocks submitting the form until it's cleared)
   input.addEventListener("input", () => input.setCustomValidity(""));
   root.querySelector(".cmap-compare-form").addEventListener("submit", (ev) => {
     ev.preventDefault();
-    const e = resolve(input.value);
-    input.setCustomValidity(e ? "" : "Unknown colormap");
+    const s = resolve(input.value);
+    input.setCustomValidity(s ? "" : "Unknown colormap");
     input.reportValidity();
-    if (!e) return;
-    if (!selected.includes(e) && selected.length >= COMPARE_MAX) {
+    if (!s) return;
+    const isNew = !selected.some((x) => x.name === s.name);
+    if (isNew && selected.length >= COMPARE_MAX) {
       input.setCustomValidity(`Up to ${COMPARE_MAX} colormaps: remove one first`);
       input.reportValidity();
       return;
     }
-    if (!selected.includes(e)) selected = [...selected, e];
+    if (isNew) selected = [...selected, s];
     input.value = "";
     render();
   });

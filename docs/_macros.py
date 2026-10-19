@@ -59,8 +59,10 @@ def cmap_bar(
     """Return single-line HTML for a labeled colorbar of colormap `name`."""
     cm = Colormap(name)
     cls = " ".join(["cmap", *classes])
+    # (in a link, the label already names it: an alt would be read out twice)
+    alt = "" if link else f"{html.escape(name)} colormap"
     img = (
-        f'<img src="{png_uri(cm)}" alt="{html.escape(name)} colormap" '
+        f'<img src="{png_uri(cm)}" alt="{alt}" '
         f'style="height: {height}px" loading="lazy">'
     )
     label = f'<span class="cmap-name">{html.escape(name)}</span>'
@@ -189,10 +191,6 @@ def define_env(env: Any) -> None:
     @env.macro
     def cmap(name: str, height: int = 32) -> str:
         return cmap_bar(name, _page(), height=height)
-
-    @env.macro
-    def cmap_gray(name: str, height: int = 32) -> str:
-        return cmap_bar(name, _page(), height=height, classes=["grayscale"])
 
     @env.macro
     def cmap_expr(expr: str) -> str:

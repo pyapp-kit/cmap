@@ -166,9 +166,8 @@ Comparing a color to anything will attempt to cast the other object:
 
 ```python
 trq == "turquoise"  # True
-trq is Color(
-    (64, 224, 208)
-)  # True ... colors are cached, so equal colors are the same object
+# colors are cached, so equal colors are the same object
+trq is Color((64, 224, 208))  # True
 ```
 
 !!!tip

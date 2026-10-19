@@ -270,7 +270,7 @@ breadcrumbs:
 
 ## Perceptual lightness { data-search-exclude }
 
-<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="lightness" data-cmap-name="{{ name }}"{% if discrete %} data-discrete{% endif %}></canvas></div>
+<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="lightness" data-cmap-name="{{ name }}" role="img" aria-label="Lightness across {{ name }}"{% if discrete %} data-discrete{% endif %}></canvas></div>
 
 <p class="cmap-chart-caption">
 Lightness (J&prime;) measured in
@@ -279,11 +279,11 @@ Lightness (J&prime;) measured in
 
 ## RGB components { data-search-exclude }
 
-<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="rgb" data-cmap-name="{{ name }}"></canvas></div>
+<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="rgb" data-cmap-name="{{ name }}" role="img" aria-label="Red, green and blue components across {{ name }}"></canvas></div>
 
 ## Hue & saturation { data-search-exclude }
 
-<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="hsl" data-cmap-name="{{ name }}"></canvas></div>
+<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="hsl" data-cmap-name="{{ name }}" role="img" aria-label="Hue, saturation and chroma across {{ name }}"></canvas></div>
 
 ---
 

@@ -228,7 +228,8 @@ div.doc-contents:not(.first) {
 	color: var(--md-default-fg-color--light);
 }
 
-.cmap-empty {
+.cmap-empty,
+.md-typeset .cmap-error {
 	color: var(--md-default-fg-color--light);
 }
 
@@ -347,15 +348,15 @@ div.doc-contents:not(.first) {
 
 /* L / M / S: the cone type that each deficiency is missing */
 .cmap-cvd-cone {
-  display: inline-block;
-  min-width: 1.1em;
-  margin-right: 0.35em;
-  font-family: var(--md-code-font-family);
-  font-weight: 700;
-  line-height: 1.1em;
-  text-align: center;
-  border: 1px solid currentColor;
-  border-radius: 0.2em;
+	display: inline-block;
+	min-width: 1.1em;
+	margin-right: 0.35em;
+	font-family: var(--md-code-font-family);
+	font-weight: 700;
+	line-height: 1.1em;
+	text-align: center;
+	border: 1px solid currentColor;
+	border-radius: 0.2em;
 }
 
 .cmap-pills input {

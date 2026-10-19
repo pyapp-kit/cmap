@@ -63,6 +63,7 @@ dev = [
 ]
 docs = [
     'colorspacious',
+    'jinja2',
     'mkdocstrings-python',
     'natsort',
     'zensical',

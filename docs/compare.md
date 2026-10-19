@@ -45,7 +45,7 @@ The URL updates as you go, so you can share a comparison.
 <label><input type="radio" name="sample" value="corsica" data-image="../images/corsica.png"><span title="Land and seafloor heights, with sea level at the middle: best for diverging colormaps">Corsica</span></label>
 </fieldset>
 <span class="cmap-image-name" hidden></span>
-<button type="button" class="cmap-image-reset" title="Back to the sample image" hidden>✕</button>
+<button type="button" class="cmap-image-reset" title="Back to the sample image" aria-label="Back to the sample image" hidden>✕</button>
 <label class="cmap-image-stretch" hidden><input type="checkbox" checked><span title="Stretch the 1st to 99th percentile of the image's values to the full colormap">Stretch contrast</span></label>
 <span class="cmap-image-hint">Or drop or paste an image here. It's converted to grayscale and stays in your browser: nothing is uploaded.</span>
 </div>
@@ -60,6 +60,6 @@ The URL updates as you go, so you can share a comparison.
 <label><input type="radio" name="line-colors" value="colormap" checked><span title="Color each line by its colormap">Colormap colors</span></label>
 <label><input type="radio" name="line-colors" value="distinct"><span title="Give each line its own distinct color (petroff:petroff6)">Distinct colors</span></label>
 </fieldset>
-<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="compare"></canvas></div>
+<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="compare" role="img" aria-label="Lightness of each compared colormap"></canvas></div>
 
 </div>
