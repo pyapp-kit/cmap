@@ -303,7 +303,7 @@ class Colormap:
             extremes = (under, over, bad, neg_inf, pos_inf, nan)
             if all(v is None for v in (*overrides, *extremes)):
                 self._catalog_name = info.qualified_name + ("_r" if rev else "")
-            name = name or f"{info.namespace}:{info.name}"
+            name = name or f"{info.qualified_name}{'_r' if rev else ''}"
             category = category or info.category
             # the record's directional colors follow the ends they extend, so a "_r"
             # name swaps them.  Swapping here rather than after the lines below keeps
