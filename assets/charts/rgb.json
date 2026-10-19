@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "/cmap/assets/data/jet.csv"
+  },
+  "encoding": {
+    "size": {
+      "value": 4
+    },
+    "x": {
+      "field": "x",
+      "type": "quantitative"
+    }
+  },
+  "layer": [
+    {
+      "encoding": {
+        "color": {
+          "value": "#D22"
+        },
+        "y": {
+          "field": "R",
+          "type": "quantitative"
+        }
+      },
+      "mark": "line"
+    },
+    {
+      "encoding": {
+        "color": {
+          "value": "#0C0"
+        },
+        "y": {
+          "field": "G",
+          "type": "quantitative"
+        }
+      },
+      "mark": "line"
+    },
+    {
+      "encoding": {
+        "color": {
+          "value": "blue"
+        },
+        "y": {
+          "field": "B",
+          "type": "quantitative"
+        }
+      },
+      "mark": "line"
+    }
+  ]
+}
