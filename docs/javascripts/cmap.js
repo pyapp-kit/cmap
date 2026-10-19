@@ -522,6 +522,45 @@ function lineSwatch(colors, dash, width = 40, height = 10) {
   return canvas;
 }
 
+// user images are scaled down to at most this many pixels on their long edge
+const IMAGE_MAX = 768;
+const GRAY = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, "0").repeat(3));
+
+// The image at `src` as values in [0, 1] (NaN where transparent).
+async function loadImage(src) {
+  // (an <img> decodes anything the browser can show, SVG included)
+  const img = new Image();
+  img.src = src;
+  await img.decode();
+  const { naturalWidth: width, naturalHeight: height } = img;
+  if (!width || !height) throw new Error(`${src} has no size`);
+  const scale = Math.min(1, IMAGE_MAX / Math.max(width, height));
+  const cols = Math.max(1, Math.round(width * scale));
+  const rows = Math.max(1, Math.round(height * scale));
+  const canvas = Object.assign(document.createElement("canvas"), { width: cols, height: rows });
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0, cols, rows);
+  const px = ctx.getImageData(0, 0, cols, rows).data;
+  const im = new Float32Array(rows * cols);
+  for (let i = 0; i < im.length; i++) {
+    const [r, g, b, a] = px.subarray(i * 4, i * 4 + 4);
+    // (luma of the encoded values, so that a grayscale image keeps its own values)
+    im[i] = a ? (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 : NaN;
+  }
+  return { im, rows, cols, width, height };
+}
+
+// `image` with its 1st to 99th percentile stretched to [0, 1].
+function stretchContrast(image) {
+  const sorted = image.im.filter((v) => !Number.isNaN(v)).sort();
+  if (!sorted.length) return image;
+  const lo = sorted[Math.floor(0.01 * (sorted.length - 1))];
+  const hi = sorted[Math.ceil(0.99 * (sorted.length - 1))];
+  if (!(hi > lo)) return image;
+  const im = image.im.map((v) => Math.min(1, Math.max(0, (v - lo) / (hi - lo))));
+  return { ...image, im };
+}
+
 async function initCompare(root) {
   if (root.dataset.ready) return;
   root.dataset.ready = "1";
@@ -565,6 +604,115 @@ async function initCompare(root) {
     history.replaceState(history.state, "", url);
   }
 
+  // The image section: a sample image, or one of the user's own, shown in grayscale
+  // and through each colormap.
+  const imageEl = root.querySelector(".cmap-image");
+  const imageGrid = imageEl.querySelector(".cmap-image-grid");
+  const imageName = imageEl.querySelector(".cmap-image-name");
+  const imageFile = imageEl.querySelector("input[type=file]");
+  const imageReset = imageEl.querySelector(".cmap-image-reset");
+  const imageCredits = imageEl.querySelectorAll(".cmap-image-credit");
+  const sampleGroup = imageEl.querySelector(".cmap-image-samples");
+  const stretch = imageEl.querySelector(".cmap-image-stretch");
+  const samples = new Map(); // sample name -> Promise of its image
+  let sampleInput = sampleGroup.querySelector("input:checked");
+  let sample = null; // (the image of `sampleInput`, once loaded)
+  let userImage = null;
+  let maps = []; // the colormaps as last rendered: [{ name, data }]
+
+  function renderImages() {
+    // (samples are never stretched: Corsica's middle value is sea level)
+    const image = !userImage
+      ? sample
+      : stretch.querySelector("input").checked
+        ? (userImage.stretched ??= stretchContrast(userImage))
+        : userImage;
+    if (userImage) {
+      imageName.textContent = `${userImage.name} (${userImage.width}×${userImage.height})`;
+    }
+    imageName.hidden = imageReset.hidden = stretch.hidden = !userImage;
+    for (const p of imageCredits) {
+      p.hidden = !!userImage || p.dataset.sample !== sampleInput.value;
+    }
+    if (!image) return;
+    const aspect = image.cols / image.rows;
+    imageGrid.dataset.shape = aspect > 1.5 ? "wide" : aspect < 0.75 ? "tall" : "square";
+    const tile = (name, colors) => {
+      const el = document.createElement("div");
+      el.className = "cmap-image-tile";
+      const canvas = document.createElement("canvas");
+      paint(canvas, colors, image.im, image.rows, image.cols);
+      const label = Object.assign(document.createElement("span"), { textContent: name });
+      el.append(canvas, label);
+      return el;
+    };
+    imageGrid.replaceChildren(
+      tile("grayscale", GRAY),
+      ...maps.map(({ name, data }) => tile(name, (data[cvd()] ?? data.normal).color))
+    );
+  }
+
+  async function setImage(file) {
+    if (!file?.type.startsWith("image/")) return;
+    const src = URL.createObjectURL(file);
+    try {
+      userImage = { ...(await loadImage(src)), name: file.name };
+      sampleInput.checked = false;
+    } catch {
+      userImage = null;
+      imageName.textContent = `Couldn't read ${file.name}`;
+      imageName.hidden = false;
+      return;
+    } finally {
+      URL.revokeObjectURL(src);
+    }
+    renderImages();
+  }
+
+  async function showSample(input) {
+    sampleInput = input;
+    input.checked = true;
+    userImage = null;
+    renderImages();
+    if (!samples.has(input.value)) {
+      samples.set(input.value, loadImage(new URL(input.dataset.image, location.href)));
+    }
+    const image = await samples.get(input.value);
+    if (sampleInput !== input || userImage) return; // (something else was picked since)
+    sample = image;
+    renderImages();
+  }
+  showSample(sampleInput);
+
+  sampleGroup.addEventListener("change", (ev) => showSample(ev.target));
+  imageFile.addEventListener("change", () => {
+    setImage(imageFile.files[0]);
+    imageFile.value = ""; // (so that choosing the same file again still fires)
+  });
+  imageReset.addEventListener("click", () => showSample(sampleInput));
+  stretch.addEventListener("change", renderImages);
+  imageEl.addEventListener("dragover", (ev) => {
+    ev.preventDefault();
+    imageEl.classList.add("is-dragging");
+  });
+  imageEl.addEventListener("dragleave", (ev) => {
+    if (!imageEl.contains(ev.relatedTarget)) imageEl.classList.remove("is-dragging");
+  });
+  imageEl.addEventListener("drop", (ev) => {
+    ev.preventDefault();
+    imageEl.classList.remove("is-dragging");
+    setImage(ev.dataTransfer.files[0]);
+  });
+  // pasting an image anywhere on the page (until we navigate away from it)
+  const onPaste = (ev) => {
+    if (!root.isConnected) return document.removeEventListener("paste", onPaste);
+    const file = [...ev.clipboardData.files].find((f) => f.type.startsWith("image/"));
+    if (!file) return;
+    ev.preventDefault();
+    setImage(file);
+  };
+  document.addEventListener("paste", onPaste);
+
   async function render() {
     syncUrl();
     const allData = await Promise.all(
@@ -607,6 +755,8 @@ async function initCompare(root) {
         return row;
       })
     );
+    maps = selected.map((e, i) => ({ name: e.name, data: allData[i] }));
+    renderImages();
 
     Chart.getChart(chart)?.destroy();
     const options = baseOptions({

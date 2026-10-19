@@ -389,6 +389,36 @@ div.doc-contents:not(.first) {
    Compare page
    ------------------------------------------------------------------------- */
 
+/* the colormap input and CVD pills stay in reach while scrolling the page */
+.cmap-compare-controls {
+	position: sticky;
+	top: 2.4rem;
+	z-index: 2;
+	padding-top: 0.6rem;
+	background: var(--md-default-bg-color);
+}
+
+.md-typeset .cmap-compare-controls .cmap-cvd {
+	margin: 0.6rem 0 0;
+	padding-bottom: 0.6rem;
+}
+
+/* (so that linked headings aren't hidden under the sticky controls) */
+.md-typeset .cmap-compare h2 {
+	scroll-margin-top: 9rem;
+}
+
+/* (as for the catalog filter, too much of a small screen) */
+@media (max-width: 600px) {
+	.cmap-compare-controls {
+		position: static;
+	}
+
+	.md-typeset .cmap-compare h2 {
+		scroll-margin-top: 3rem;
+	}
+}
+
 .cmap-compare-form {
 	display: flex;
 	gap: 0.5rem;
@@ -430,6 +460,112 @@ div.doc-contents:not(.first) {
 	width: 100%;
 	height: 32px;
 	margin-bottom: 2px;
+}
+
+.cmap-image-drop {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem 0.8rem;
+	align-items: center;
+	padding: 0.6rem 0.8rem;
+	font-size: 0.7rem;
+	border: 1px dashed var(--md-default-fg-color--lighter);
+	border-radius: 0.3rem;
+	transition:
+		border-color 0.1s,
+		background-color 0.1s;
+}
+
+.cmap-image.is-dragging .cmap-image-drop {
+	background: var(--md-accent-fg-color--transparent);
+	border-color: var(--md-accent-fg-color);
+}
+
+.md-typeset .cmap-image-pick {
+	padding: 0.25rem 0.8rem;
+	margin: 0;
+	font-size: inherit;
+}
+
+.md-typeset .cmap-image-samples {
+	margin: 0;
+}
+
+.cmap-image-name {
+	font-weight: 700;
+	overflow-wrap: anywhere;
+}
+
+.cmap-image-reset {
+	color: var(--md-default-fg-color--light);
+	cursor: pointer;
+}
+
+.cmap-image-reset:hover {
+	color: var(--md-accent-fg-color);
+}
+
+.cmap-image-stretch {
+	display: inline-flex;
+	gap: 0.3rem;
+	align-items: center;
+	margin-left: auto;
+	cursor: pointer;
+}
+
+.cmap-image-stretch[hidden] {
+	display: none;
+}
+
+.cmap-image-hint {
+	flex-basis: 100%;
+	color: var(--md-default-fg-color--light);
+}
+
+/* small multiples: fewer, larger tiles for wide images, more for tall ones */
+.cmap-image-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.8rem 0.6rem;
+	margin-top: 0.8rem;
+}
+
+.cmap-image-grid[data-shape="wide"] {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cmap-image-grid[data-shape="tall"] {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 600px) {
+	.cmap-image-grid,
+	.cmap-image-grid[data-shape="tall"] {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.cmap-image-grid[data-shape="wide"] {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.cmap-image-tile canvas {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 0.15rem;
+}
+
+.md-typeset .cmap-image-credit {
+	font-size: 0.65rem;
+	color: var(--md-default-fg-color--light);
+}
+
+.cmap-image-tile span {
+	display: block;
+	margin-top: 0.2rem;
+	font-size: 0.65rem;
+	color: var(--md-default-fg-color--light);
 }
 
 /* ----------------------------------------------------------------------------
