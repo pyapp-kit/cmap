@@ -8,7 +8,7 @@ description: Compare colormaps side by side, including perceptual lightness and 
 Add up to six colormaps from the [catalog](catalog/index.md) to compare them
 side by side.
 Each colormap is shown as a colorbar and applied to a
-[sine ramp](https://www.peterkovesi.com/matlabfns/) test image: in a good colormap,
+[sine ramp](https://arxiv.org/abs/1509.03700) test image: in a good colormap,
 the sine wave at the top should be equally visible across the whole range. The
 chart below shows the perceptual lightness of each colormap.
 

@@ -65,7 +65,7 @@ function sineramp([rows, cols], amp = 0.05, wavelen = 8, power = 2) {
 
 // Port of Peter Kovesi's circlesineramp: test image for cyclic colormaps. A sine
 // wave on a spiral ramp, values in [0, 1], NaN outside the annulus.
-// https://www.peterkovesi.com/matlabfns/Misc/circlesineramp.m
+// https://codeberg.org/peterkovesi/matlabfns/src/branch/main/Misc/circlesineramp.m
 function circlesineramp(size = 320, amp = Math.PI / 10, wavelen = 8, power = 2) {
   const maxr = (size / 2) * 0.9;
   const minr = 0.15 * size;

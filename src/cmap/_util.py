@@ -258,8 +258,8 @@ def sineramp(
     """Generate test image consisting of a sine wave superimposed on a ramp function.
 
     This function and all documentation is based on the MATLAB function of the same
-    name, written by Peter Kovesi and available from his website:
-    https://www.peterkovesi.com/matlabfns/
+    name, written by Peter Kovesi and available at:
+    https://codeberg.org/peterkovesi/matlabfns/src/branch/main/Misc/sineramp.m
 
     Copyright (c) 1996-2005 Peter Kovesi
     School of Computer Science & Software Engineering
@@ -348,8 +348,8 @@ def circlesineramp(
     """Generate test image for evaluating cyclic color maps.
 
     This function and all documentation is based on the MATLAB function of the same
-    name, written by Peter Kovesi and available from his website:
-    https://www.peterkovesi.com/matlabfns/
+    name, written by Peter Kovesi and available at:
+    https://codeberg.org/peterkovesi/matlabfns/src/branch/main/Misc/circlesineramp.m
 
     Copyright (c) 1996-2005 Peter Kovesi
     School of Computer Science & Software Engineering
