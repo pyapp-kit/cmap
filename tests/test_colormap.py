@@ -436,16 +436,25 @@ def test_with_extremes_preserves_what_is_not_passed() -> None:
 
 def test_reversed_preserves_state_and_swaps_the_directional_colors() -> None:
     cm = _configured()
+    # the comparisons with `cm` below only catch a dropped or unswapped field if
+    # every field is non-default and the extreme colors are all distinct
+    extremes = [cm.under_color, cm.over_color, cm.bad_color]
+    extremes += [cm.neg_inf_color, cm.pos_inf_color, cm.nan_color]
+    assert None not in extremes and len(set(extremes)) == len(extremes)
+    assert cm.category is not None and cm.interpolation != "linear"
 
     rev = cm.reversed()
 
-    assert rev.name == "foo_r"
-    assert rev.category == "sequential"
-    assert rev.interpolation == "nearest"
+    assert rev.name == f"{cm.name}_r"
+    assert rev.category == cm.category
+    assert rev.interpolation == cm.interpolation
     # under/over and neg_inf/pos_inf name the ends they extend, so they follow them
-    assert (rev.under_color, rev.over_color) == (Color("yellow"), Color("green"))
-    assert (rev.neg_inf_color, rev.pos_inf_color) == (Color("magenta"), Color("cyan"))
-    assert (rev.bad_color, rev.nan_color) == (Color("black"), Color("white"))
+    assert rev.under_color == cm.over_color
+    assert rev.over_color == cm.under_color
+    assert rev.neg_inf_color == cm.pos_inf_color
+    assert rev.pos_inf_color == cm.neg_inf_color
+    assert rev.bad_color == cm.bad_color
+    assert rev.nan_color == cm.nan_color
     assert rev.reversed() == cm
 
 
