@@ -12,17 +12,17 @@
     },
     "tab10_colorblind": {
       "data": "cmap.data.tableau:ColorBlind10",
-      "info": "Tableau's \"Color Blind 10\" palette, designed to be distinguishable with color vision deficiencies. Also matplotlib's `tableau-colorblind10` style.",
+      "info": "Tableau's \"Color Blind 10\" palette. Also matplotlib's `tableau-colorblind10` style.",
       "interpolation": false
     },
     "tab10_light": {
       "data": "cmap.data.tableau:Tableau10_Light",
-      "info": "Tableau's classic \"Tableau 10 Light\" palette.",
+      "info": "Tableau's \"Tableau 10 Light\" palette.",
       "interpolation": false
     },
     "tab10_medium": {
       "data": "cmap.data.tableau:Tableau10_Medium",
-      "info": "Tableau's classic \"Tableau 10 Medium\" palette.",
+      "info": "Tableau's \"Tableau 10 Medium\" palette.",
       "interpolation": false
     },
     "tab10_new": {
