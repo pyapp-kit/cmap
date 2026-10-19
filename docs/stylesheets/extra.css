@@ -1,224 +1,612 @@
-.md-typeset .admonition,
-.md-typeset details {
-  border-width: 0;
-  border-left-width: 4px;
-}
-
-.md-typeset .doc-children {
-  font-size: 0.7rem;
-}
-
-/* name of a method */
-code.highlight span.n:first-child {
-  color: red;
-}
-code.highlight span.n:not(:first-child) {
-  color: #666;
-}
-
-/* Indentation. */
-div.doc-contents:not(.first) {
-  padding-left: 25px;
-  border-left: 0.05rem solid var(--md-typeset-table-color);
-}
-
-/* Mark external links as such. */
-a.autorefs-external::after {
-  /* https://primer.style/octicons/arrow-up-right-24 */
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="rgb(0, 0, 0)" d="M18.25 15.5a.75.75 0 00.75-.75v-9a.75.75 0 00-.75-.75h-9a.75.75 0 000 1.5h7.19L6.22 16.72a.75.75 0 101.06 1.06L17.5 7.56v7.19c0 .414.336.75.75.75z"></path></svg>');
-  content: " ";
-
-  display: inline-block;
-  position: relative;
-  top: 0.1em;
-  margin-left: 0.2em;
-  margin-right: 0.1em;
-
-  height: 1em;
-  width: 1em;
-  border-radius: 100%;
-  background-color: var(--md-typeset-a-color);
-}
-a.autorefs-external:hover::after {
-  background-color: var(--md-accent-fg-color);
-}
+/* ----------------------------------------------------------------------------
+   Theme
+   ------------------------------------------------------------------------- */
 
 .md-header {
-  background: rgba(0, 0, 4, 1);
-  /* magma ... generated with Colormap('magma').to_css() */
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 4, 1) 0%,
-    rgba(29, 17, 70, 1) 12.5%,
-    rgba(80, 18, 124, 1) 25%,
-    rgba(130, 38, 129, 1) 37.5%,
-    rgba(182, 55, 121, 1) 50%,
-    rgba(230, 81, 99, 1) 62.5%,
-    rgba(251, 135, 97, 1) 75%,
-    rgba(254, 195, 135, 1) 87.5%,
-    rgba(252, 253, 191, 1) 100%
-  );
+	/* magma ... generated with Colormap('magma').to_css() */
+	background: rgb(0, 0, 4);
+	background: linear-gradient(
+		90deg,
+		rgba(0, 0, 4, 1) 0%,
+		rgba(29, 17, 70, 1) 12.5%,
+		rgba(80, 18, 124, 1) 25%,
+		rgba(130, 38, 129, 1) 37.5%,
+		rgba(182, 55, 121, 1) 50%,
+		rgba(230, 81, 99, 1) 62.5%,
+		rgba(251, 135, 97, 1) 75%,
+		rgba(254, 195, 135, 1) 87.5%,
+		rgba(252, 253, 191, 1) 100%
+	);
+	color: white;
 }
 
-nav.md-header__inner {
-  min-height: 72px;
+.md-header__source,
+.md-header [for="__search"] {
+	mix-blend-mode: difference;
 }
 
-nav .md-header__source {
-  mix-blend-mode: difference;
+html body div.ethical-sidebar,
+html body div.ethical-footer {
+	display: none !important;
 }
 
-nav > label.md-header__button[for="__search"] {
-  mix-blend-mode: difference;
+/* ----------------------------------------------------------------------------
+   API docs (mkdocstrings)
+   ------------------------------------------------------------------------- */
+
+/* Mark external links as such (a small arrow, in the link's color). */
+a.autorefs-external::after {
+	/* https://primer.style/octicons/arrow-up-right-24 */
+	mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.25 15.5a.75.75 0 00.75-.75v-9a.75.75 0 00-.75-.75h-9a.75.75 0 000 1.5h7.19L6.22 16.72a.75.75 0 101.06 1.06L17.5 7.56v7.19c0 .414.336.75.75.75z"></path></svg>')
+		center / contain no-repeat;
+	content: "";
+	display: inline-block;
+	width: 0.75em;
+	height: 0.75em;
+	margin-left: 0.15em;
+	vertical-align: 0.05em;
+	background-color: currentColor;
 }
 
-div.cmap {
-  position: relative;
-  margin: 0;
-}
-div.cmap-bar {
-  height: 30px;
+div.doc-contents:not(.first) {
+	padding-left: 25px;
+	border-left: 0.05rem solid var(--md-typeset-table-color);
 }
 
-div.cmap-expr > .cmap-bar {
-  height: 24px;
+/* ----------------------------------------------------------------------------
+   Colorbars ({{ cmap(...) }} macros and the catalog grid)
+   ------------------------------------------------------------------------- */
+
+.md-typeset .cmap {
+	position: relative;
+	display: block;
+	margin: 0 0 2px;
+	line-height: 0;
 }
 
-div.cmap.grayscale > .cmap-bar, div.cmap.grayscale > img {
-  filter: grayscale(100%);
+.md-typeset .cmap[hidden] {
+	display: none;
 }
 
-a div.cmap-bar:hover {
-  cursor: pointer;
-  filter: drop-shadow(0 0 0.4rem gray);
+.md-typeset .cmap img {
+	display: block;
+	width: 100%;
+	height: 32px;
 }
 
-div.cmap-name {
-  position: absolute;
-  vertical-align: middle;
-  line-height: 30px; /* same as cmap-bar */
-  margin: 0 0.8rem;
-  font-weight: bold;
-  font-size: 0.75rem;
-  text-shadow: #000 0 1px 2px;
-  color: white;
-  mix-blend-mode: difference;
-}
-div.cmap:hover .cmap-name {
-  color: red;
+.md-typeset .cmap.grayscale img {
+	filter: grayscale(100%);
 }
 
-.container {
-  overflow: hidden;
+/* example bars under their code, aligned with it */
+.md-typeset .cmap-expr {
+	display: block;
+	width: min(100%, 24rem);
+	margin: 0.35rem 0 0.6rem;
 }
 
-.filterDiv {
-  width: 100%;
-  display: none; /* Hidden by default */
+.md-typeset .cmap-expr img {
+	height: 20px;
+	border-radius: 0.15rem;
 }
 
-/* The "show" class is added to the filtered elements */
-.show {
-  display: block;
+/* a dark pill keeps the name legible on any colormap */
+.md-typeset .cmap-name {
+	position: absolute;
+	top: 50%;
+	left: 0.6rem;
+	z-index: 1;
+	padding: 0.15em 0.4em;
+	font-size: 0.65rem;
+	font-weight: 500;
+	line-height: 1;
+	color: white;
+	background: rgb(0 0 0 / 0.65);
+	border-radius: 0.25em;
+	transform: translateY(-50%);
+	pointer-events: none;
 }
 
-/* Style the buttons */
-.btn {
-  border: none;
-  outline: none;
-  padding: 8px 16px;
-  background-color: #f1f1f1;
-  cursor: pointer;
-}
-body[data-md-color-scheme="slate"] .btn {
-  background-color: #414352;
-  color: white;
+/* grow only the bar (not the label) on hover */
+.md-typeset a.cmap img {
+	transition:
+		transform 0.1s,
+		box-shadow 0.1s;
 }
 
-body[data-md-color-scheme="slate"] {
-  /* default is  hsla(var(--md-hue),75%,95%,1) */
-  --md-default-fg-color: hsla(var(--md-hue),40%,95%,.75);
-  /* default is  hsla(var(--md-hue), 15%, 21%, 1); */
-  --md-default-bg-color: hsla(var(--md-hue), 15%, 10%, 1);
+.md-typeset a.cmap:hover,
+.md-typeset a.cmap:focus-visible {
+	z-index: 1;
 }
 
-/* Add a light grey background on mouse-over */
-.btn:hover {
-  background-color: #ddd;
-}
-body[data-md-color-scheme="slate"] .btn:hover {
-  background-color: #a3a5b1;
+.md-typeset a.cmap:hover img,
+.md-typeset a.cmap:focus-visible img {
+	transform: scaleY(1.15);
+	box-shadow: 0 0 0.4rem var(--md-default-fg-color--light);
 }
 
-/* Add a dark background to the active button */
-.btn.active {
-  background-color: #666;
-  color: white;
+/* ----------------------------------------------------------------------------
+   Catalog filter
+   ------------------------------------------------------------------------- */
+
+.cmap-filter {
+	position: sticky;
+	top: 2.4rem;
+	z-index: 2;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 0.8rem;
+	align-items: center;
+	padding: 0.6rem 0;
+	margin-bottom: 0.4rem;
+	background: var(--md-default-bg-color);
+	font-size: 0.7rem;
 }
-body[data-md-color-scheme="slate"] .btn.active {
-  background-color: #a0a3b7;
-  color: black;
+
+/* on small screens, a sticky filter bar would cover too much of the page */
+@media (max-width: 600px) {
+	.cmap-filter {
+		position: static;
+	}
 }
+
+.cmap-filter input[type="search"],
+.cmap-filter select,
+.cmap-compare-input {
+	padding: 0.35rem 0.6rem;
+	font: inherit;
+	color: var(--md-default-fg-color);
+	background: var(--md-default-fg-color--lightest);
+	border: 1px solid transparent;
+	border-radius: 0.3rem;
+}
+
+.cmap-filter input[type="search"],
+.cmap-filter select {
+	box-sizing: border-box;
+	height: 1.9rem;
+}
+
+.cmap-filter input[type="search"] {
+	flex: 1 1 12rem;
+}
+
+/* custom chevron, so the native one isn't jammed against the right edge */
+.cmap-filter select {
+	padding-right: 1.8rem;
+	appearance: none;
+	cursor: pointer;
+	background-image:
+		linear-gradient(45deg, transparent 50%, currentColor 50%),
+		linear-gradient(135deg, currentColor 50%, transparent 50%);
+	background-position:
+		right 0.85rem center,
+		right 0.6rem center;
+	background-size: 0.25rem 0.25rem;
+	background-repeat: no-repeat;
+}
+
+.cmap-filter input:focus,
+.cmap-filter select:focus,
+.cmap-compare-input:focus {
+	outline: none;
+	border-color: var(--md-accent-fg-color);
+}
+
+.cmap-filter-mono {
+	display: inline-flex;
+	gap: 0.3rem;
+	align-items: center;
+	cursor: pointer;
+}
+
+.cmap-filter-cats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.25rem;
+}
+
+.cmap-filter-cats button,
+.cmap-pills label {
+	padding: 0.25rem 0.7rem;
+	font: inherit;
+	color: var(--md-default-fg-color);
+	cursor: pointer;
+	background: var(--md-default-fg-color--lightest);
+	border-radius: 1rem;
+}
+
+.cmap-filter-cats button[aria-pressed="true"],
+.cmap-pills label:has(input:checked) {
+	color: var(--md-accent-bg-color);
+	/* (darkened a little, for white text) */
+	background: color-mix(in srgb, var(--md-accent-fg-color) 85%, black);
+}
+
+.cmap-filter-count {
+	margin-left: auto;
+	color: var(--md-default-fg-color--light);
+}
+
+.cmap-empty,
+.md-typeset .cmap-error {
+	color: var(--md-default-fg-color--light);
+}
+
+/* ----------------------------------------------------------------------------
+   Colormap detail page
+   ------------------------------------------------------------------------- */
+
+.md-typeset .cmap-detail .cmap img {
+	height: 40px;
+}
+
+.md-typeset .cmap-detail .cmap.grayscale img {
+	height: 30px;
+}
+
+/* (the page title already names the colormap) */
+.md-typeset .cmap-detail .cmap-name {
+	display: none;
+}
+
+/* Colorbar(s) + sine ramp stacked on the left, with the square test image (cyclic
+   and diverging maps only) on the right at the same height as the stack.
+   Test images are rendered at their displayed size by cmap.js. */
+.cmap-detail {
+	--cmap-square: 170px;
+	container-type: inline-size;
+}
+
+.cmap-test-images {
+	display: grid;
+	gap: 0.8rem;
+}
+
+.cmap-test-stack {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.md-typeset .cmap-test-stack > .cmap {
+	margin: 0;
+}
+
+.cmap-sineramp {
+	display: block;
+	width: 100%;
+	height: 96px;
+}
+
+.cmap-test-square {
+	display: block;
+	width: var(--cmap-square);
+	height: auto;
+	aspect-ratio: 1;
+}
+
+.cmap-test-images:has(> .cmap-test-square) {
+	grid-template-columns: minmax(0, 1fr) auto;
+}
+
+/* the sine ramp takes whatever height is left after the colorbars */
+.cmap-test-images:has(> .cmap-test-square) .cmap-test-stack {
+	height: var(--cmap-square);
+}
+
+.cmap-test-images:has(> .cmap-test-square) .cmap-sineramp {
+	flex: 1;
+	min-height: 0;
+	height: auto;
+}
+
+/* discrete colormaps have no sine ramp: put the square test image below the bars */
+.cmap-test-images:has(> .cmap-test-square):not(:has(.cmap-sineramp)) {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.cmap-test-images:has(> .cmap-test-square):not(:has(.cmap-sineramp)) .cmap-test-stack {
+	height: auto;
+}
+
+.cmap-test-images:not(:has(.cmap-sineramp)) .cmap-test-square {
+	justify-self: center;
+}
+
+/* too narrow for side by side: square goes below, centered and larger */
+@container (width < 560px) {
+	.cmap-test-images:has(> .cmap-test-square) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.cmap-test-images:has(> .cmap-test-square) .cmap-test-stack {
+		height: auto;
+	}
+
+	.cmap-test-images:has(> .cmap-test-square) .cmap-sineramp {
+		flex: none;
+		height: 96px;
+	}
+
+	.cmap-test-square {
+		justify-self: center;
+		width: min(100%, 280px);
+	}
+}
+
+.md-typeset .cmap-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.3rem;
+	padding: 0;
+	margin: 0.8rem 0;
+	font-size: 0.65rem;
+	border: 0;
+}
+
+/* L / M / S: the cone type that each deficiency is missing */
+.cmap-cvd-cone {
+	display: inline-block;
+	min-width: 1.1em;
+	margin-right: 0.35em;
+	font-family: var(--md-code-font-family);
+	font-weight: 700;
+	line-height: 1.1em;
+	text-align: center;
+	border: 1px solid currentColor;
+	border-radius: 0.2em;
+}
+
+.cmap-pills input {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.cmap-pills label:has(input:focus-visible) {
+	outline: 2px solid var(--md-accent-fg-color);
+}
+
+.cmap-chart-wrap {
+	position: relative;
+	height: 350px;
+}
+
+.md-typeset .cmap-chart-caption {
+	font-size: 0.65rem;
+	font-style: italic;
+	color: var(--md-default-fg-color--light);
+	text-align: center;
+}
+
+/* (the links are wrapped in a <p> by markdown) */
+.md-typeset .cmap-pager > p {
+	display: flex;
+	justify-content: space-between;
+}
+
+.md-typeset .cmap-pager a:only-child:last-child {
+	margin-left: auto;
+}
+
+/* ----------------------------------------------------------------------------
+   Compare page
+   ------------------------------------------------------------------------- */
+
+/* the colormap input and CVD pills stay in reach while scrolling the page */
+.cmap-compare-controls {
+	position: sticky;
+	top: 2.4rem;
+	z-index: 2;
+	padding-top: 0.6rem;
+	background: var(--md-default-bg-color);
+}
+
+.md-typeset .cmap-compare-controls .cmap-cvd {
+	margin: 0.6rem 0 0;
+	padding-bottom: 0.6rem;
+}
+
+/* (so that linked headings aren't hidden under the sticky controls) */
+.md-typeset .cmap-compare h2 {
+	scroll-margin-top: 9rem;
+}
+
+/* (as for the catalog filter, too much of a small screen) */
+@media (max-width: 600px) {
+	.cmap-compare-controls {
+		position: static;
+	}
+
+	.md-typeset .cmap-compare h2 {
+		scroll-margin-top: 3rem;
+	}
+}
+
+.cmap-compare-form {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+}
+
+.cmap-compare-input {
+	flex: 1;
+	font-size: 0.8rem;
+}
+
+.md-typeset .cmap-compare-form .md-button {
+	padding: 0.35rem 1rem;
+	margin: 0;
+}
+
+.cmap-compare-row {
+	margin-bottom: 1rem;
+}
+
+.cmap-compare-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-weight: 700;
+}
+
+.cmap-compare-remove {
+	color: var(--md-default-fg-color--light);
+	cursor: pointer;
+}
+
+.cmap-compare-remove:hover {
+	color: var(--md-accent-fg-color);
+}
+
+.cmap-compare-bar {
+	display: block;
+	width: 100%;
+	height: 32px;
+	margin-bottom: 2px;
+}
+
+.cmap-image-drop {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem 0.8rem;
+	align-items: center;
+	padding: 0.6rem 0.8rem;
+	font-size: 0.7rem;
+	border: 1px dashed var(--md-default-fg-color--lighter);
+	border-radius: 0.3rem;
+	transition:
+		border-color 0.1s,
+		background-color 0.1s;
+}
+
+.cmap-image.is-dragging .cmap-image-drop {
+	background: var(--md-accent-fg-color--transparent);
+	border-color: var(--md-accent-fg-color);
+}
+
+.md-typeset .cmap-image-pick {
+	padding: 0.25rem 0.8rem;
+	margin: 0;
+	font-size: inherit;
+}
+
+.md-typeset .cmap-image-samples {
+	margin: 0;
+}
+
+.cmap-image-name {
+	font-weight: 700;
+	overflow-wrap: anywhere;
+}
+
+.cmap-image-reset {
+	color: var(--md-default-fg-color--light);
+	cursor: pointer;
+}
+
+.cmap-image-reset:hover {
+	color: var(--md-accent-fg-color);
+}
+
+.cmap-image-stretch {
+	display: inline-flex;
+	gap: 0.3rem;
+	align-items: center;
+	margin-left: auto;
+	cursor: pointer;
+}
+
+.cmap-image-stretch[hidden] {
+	display: none;
+}
+
+.cmap-image-hint {
+	flex-basis: 100%;
+	color: var(--md-default-fg-color--light);
+}
+
+/* small multiples: fewer, larger tiles for wide images, more for tall ones */
+.cmap-image-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.8rem 0.6rem;
+	margin-top: 0.8rem;
+}
+
+.cmap-image-grid[data-shape="wide"] {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cmap-image-grid[data-shape="tall"] {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 600px) {
+	.cmap-image-grid,
+	.cmap-image-grid[data-shape="tall"] {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.cmap-image-grid[data-shape="wide"] {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+.cmap-image-tile canvas {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 0.15rem;
+}
+
+.md-typeset .cmap-image-credit {
+	font-size: 0.65rem;
+	color: var(--md-default-fg-color--light);
+}
+
+.cmap-image-tile span {
+	display: block;
+	margin-top: 0.2rem;
+	font-size: 0.65rem;
+	color: var(--md-default-fg-color--light);
+}
+
+/* ----------------------------------------------------------------------------
+   Named colors (colors.md)
+   ------------------------------------------------------------------------- */
 
 .colorlist {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  font-size: 0.7rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+	gap: 0.4rem;
+	font-size: 0.65rem;
 }
+
 .colorbox {
-  width: 7rem;
-  height: 3.8rem;
-  padding-top: 0.22rem;
-  margin: 0.2rem;
-  text-align: center;
-}
-#readthedocs-ea, .ethical-alabaster {
-  display: none;
-}
-
-.radio-group {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+	justify-content: center;
+	min-height: 4.4rem;
+	padding: 0.4rem;
+	line-height: 1.3;
+	text-align: center;
+	border-radius: 0.3rem;
+	/* outline, so that white / transparent boxes are visible */
+	box-shadow: inset 0 0 0 1px rgb(127 127 127 / 0.25);
 }
 
-.radio-option {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5em;
-  border-radius: 0.5em;
-  cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
+.md-typeset .colorbox code {
+	padding: 0;
+	font-size: inherit;
+	color: inherit;
+	background: none;
 }
 
-.radio-option input[type="radio"] {
-  appearance: none;
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.radio-option .material-icons {
-  font-size: 1rem;
-  color: var(--md-default-fg-color);
-  transition: color 0.2s;
-}
-
-.radio-option input[type="radio"]:checked ~ .material-icons,
-.radio-option input[type="radio"]:checked ~ .radio-label {
-  color: var(--md-accent-fg-color);
-}
-
-
-.radio-option:hover {
-  background-color: var(--md-default-bg-color--lighter);
-  box-shadow: 0 0 0 2px var(--md-accent-fg-color);
-}
-
-.radio-option .radio-label {
-  font-size: 0.65rem;
-  color: var(--md-default-fg-color);
+.colorbox-aliases {
+	font-style: italic;
+	opacity: 0.8;
 }

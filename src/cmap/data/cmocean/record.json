@@ -1,6 +1,6 @@
 {
   "authors": [
-    ""
+    "Kristen M. Thyng"
   ],
   "colormaps": {
     "algae": {
@@ -104,7 +104,6 @@
       "data": "cmap.data.cmocean.turbid:turbid"
     }
   },
-  "info": "",
   "license": "MIT",
   "namespace": "cmocean",
   "source": "https://github.com/matplotlib/cmocean"

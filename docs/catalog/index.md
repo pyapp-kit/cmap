@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Colormap Catalog
 
 To use any colormap in the catalog, you can pass its name to the [`Colormap`][cmap.Colormap]
@@ -16,43 +20,25 @@ cmap = Colormap("viridis")
     `matplotlib.colors.Colormap` instance, you may call
     [`.to_mpl()`][cmap.Colormap.to_matplotlib].
 
-See the [Colormap API docs][cmap.Colormap] for details.
-
-<!--
-With that object you can do things like:
-
-```python
-# call it directly to colorize an ndarray of values
-# values should be (pre-normalized to 0-1)
-img = np.random.random((24, 24))
-colored = cmap(img)
-assert colored.shape == (24, 24, 4)
-
-# use it in matplotlib
-import matplotlib.pyplot as plt
-plt.imshow(img, cmap=cmap.to_mpl())
-
-# use it in napari
-from napari import view_image
-view_image(img, colormap=cmap.to_napari())
-``` -->
+See [Colormaps](../colormaps.md#mapping-data-to-colors) for how to apply it to
+your data, and the [Colormap API docs][cmap.Colormap] for details.
 
 !!!tip "Tip: Reversed colormaps"
 
     You can append `'_r'` to any of the colormap names listed below to get a
     reversed version of that colormap. For example, `'viridis_r'`
 
-    {{ cmap: viridis }}
-    {{ cmap: viridis_r }}
+    {{ cmap("viridis") }}
+    {{ cmap("viridis_r") }}
 
     This works with function based colormaps as well:
 
-    {{ cmap: cubehelix }}
-    {{ cmap: cubehelix_r }}
+    {{ cmap("cubehelix") }}
+    {{ cmap("cubehelix_r") }}
 
-## Colormaps by category { data-search-exclude }
+## All colormaps
 
-{{ CMAP_CATALOG }}
+Filter by name, source, or lightness profile below, or
+[compare colormaps side by side](../compare.md).
 
-<!-- Note: this is here because of `navigation.instant` in the mkdocs settings -->
-<script>typeof(initFilters) !== 'undefined' && initFilters();</script>
+{{ cmap_catalog() }}
