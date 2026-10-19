@@ -458,8 +458,20 @@ def test_reversed_preserves_state_and_swaps_the_directional_colors() -> None:
     assert rev.reversed() == cm
 
 
-def test_reversed_agrees_with_the_r_suffix() -> None:
-    assert Colormap("napari:HiLo").reversed() == Colormap("napari:HiLo_r")
+# one catalog entry per kind of state that "_r" and reversed() could disagree on
+@pytest.mark.parametrize(
+    "name",
+    [
+        "napari:HiLo",  # under/over in the record, which must swap
+        "tab10",  # nearest interpolation
+        "napari:nan",  # bad in the record
+    ],
+)
+def test_reversed_agrees_with_the_r_suffix(name: str) -> None:
+    assert Colormap(name).reversed() == Colormap(f"{name}_r")
+
+
+def test_r_suffix_keeps_explicit_directional_colors() -> None:
     # the record's colors swap; an explicit argument names the end it lands on
     assert Colormap("napari:HiLo_r", under="green").under_color == Color("green")
 
