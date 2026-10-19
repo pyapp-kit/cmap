@@ -6,10 +6,7 @@ import pytest
 from cmap import Color, Colormap
 from cmap._colormap import ColorStops
 
-try:
-    from pydantic import BaseModel
-except ImportError:
-    pytest.skip("pydantic not installed", allow_module_level=True)
+pydantic = pytest.importorskip("pydantic", minversion="2")
 
 
 def test_pydantic_casting() -> None:
@@ -18,7 +15,7 @@ def test_pydantic_casting() -> None:
 
 
 def test_pydantic_validate() -> None:
-    class MyModel(BaseModel):
+    class MyModel(pydantic.BaseModel):
         color: Color
         colormap: Colormap
 
@@ -64,7 +61,7 @@ def test_psygnal_serialization() -> None:
 
 
 def test_pydantic_preserves_modified_catalog_colormaps() -> None:
-    class MyModel(BaseModel):
+    class MyModel(pydantic.BaseModel):
         colormap: Colormap
 
     def round_trip(cmap: Colormap) -> Colormap:
