@@ -22,14 +22,14 @@ The URL updates as you go, so you can share a comparison.
 </form>
 <fieldset class="cmap-pills cmap-cvd" role="radiogroup" aria-label="Simulate color vision deficiency">
 <label><input type="radio" name="cvd" value="normal" checked><span>Normal vision</span></label>
-<label title="Simulates missing L (long-wavelength, red) cones"><input type="radio" name="cvd" value="protan"><span class="cmap-cvd-cone" aria-hidden="true">L</span><span>Protanopia</span></label>
-<label title="Simulates missing M (medium-wavelength, green) cones"><input type="radio" name="cvd" value="deutan"><span class="cmap-cvd-cone" aria-hidden="true">M</span><span>Deuteranopia</span></label>
-<label title="Simulates missing S (short-wavelength, blue) cones"><input type="radio" name="cvd" value="tritan"><span class="cmap-cvd-cone" aria-hidden="true">S</span><span>Tritanopia</span></label>
+<label><input type="radio" name="cvd" value="protan"><span title="Simulates missing L (long-wavelength, red) cones"><span class="cmap-cvd-cone" aria-hidden="true">L</span>Protanopia</span></label>
+<label><input type="radio" name="cvd" value="deutan"><span title="Simulates missing M (medium-wavelength, green) cones"><span class="cmap-cvd-cone" aria-hidden="true">M</span>Deuteranopia</span></label>
+<label><input type="radio" name="cvd" value="tritan"><span title="Simulates missing S (short-wavelength, blue) cones"><span class="cmap-cvd-cone" aria-hidden="true">S</span>Tritanopia</span></label>
 </fieldset>
 <div class="cmap-compare-rows"></div>
 <fieldset class="cmap-pills cmap-line-colors" role="radiogroup" aria-label="Line colors">
-<label title="Color each line by its colormap"><input type="radio" name="line-colors" value="colormap" checked><span>Colormap colors</span></label>
-<label title="Give each line its own distinct color (petroff:petroff6)"><input type="radio" name="line-colors" value="distinct"><span>Distinct colors</span></label>
+<label><input type="radio" name="line-colors" value="colormap" checked><span title="Color each line by its colormap">Colormap colors</span></label>
+<label><input type="radio" name="line-colors" value="distinct"><span title="Give each line its own distinct color (petroff:petroff6)">Distinct colors</span></label>
 </fieldset>
 <div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="compare"></canvas></div>
 </div>

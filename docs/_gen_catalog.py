@@ -160,7 +160,7 @@ breadcrumbs:
 {% if square %}<canvas class="cmap-test-square" data-test-image="{{ square.kind }}" title="{{ square.title }}" aria-label="{{ name }} applied to the {{ square.label }} test image"></canvas>
 {% endif %}</div>
 <fieldset class="cmap-pills cmap-cvd" role="radiogroup" aria-label="Simulate color vision deficiency">
-{% for key, label in cvd_labels.items() %}{% set cone = cvd_cones.get(key) %}<label{% if cone %} title="Simulates missing {{ cone[0] }} ({{ cone[1] }}) cones"{% endif %}><input type="radio" name="cvd" value="{{ key }}"{% if loop.first %} checked{% endif %}>{% if cone %}<span class="cmap-cvd-cone" aria-hidden="true">{{ cone[0] }}</span>{% endif %}<span>{{ label }}</span></label>
+{% for key, label in cvd_labels.items() %}{% set cone = cvd_cones.get(key) %}<label><input type="radio" name="cvd" value="{{ key }}"{% if loop.first %} checked{% endif %}><span{% if cone %} title="Simulates missing {{ cone[0] }} ({{ cone[1] }}) cones"{% endif %}>{% if cone %}<span class="cmap-cvd-cone" aria-hidden="true">{{ cone[0] }}</span>{% endif %}{{ label }}</span></label>
 {% endfor %}</fieldset>
 </div>
 

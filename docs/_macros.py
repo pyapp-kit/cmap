@@ -113,9 +113,11 @@ def catalog_grid(page: str, category: str | None = None) -> str:
         ' aria-label="Filter colormaps by name">'
         '<select class="cmap-filter-ns" aria-label="Filter by collection">'
         f'<option value="">All collections</option>{ns_options}</select>'
-        '<label class="cmap-filter-mono" title="Lightness (CAM02-UCS J) only ever '
-        'increases or only ever decreases (tolerance: 0.5 per step)">'
-        '<input type="checkbox"> Monotonic lightness</label>'
+        # (the title is on the text, not the label: clicking a label focuses its
+        # input, and zensical's tooltips also open on focus, so they'd stay open)
+        '<label class="cmap-filter-mono"><input type="checkbox">'
+        '<span title="Lightness (CAM02-UCS J) only ever increases or only ever '
+        'decreases (tolerance: 0.5 per step)">Monotonic lightness</span></label>'
         f"{cat_buttons}"
         f'<span class="cmap-filter-count">{len(items)} colormaps</span>'
         "</div>"
