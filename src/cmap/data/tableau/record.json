@@ -55,7 +55,7 @@
       "interpolation": false
     }
   },
-  "info": "Categorical palettes from Tableau. The classic palettes date from Tableau 1.5 (2004); \"tab10_new\" is the current \"Tableau 10\", redesigned for Tableau 10 (2016): https://www.tableau.com/blog/colors-upgrade-tableau-10-56782",
+  "info": "Categorical palettes from Tableau. The basic palettes (like Tableau 10 and Tableau 20) date from Tableau 1.5 (2004), and all of them were redesigned for Tableau 10 (2016): https://www.tableau.com/blog/colors-upgrade-tableau-10-56782",
   "license": "UNKNOWN",
   "namespace": "tableau",
   "source": "https://public.tableau.com/app/profile/chris.gerrard/viz/TableauColors/ColorPaletteswithRGBValues"
