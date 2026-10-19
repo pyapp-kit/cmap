@@ -134,13 +134,23 @@ breadcrumbs:
     plt.imshow(data, cmap=Colormap("{{ name }}").to_mpl())
     ```
 
+=== "plotly"
+
+    ```python
+    import plotly.express as px
+    from cmap import Colormap
+
+    px.imshow(data, color_continuous_scale=Colormap("{{ name }}").to_plotly())
+    ```
+
 === "napari"
 
     ```python
     import napari
     from cmap import Colormap
 
-    napari.view_image(data, colormap=Colormap("{{ name }}").to_napari())
+    napari.imshow(data, colormap=Colormap("{{ name }}").to_napari())
+    napari.run()
     ```
 
 === "CSS"
@@ -148,6 +158,93 @@ breadcrumbs:
     ```css
     {{ css | indent(4) }}
     ```
+
+=== "More..."
+
+    === "altair"
+
+        ```python
+        import altair as alt
+        from cmap import Colormap
+
+        # df: a DataFrame with columns x, y and value
+        alt.Chart(df).mark_rect().encode(
+            x="x:O",
+            y="y:O",
+            color=alt.Color(
+                "value:Q", scale=alt.Scale(range=Colormap("{{ name }}").to_altair())
+            ),
+        )
+        ```
+
+    === "bokeh"
+
+        ```python
+        from bokeh.plotting import figure, show
+        from cmap import Colormap
+
+        p = figure()
+        p.image(
+            image=[data], x=0, y=0, dw=1, dh=1,
+            color_mapper=Colormap("{{ name }}").to_bokeh(),
+        )
+        show(p)
+        ```
+
+    === "vispy"
+
+        ```python
+        from vispy import app, scene
+        from cmap import Colormap
+
+        canvas = scene.SceneCanvas(show=True)
+        view = canvas.central_widget.add_view()
+        scene.visuals.Image(data, cmap=Colormap("{{ name }}").to_vispy(), parent=view.scene)
+        view.camera = scene.PanZoomCamera(aspect=1)
+        view.camera.set_range()
+        app.run()
+        ```
+
+    === "pygfx"
+
+        ```python
+        import pygfx as gfx
+        from cmap import Colormap
+
+        image = gfx.Image(
+            gfx.Geometry(grid=gfx.Texture(data, dim=2)),
+            gfx.ImageBasicMaterial(
+                clim=(data.min(), data.max()), map=Colormap("{{ name }}").to_pygfx()
+            ),
+        )
+        gfx.show(image)
+        ```
+
+    === "pyqtgraph"
+
+        ```python
+        import pyqtgraph as pg
+        from cmap import Colormap
+
+        view = pg.image(data)
+        view.setColorMap(Colormap("{{ name }}").to_pyqtgraph())
+        pg.exec()
+        ```
+
+    === "Earth Engine"
+
+        ```python
+        import ee
+        from cmap import Colormap
+
+        ee.Initialize(project="my-project")  # your Google Cloud project
+        elevation = ee.Image("CGIAR/SRTM90_V4")
+        image = elevation.visualize(
+            min=0, max=3000, palette=Colormap("{{ name }}").to_gee()
+        )
+        ```
+
+    See also [usage with external libraries](../../colormaps.md#usage-with-external-visualization-libraries).
 
 </div>
 

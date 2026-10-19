@@ -244,6 +244,11 @@ div.doc-contents:not(.first) {
 	height: 30px;
 }
 
+/* (the page title already names the colormap) */
+.md-typeset .cmap-detail .cmap-name {
+	display: none;
+}
+
 /* Colorbar(s) + sine ramp stacked on the left, with the square test image (cyclic
    and diverging maps only) on the right at the same height as the stack.
    Test images are rendered at their displayed size by cmap.js. */
