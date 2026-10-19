@@ -144,6 +144,30 @@ function paintTestImage(canvas) {
   paint(canvas, testImageColors.get(canvas), im, r, c);
 }
 
+// The runs of identical colors in a (discrete) colormap's samples: each with its
+// color, its J′ and the x at its middle.
+function colorRuns(d) {
+  const runs = [];
+  d.color.forEach((c, i) => {
+    const last = runs.at(-1);
+    if (last && last.color === c) last.end = i;
+    else runs.push({ color: c, start: i, end: i });
+  });
+  const n = Math.max(d.color.length - 1, 1);
+  return runs.map((r) => ({
+    color: `#${r.color}`,
+    x: (r.start + r.end) / 2 / n,
+    J: d.J[Math.floor((r.start + r.end) / 2)],
+  }));
+}
+
+// The smallest 1, 2 or 5 (times a power of 10) that is >= `v`.
+function niceCeil(v) {
+  if (!(v > 0)) return 1;
+  const p = 10 ** Math.floor(Math.log10(v));
+  return [1, 2, 5, 10].map((m) => m * p).find((s) => s >= v);
+}
+
 // Paint values in [0, 1] (row-major, `rows` x `cols`) through the LUT `colors`.
 function paint(canvas, colors, values, rows, cols) {
   const lut = colors.map(hexToRgb);
@@ -306,12 +330,38 @@ function drawChart(canvas, d) {
   const colors = d.color.map((c) => `#${c}`);
   const kind = canvas.dataset.chart;
 
-  if (kind === "lightness") {
+  if (kind === "lightness" && "discrete" in canvas.dataset) {
+    // a discrete colormap: one point per color, and no derivative
+    const runs = colorRuns(d);
+    new Chart(canvas, {
+      type: "scatter",
+      data: {
+        datasets: [
+          {
+            label: "J′",
+            data: runs.map((r) => ({ x: r.x, y: r.J })),
+            backgroundColor: runs.map((r) => r.color),
+            tooltipColors: runs.map((r) => r.color),
+            pointRadius: 10,
+            pointHoverRadius: 12,
+            borderWidth: 0,
+            clip: false,
+          },
+        ],
+      },
+      options: baseOptions({
+        y: { min: 0, max: 100, title: { text: "Lightness J′", display: true } },
+      }),
+    });
+  } else if (kind === "lightness") {
+    // symmetric derivative axis, fit to the data (ignoring the most extreme 2%)
+    const dJ = d.dJ.filter(Number.isFinite).map(Math.abs).sort((a, b) => a - b);
+    const dJmax = niceCeil(1.25 * (dJ[Math.floor(0.98 * (dJ.length - 1))] ?? 0));
     const options = baseOptions({
       y: { min: 0, max: 100, title: { text: "Lightness J′", display: true } },
       y2: {
-        min: -500,
-        max: 500,
+        min: -dJmax,
+        max: dJmax,
         position: "right",
         grid: { drawOnChartArea: false },
         title: { text: "Lightness derivative", display: true },
@@ -329,6 +379,8 @@ function drawChart(canvas, d) {
             pointRadius: 10,
             pointHoverRadius: 12,
             borderWidth: 0,
+            // (don't cut off the points near the top and bottom)
+            clip: false,
           },
           {
             label: "dJ′",
@@ -519,11 +571,15 @@ async function initCompare(root) {
         const bar = document.createElement("canvas");
         bar.className = "cmap-compare-bar";
         paintBar(bar, d.color);
-        const sine = document.createElement("canvas");
-        sine.className = "cmap-sineramp";
-        sine.dataset.testImage = "sineramp";
-        row.append(head, bar, sine);
-        setTestImageColors(sine, d.color);
+        row.append(head, bar);
+        // (a sine ramp means nothing for a discrete colormap)
+        if (!e.discrete) {
+          const sine = document.createElement("canvas");
+          sine.className = "cmap-sineramp";
+          sine.dataset.testImage = "sineramp";
+          row.append(sine);
+          setTestImageColors(sine, d.color);
+        }
         return row;
       })
     );

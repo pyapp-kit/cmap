@@ -296,6 +296,15 @@ div.doc-contents:not(.first) {
 	height: auto;
 }
 
+/* discrete colormaps have no sine ramp: put the square test image below the bars */
+.cmap-test-images:has(> .cmap-test-square):not(:has(.cmap-sineramp)) {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.cmap-test-images:has(> .cmap-test-square):not(:has(.cmap-sineramp)) .cmap-test-stack {
+	height: auto;
+}
+
 /* too narrow for side by side: square goes below, centered and larger */
 @container (width < 560px) {
 	.cmap-test-images:has(> .cmap-test-square) {

@@ -155,7 +155,7 @@ breadcrumbs:
 <div class="cmap-test-stack">
 {{ bar }}
 {{ gray }}
-<canvas class="cmap-sineramp" data-test-image="sineramp" title="Sine ramp test image (Kovesi): the sine wave at the top should be equally visible across the whole range" aria-label="{{ name }} applied to a sine ramp test image"></canvas>
+{% if not discrete %}<canvas class="cmap-sineramp" data-test-image="sineramp" title="Sine ramp test image (Kovesi): the sine wave at the top should be equally visible across the whole range" aria-label="{{ name }} applied to a sine ramp test image"></canvas>{% endif %}
 </div>
 {% if square %}<canvas class="cmap-test-square" data-test-image="{{ square.kind }}" title="{{ square.title }}" aria-label="{{ name }} applied to the {{ square.label }} test image"></canvas>
 {% endif %}</div>
@@ -172,7 +172,7 @@ breadcrumbs:
 
 ## Perceptual lightness { data-search-exclude }
 
-<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="lightness" data-cmap-name="{{ name }}"></canvas></div>
+<div class="cmap-chart-wrap"><canvas class="cmap-chart" data-chart="lightness" data-cmap-name="{{ name }}"{% if discrete %} data-discrete{% endif %}></canvas></div>
 
 <p class="cmap-chart-caption">
 Lightness (J&prime;) measured in
@@ -365,6 +365,9 @@ def _render_page(
         cvd_labels=CVD_LABELS,
         cvd_cones=CVD_CONES,
         square=SQUARE_TEST_IMAGES.get(info.category),
+        # a fixed set of colors: the continuous diagnostics (sine ramp, lightness
+        # derivative) don't apply
+        discrete=cm.interpolation == "nearest",
         data_url=f"../../_data/{quote(Path(page).stem)}.json",
         prev=_link(prev),
         next=_link(next_),
@@ -403,6 +406,7 @@ def build() -> None:
                     "namespace": info.namespace,
                     "aliases": natsort.natsorted(aliases.get(name.lower(), ())),
                     "monotonic": _is_monotonic(data["normal"]["J"]),
+                    "discrete": Colormap(name).interpolation == "nearest",
                     "path": page.removesuffix(".md"),
                 }
             )
