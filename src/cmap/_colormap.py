@@ -280,7 +280,7 @@ class Colormap:
         if isinstance(value, str):
             rev = value.endswith("_r")
             info = self.catalog()[value[:-2] if rev else value]
-            name = name or f"{info.namespace}:{info.name}"
+            name = name or f"{info.qualified_name}{'_r' if rev else ''}"
             category = category or info.category
             over = info.over if over is None else over
             under = info.under if under is None else under
