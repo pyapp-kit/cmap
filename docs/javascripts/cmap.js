@@ -275,6 +275,8 @@ function baseOptions(yScales) {
       legend: { display: false },
       tooltip: {
         boxPadding: 4,
+        // (point-style swatches: the default boxes have a white backing and outline)
+        usePointStyle: true,
         callbacks: {
           title: (items) => `x = ${items[0].parsed.x.toFixed(3)}`,
           label: ({ dataset, parsed }) =>
@@ -284,8 +286,9 @@ function baseOptions(yScales) {
           labelColor: ({ dataset, dataIndex }) => {
             let color = dataset.tooltipColors?.[dataIndex] ?? dataset.borderColor;
             if (typeof color !== "string") color = themeColors().fg;
-            return { borderColor: color, backgroundColor: color, borderWidth: 0, borderRadius: 2 };
+            return { borderColor: color, backgroundColor: color, borderWidth: 0 };
           },
+          labelPointStyle: () => ({ pointStyle: "rectRounded", rotation: 0 }),
         },
       },
     },
@@ -333,6 +336,7 @@ function drawChart(canvas, d) {
             showLine: true,
             pointRadius: 0,
             borderColor: "#88888866",
+            tooltipColors: Array(x.length).fill("#888888"),
             borderWidth: 3,
             yAxisID: "y2",
           },
