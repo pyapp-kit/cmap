@@ -116,6 +116,16 @@ def test_colorstops_reversed_does_not_mutate_source() -> None:
     npt.assert_array_equal(np.asarray(stops), before)
 
 
+def test_r_suffix_is_kept_in_the_name() -> None:
+    cm = Colormap("viridis_r")
+    assert cm.name == "bids:viridis_r"
+    assert cm.identifier == "bids_viridis_r"
+    assert cm.identifier != Colormap("viridis").identifier
+    assert cm.reversed().name == "bids:viridis"
+    assert Colormap("viridis").reversed().name == cm.name
+    assert Colormap("viridis_r", name="mine").name == "mine"
+
+
 def test_construction_does_not_change_source_interpolation() -> None:
     stops = Colormap(["red", "blue"], interpolation="nearest").color_stops
     before = stops.to_lut(4).copy()
