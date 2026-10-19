@@ -20,7 +20,7 @@ from ._color import Color, ColorLike
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Literal, TypeAlias, TypeGuard
+    from typing import Literal, NotRequired, TypeAlias, TypeGuard
 
     import bokeh.models
     import matplotlib.colors
@@ -45,22 +45,20 @@ if TYPE_CHECKING:
         blue: list[tuple[float, float, float]] | Callable[[np.ndarray], np.ndarray]
         alpha: list[tuple[float, float, float]] | Callable[[np.ndarray], np.ndarray]
 
-    class _RequiredColormapDict(TypedDict):
+    class ColormapDict(TypedDict):
         name: str
         identifier: str
         category: str | None
         value: list[tuple[float, list[float]]]
-
-    class ColormapDict(_RequiredColormapDict, total=False):
         # written only when they hold non-default state, so a colormap that has none
         # of them serializes exactly as it did before they existed
-        interpolation: str
-        under: list[float]
-        over: list[float]
-        bad: list[float]
-        neg_inf: list[float]
-        pos_inf: list[float]
-        nan: list[float]
+        interpolation: NotRequired[Interpolation]
+        under: NotRequired[list[float]]
+        over: NotRequired[list[float]]
+        bad: NotRequired[list[float]]
+        neg_inf: NotRequired[list[float]]
+        pos_inf: NotRequired[list[float]]
+        nan: NotRequired[list[float]]
 
 
 # the extreme colors, in constructor-argument spelling; `<field>_color` is the property.
