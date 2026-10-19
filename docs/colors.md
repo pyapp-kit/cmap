@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Colors
 
 The `cmap.Color` type represents an individual color.
@@ -36,7 +40,7 @@ Briefly, valid arguments are of type:
 - `None`
 - `int`
 - `cmap.Color`
-- `pydantic.color.Color`
+- `pydantic_extra_types.color.Color`
 - `colour.Color`
 
 In detail:
@@ -81,7 +85,7 @@ In detail:
     !!!warning "Ambiguities with tuples of 0 and 1"
 
         While it's nice to support both the 8-bit and float inputs, there is
-        amgiguity in the case of a tuple of integers containing only zeros
+        ambiguity in the case of a tuple of integers containing only zeros
         and ones (e.g. `(0, 0, 1)`).  The convention in `cmap` is to treat a
         tuple of *all* integers as 8-bit RGB values, and a tuple with *any*
         floats (excepting the 4th alpha value) as float RGB values, so
@@ -121,12 +125,12 @@ In detail:
     !!!Note
         [Base-16 integers](https://docs.python.org/3/library/functions.html#int)
         look the same as their hexadecimal color string representation, but
-        lacks the quotes, and are preceded by `0x` instead of `#`.
+        lack the quotes, and are preceded by `0x` instead of `#`.
 
 1. An instance of [`cmap.Color`][] itself: which is returned unchanged
-    - `Color(Color('red')) is Color('red')`)
+    - `Color(Color('red')) is Color('red')`
 
-1. (*Third-party object*): An instance of [`pydantic.color.Color`](https://docs.pydantic.dev/usage/types/#color-type).
+1. (*Third-party object*): An instance of [`pydantic_extra_types.color.Color`](https://docs.pydantic.dev/latest/api/pydantic_extra_types_color/#pydantic_extra_types.color.Color).
 
 1. (*Third-party object*): An instance of [`colour.Color`](https://github.com/vaab/colour)
 
@@ -162,7 +166,8 @@ Comparing a color to anything will attempt to cast the other object:
 
 ```python
 trq == "turquoise"  # True
-trq is "turquoise"  # False ... naturally, it's not the same object
+# colors are cached, so equal colors are the same object
+trq is Color((64, 224, 208))  # True
 ```
 
 !!!tip
@@ -209,8 +214,8 @@ trq.name = "foo"  # AttributeError: Color is immutable
 
 ## Usage with pydantic
 
-`Color` can be used as a field type in
-[pydantic](https://pydantic-docs.helpmanual.io/usage/types/). models.
+`Color` can be used as a field type in [pydantic](https://docs.pydantic.dev/)
+models. Fields accept any `ColorLike` value, and serialize to a color string:
 
 ```python
 from pydantic import BaseModel
@@ -223,13 +228,16 @@ class Foo(BaseModel):
 
 foo = Foo(color="red")
 foo.color is Color("red")  # True
+
+Foo(color=(0, 11, 23)).model_dump_json()  # '{"color":"#000B17"}'
 ```
 
-!!!tip "Serialization in pydantic"
-    Unfortunately, serialization with the `json` module is not easily
-    pluggable, so if you want to serialize a pydantic model with a `Color`
-    field to JSON, add the following encoder to your model to cast
-    `Color` objects to strings:
+This also works in
+[`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/).
+
+??? note "pydantic v1"
+    With pydantic v1, `Color` fields validate the same way, but serializing to
+    JSON requires an encoder:
 
     ```python
     class Foo(BaseModel):
@@ -237,17 +245,7 @@ foo.color is Color("red")  # True
 
         class Config:
             json_encoders = {Color: str}
-
-
-    # example
-    Foo(color=(0, 11, 23)).json()  # '{"color": "#000B17"}'
     ```
-
-!!!tip "Serialization in `psygnal.EventedModel`"
-    Color supports serialization in
-    [`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/)
-    out of the box.  The `json_encoders = {Color: str}` line in the `Config`
-    class mentioned above is not necessary.
 
 ## Rich repr
 
@@ -269,4 +267,4 @@ The following names may be used as string inputs to the `Color` constructor.
 
 (case insensitive; spaces, dashes, and underscores are ignored)
 
-{{ COLOR_LIST }}
+{{ color_list() }}

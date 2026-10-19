@@ -249,10 +249,10 @@ class Catalog(Mapping[str, "CatalogItem"]):
 
         # sort record files.  Put matplotlib-related names first so that un-namespaced
         # names resolve to the matplotlib colormaps by default.
-        MPL_PRIORTY_NAMESPACES = ("matplotlib", "bids", "matlab", "gnuplot")
+        MPL_PRIORITY_NAMESPACES = ("matplotlib", "bids", "matlab", "gnuplot")
 
         def _sorter(x: Path) -> tuple[int, Path]:
-            if any(s in str(x) for s in MPL_PRIORTY_NAMESPACES):
+            if any(s in str(x) for s in MPL_PRIORITY_NAMESPACES):
                 return (0, x)
             return (1, x)
 

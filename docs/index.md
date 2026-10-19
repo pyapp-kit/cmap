@@ -3,6 +3,39 @@
 `cmap` is a colormap library for python, providing all of the colormaps in
 matplotlib, vispy, cmocean, (and more), with no dependencies beyond numpy.
 
+## Installation
+
+`cmap` is available on [PyPI](https://pypi.org/project/cmap/) and
+[conda-forge](https://anaconda.org/conda-forge/cmap):
+
+=== "pip"
+
+    ```bash
+    pip install cmap
+    ```
+
+=== "conda"
+
+    ```bash
+    conda install -c conda-forge cmap
+    ```
+
+## Quick start
+
+```python
+import numpy as np
+from cmap import Colormap
+
+cm = Colormap("viridis")  # any name from the catalog
+
+data = np.random.random((64, 64))  # values in [0, 1]
+rgba = cm(data)  # (64, 64, 4) array of RGBA colors
+
+cm.to_mpl()  # or .to_napari(), .to_vispy(), .to_pygfx(), ...
+```
+
+See [Colormaps](colormaps.md) for more.
+
 ## Purpose
 
 Mapping scalar values to colors is a very common procedure in scientific
@@ -45,4 +78,4 @@ For details on using the [`cmap.Colormap`][cmap.Colormap] object, see [Colormaps
 This library also offers a simple [`cmap.Color`][cmap.Color] object.  It can cast a variety of
 inputs (including strings, tuples/lists, arrays, integers) to an RGBA color
 representation, and offers some basic conversions.  See [Colors](colors.md) for
-details
+details.

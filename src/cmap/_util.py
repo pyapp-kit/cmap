@@ -258,8 +258,8 @@ def sineramp(
     """Generate test image consisting of a sine wave superimposed on a ramp function.
 
     This function and all documentation is based on the MATLAB function of the same
-    name, written by Peter Kovesi and available from his website:
-    https://www.peterkovesi.com/matlabfns/
+    name, written by Peter Kovesi and available at:
+    https://codeberg.org/peterkovesi/matlabfns/src/branch/main/Misc/sineramp.m
 
     Copyright (c) 1996-2005 Peter Kovesi
     School of Computer Science & Software Engineering
@@ -348,8 +348,8 @@ def circlesineramp(
     """Generate test image for evaluating cyclic color maps.
 
     This function and all documentation is based on the MATLAB function of the same
-    name, written by Peter Kovesi and available from his website:
-    https://www.peterkovesi.com/matlabfns/
+    name, written by Peter Kovesi and available at:
+    https://codeberg.org/peterkovesi/matlabfns/src/branch/main/Misc/circlesineramp.m
 
     Copyright (c) 1996-2005 Peter Kovesi
     School of Computer Science & Software Engineering
@@ -481,13 +481,9 @@ def report(
     RGB = np.clip(cast("np.ndarray", cspace_convert(RGB, initial_space, "sRGB1")), 0, 1)
     Jab = cast("np.ndarray", cspace_convert(RGB, "sRGB1", uniform_space))
 
-    local_deltas = np.sqrt(np.sum((Jab[:-1, :] - Jab[1:, :]) ** 2, axis=-1))
-    local_deltas = np.insert(local_deltas, 0, 0)  # keep length the same
-    percep_derivs = n * local_deltas  # export
-
-    lightness_deltas = np.diff(Jab[:, 0])
-    lightness_deltas = np.insert(lightness_deltas, 0, 0)  # keep length same
-    lightness_derivs = n * lightness_deltas  # export
+    # derivatives with respect to x (same length as x, one-sided at the ends)
+    percep_derivs = np.linalg.norm(np.gradient(Jab, x, axis=0), axis=-1)  # export
+    lightness_derivs = np.gradient(Jab[:, 0], x)  # export
 
     JchMs = cspace_convert(RGB, "sRGB1", "JChMs")
     color = [
@@ -577,7 +573,7 @@ def to_mpl(
     N: int = 256,
     gamma: float = 1.0,
 ) -> matplotlib.colors.Colormap:
-    """Convienence function to create a matplotlib colormap.
+    """Convenience function to create a matplotlib colormap.
 
     Arguments are the same as for [cmap.Colormap][]. This simply creates the
     colormap instance and returns the value of `to_matplotlib()`.
