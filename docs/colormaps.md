@@ -435,6 +435,30 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
     Returns an instance of
     [`pyqtgraph.ColorMap`](https://pyqtgraph.readthedocs.io/en/latest/api_reference/colormap.html#pyqtgraph.ColorMap)
 
+### Using cmap names as matplotlib strings
+
+`cmap` does not register its colormaps with matplotlib on import.  To use catalog
+names as plain strings anywhere matplotlib accepts a colormap name, call [`cmap.register_mpl`][]:
+
+```python
+import cmap
+import matplotlib.pyplot as plt
+
+cmap.register_mpl("tol:*", "batlow")  # names or fnmatch patterns
+plt.imshow(data, cmap="tol:sunset")
+plt.imshow(data, cmap="crameri:batlow_r")  # reversed versions are registered too
+```
+
+Colormaps are registered under their canonical, fully-qualified name (lowercase, with
+`_` in place of `-` or spaces: `Colormap(name).name`), so they never collide with
+matplotlib's builtin names.
+
+!!!note "For library authors"
+    Please don't call `cmap.register_mpl("*")` on behalf of your users: it adds
+    1300+ entries to matplotlib's global registry, visible to all code in the
+    session, and takes a second or more.  Prefer registering the specific name(s)
+    you need.
+
 ## Usage with pydantic
 
 `Colormap` can be used as a field type in [pydantic](https://docs.pydantic.dev/)

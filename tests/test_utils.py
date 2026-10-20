@@ -6,6 +6,7 @@ try:
 except ImportError:
     MplFigure = None
 
+import cmap
 from cmap import Colormap, _util
 
 CMAP_NAME = "viridis"
@@ -78,3 +79,27 @@ def test_report() -> None:
 
     report2 = _util.report(Colormap("red"))
     assert isinstance(report2, dict)
+
+
+def test_register_mpl() -> None:
+    mpl = pytest.importorskip("matplotlib")
+    before = set(mpl.colormaps)
+    try:
+        names = cmap.register_mpl("tol:*", "batlow", "colorbrewer:Blues")
+        assert "tol:bright" in names
+        assert {"crameri:batlow", "colorbrewer:blues"} <= set(names)
+        for name in names:
+            assert mpl.colormaps[name].name == name
+            assert f"{name}_r" in mpl.colormaps
+        assert "batlow" not in mpl.colormaps
+
+        # idempotent
+        added = set(mpl.colormaps) - before
+        assert cmap.register_mpl("tol:*") == [n for n in names if n.startswith("tol")]
+        assert set(mpl.colormaps) - before == added
+
+        with pytest.raises(KeyError, match="No colormaps"):
+            cmap.register_mpl("nope:*")
+    finally:
+        for name in set(mpl.colormaps) - before:
+            mpl.colormaps.unregister(name)

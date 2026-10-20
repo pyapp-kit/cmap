@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from fnmatch import fnmatchcase
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import numpy as np
@@ -591,6 +592,68 @@ def to_mpl(
         bad=bad,
     )
     return cm.to_matplotlib(N=N, gamma=gamma)
+
+
+def register_mpl(*patterns: str) -> list[str]:
+    """Register colormaps from the cmap catalog with `matplotlib.colormaps`.
+
+    Call this explicitly to make catalog names usable as strings anywhere
+    matplotlib accepts a colormap name.
+
+    Colormaps are registered under their canonical, fully-qualified cmap name
+    (lowercase, with `_` instead of `-` or spaces; see `Colormap(name).name`), along
+    with a reversed `_r` version.  Short names like "viridis" are never registered, so
+    as not to collide with matplotlib's colormaps.  Names that are already registered
+    are left untouched, so it is safe to call this multiple times.
+
+    Parameters
+    ----------
+    *patterns : str
+        Colormap names or `fnmatch`-style patterns (e.g. `"tol:*"`) to register.
+        Any name accepted by `Colormap` works (including short names and aliases).
+        `"*"` registers the entire catalog, but be aware that matplotlib's
+        registration time grows with the size of its registry: this may take many
+        seconds.
+
+    Returns
+    -------
+    list[str]
+        The canonical names of the matched colormaps.
+
+    Examples
+    --------
+    >>> import cmap
+    >>> cmap.register_mpl("tol:*", "batlow")  # doctest: +SKIP
+    >>> plt.imshow(data, cmap="crameri:batlow_r")  # doctest: +SKIP
+    """
+    import matplotlib as mpl
+
+    from cmap import Colormap
+
+    if not patterns:
+        raise TypeError("register_mpl() requires at least one name or pattern.")
+    catalog = Colormap.catalog()
+    norm = catalog._norm_name
+    resolved: set[str] = set()
+    for pattern in patterns:
+        matches = {
+            catalog[catalog.resolve(key)].qualified_name
+            for key in catalog
+            if fnmatchcase(norm(key), norm(pattern))
+        }
+        if not matches:
+            raise KeyError(f"No colormaps in the cmap catalog match {pattern!r}.")
+        resolved |= matches
+
+    # look up `mpl.colormaps` at call time: downstream libraries (e.g. UltraPlot)
+    # may have replaced it with their own registry.
+    existing = set(mpl.colormaps)
+    for name in resolved - existing:
+        mpl_cm = Colormap(name).to_mpl()
+        for cm in (mpl_cm, mpl_cm.reversed()):
+            if cm.name not in existing:
+                mpl.colormaps.register(cm)
+    return sorted(resolved)
 
 
 if __name__ == "__main__":  # pragma: no cover
