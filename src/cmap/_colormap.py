@@ -62,7 +62,8 @@ if TYPE_CHECKING:
 
 
 # the extreme colors, in constructor-argument spelling; `<field>_color` is the property.
-# Copy and serialization paths iterate this rather than repeating the list.
+# `as_dict()` and pickle iterate this; `reversed()`, `shifted()` and `with_extremes()`
+# spell out each one, so a new extreme must be added there too.
 _EXTREME_FIELDS = ("under", "over", "bad", "neg_inf", "pos_inf", "nan")
 
 LutCallable: TypeAlias = Callable[["NDArray"], "NDArray"]
