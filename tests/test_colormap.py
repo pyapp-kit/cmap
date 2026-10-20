@@ -591,3 +591,14 @@ def test_invalid_function_colormap_with_cmap_kwargs() -> None:
     # providing cmap_kwargs to a non-callable colormap should raise TypeError
     with pytest.raises(TypeError, match=r"Cannot apply cmap_kwargs to colormap"):
         Colormap("viridis", cmap_kwargs={"param": 1.0})
+
+
+def test_scalar_bytes() -> None:
+    cm = Colormap("viridis")
+    expect = cm(np.array([0.5]), bytes=True)[0]
+    for x in (0.5, np.float64(0.5), np.array(0.5)):
+        rgba = cm(x, bytes=True)
+        assert isinstance(rgba, tuple)
+        assert rgba == tuple(expect)
+        assert all(isinstance(v, np.uint8) for v in rgba)
+    assert isinstance(cm(0.5), Color)
