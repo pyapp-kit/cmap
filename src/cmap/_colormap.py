@@ -37,6 +37,7 @@ if TYPE_CHECKING:
     from ._catalog import CatalogItem
 
     LutCacheKey = tuple[int, float, bool]
+    RGBABytes = tuple[np.uint8, np.uint8, np.uint8, np.uint8]
     Interpolation = Literal["linear", "nearest"]
 
     class MPLSegmentData(TypedDict, total=False):
@@ -407,8 +408,16 @@ class Colormap:
         *,
         N: int = 256,
         gamma: float = 1,
-        bytes: bool = False,
+        bytes: Literal[False] = False,
     ) -> Color: ...
+    @overload
+    def __call__(
+        self, x: float, *, N: int = 256, gamma: float = 1, bytes: Literal[True]
+    ) -> RGBABytes: ...
+    @overload
+    def __call__(
+        self, x: float, *, N: int = 256, gamma: float = 1, bytes: bool
+    ) -> Color | RGBABytes: ...
     def __call__(
         self,
         x: float | NDArray | Iterable[float],
@@ -416,7 +425,7 @@ class Colormap:
         N: int = 256,
         gamma: float = 1,
         bytes: bool = False,
-    ) -> Color | NDArray[np.float64]:
+    ) -> Color | RGBABytes | NDArray[np.float64]:
         r"""Map scalar values in X to an RGBA array.
 
         This is the primary API for "using" a `cmap.Colormap` to map scalar values to
@@ -460,14 +469,15 @@ class Colormap:
         bytes : bool
             If False (default), the returned RGBA values will be floats in the
             interval ``[0, 1]`` otherwise they will be `numpy.uint8`\s in the
-            interval ``[0, 255]``.
+            interval ``[0, 255]``.  For scalar `x`, `bytes=True` returns a tuple of
+            four `numpy.uint8` (as matplotlib does) rather than a `Color`.
 
         Returns
         -------
-        color : Color | NDArray
-            If X is a float, a single RGBA color will be returned. If x is an
-            array-like, an array of RGBA colors will be returned with shape
-            `x.shape + (4,)`
+        color : Color | tuple | NDArray
+            If X is a float, a single `Color` will be returned (or a 4-tuple of
+            `numpy.uint8` if `bytes` is True). If x is an array-like, an array of
+            RGBA colors will be returned with shape `x.shape + (4,)`
 
         Examples
         --------
@@ -532,7 +542,11 @@ class Colormap:
         xa[mask_masked] = N + 2
 
         rgba = lut.take(xa, axis=0, mode="clip")
-        return rgba if np.iterable(x) else Color(rgba)
+        if np.iterable(x):
+            return rgba
+        if bytes:
+            return tuple(rgba)
+        return Color(rgba)
 
     def _with_exceptional_colors(self, lut: np.ndarray) -> np.ndarray:
         """Return `lut` with three rows appended, one per exceptional value class.
