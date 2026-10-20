@@ -20,7 +20,7 @@ from ._color import Color, ColorLike
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Literal, TypeAlias, TypeGuard
+    from typing import Literal, NotRequired, TypeAlias, TypeGuard
 
     import bokeh.models
     import matplotlib.colors
@@ -50,7 +50,21 @@ if TYPE_CHECKING:
         identifier: str
         category: str | None
         value: list[tuple[float, list[float]]]
+        # written only when they hold non-default state, so a colormap that has none
+        # of them serializes exactly as it did before they existed
+        interpolation: NotRequired[Interpolation]
+        under: NotRequired[list[float]]
+        over: NotRequired[list[float]]
+        bad: NotRequired[list[float]]
+        neg_inf: NotRequired[list[float]]
+        pos_inf: NotRequired[list[float]]
+        nan: NotRequired[list[float]]
 
+
+# the extreme colors, in constructor-argument spelling; `<field>_color` is the property.
+# `as_dict()` and pickle iterate this; `reversed()`, `shifted()` and `with_extremes()`
+# spell out each one, so a new extreme must be added there too.
+_EXTREME_FIELDS = ("under", "over", "bad", "neg_inf", "pos_inf", "nan")
 
 LutCallable: TypeAlias = Callable[["NDArray"], "NDArray"]
 """Function type for a callable that takes an array of values in the range [0, 1] and returns an (N, 4) array of RGBA values in the range [0, 1]."""  # noqa
@@ -162,6 +176,7 @@ class Colormap:
 
     __slots__ = (
         "__weakref__",
+        "_catalog_name",
         "_has_exceptional",
         "_initialized",
         "_lut_cache",
@@ -276,14 +291,29 @@ class Colormap:
         cmap_kwargs: dict[str, Any] | None = None,
     ) -> None:
         self.info: CatalogItem | None = None
+        # the catalog name that alone rebuilds this colormap, if nothing overrode it
+        self._catalog_name: str | None = None
 
         if isinstance(value, str):
             rev = value.endswith("_r")
             info = self.catalog()[value[:-2] if rev else value]
+            # every other constructor argument must be listed here: one that is
+            # missed is silently dropped when this colormap serializes or pickles
+            # as its bare name
+            overrides = (name, identifier, category, interpolation, cmap_kwargs)
+            extremes = (under, over, bad, neg_inf, pos_inf, nan)
+            if all(v is None for v in (*overrides, *extremes)):
+                self._catalog_name = info.qualified_name + ("_r" if rev else "")
             name = name or f"{info.qualified_name}{'_r' if rev else ''}"
             category = category or info.category
-            over = info.over if over is None else over
-            under = info.under if under is None else under
+            # the record's directional colors follow the ends they extend, so a "_r"
+            # name swaps them.  Swapping here rather than after the lines below keeps
+            # an explicit `under=`/`over=` argument on the end the caller named.
+            info_under, info_over = (
+                (info.over, info.under) if rev else (info.under, info.over)
+            )
+            over = info_over if over is None else over
+            under = info_under if under is None else under
             bad = info.bad if bad is None else bad
             self.info = info
 
@@ -531,32 +561,64 @@ class Colormap:
         pos_inf: ColorLike | None = None,
         nan: ColorLike | None = None,
     ) -> Colormap:
-        """Return a copy of the colormap with new extreme values."""
+        """Return a copy of the colormap with new extreme values.
+
+        Colors that are not passed are carried over from this colormap, as in
+        matplotlib.
+        """
         return type(self)(
             self.color_stops,
             name=self.name,
+            identifier=self.identifier,
             category=self.category,
             interpolation=self.interpolation,
-            bad=bad,
-            under=under,
-            over=over,
-            neg_inf=neg_inf,
-            pos_inf=pos_inf,
-            nan=nan,
+            under=self.under_color if under is None else under,
+            over=self.over_color if over is None else over,
+            bad=self.bad_color if bad is None else bad,
+            neg_inf=self.neg_inf_color if neg_inf is None else neg_inf,
+            pos_inf=self.pos_inf_color if pos_inf is None else pos_inf,
+            nan=self.nan_color if nan is None else nan,
         )
+
+    @property
+    def _extremes(self) -> dict[str, Color | None]:
+        """The extreme colors, keyed by their constructor argument name."""
+        return {f: getattr(self, f"{f}_color") for f in _EXTREME_FIELDS}
+
+    def _constructor_kwargs(self) -> dict[str, Any]:
+        """Every keyword argument needed to rebuild this colormap from its stops."""
+        kwargs: dict[str, Any] = {
+            "name": self.name,
+            "identifier": self.identifier,
+            "category": self.category,
+            "interpolation": self.interpolation,
+        }
+        kwargs.update({k: v for k, v in self._extremes.items() if v is not None})
+        return kwargs
 
     def as_dict(self) -> ColormapDict:
         """Return a dictionary representation of the colormap.
 
         The returned dictionary is suitable for serialization, or for passing to the
         Colormap constructor.
+
+        Note that a colormap backed by a lut function is sampled into fixed stops
+        here; use `pickle` or `copy` to duplicate one without resampling.
         """
-        return {
+        d: ColormapDict = {
             "name": self.name,
             "identifier": self.identifier,
             "category": self.category,
             "value": [(p, list(c)) for p, c in self.color_stops],
         }
+        # optional keys, written only when they hold non-default state: `value` is
+        # always stops, which the constructor reads as linear.
+        if self.interpolation != "linear":
+            d["interpolation"] = self.interpolation
+        for field, color in self._extremes.items():
+            if color is not None:
+                d[field] = list(color)  # type: ignore[literal-required]
+        return d
 
     def lut(
         self, N: int = 256, gamma: float = 1, *, with_over_under: bool = False
@@ -635,6 +697,9 @@ class Colormap:
     def reversed(self, name: str | None = None) -> Colormap:
         """Return a new Colormap, with reversed colors.
 
+        `under`/`over` and `neg_inf`/`pos_inf` are swapped, since they name the ends
+        they extend.  The other extreme colors and the interpolation carry over.
+
         Parameters
         ----------
         name: str | None
@@ -646,8 +711,19 @@ class Colormap:
         if name is None:
             name = self.name[:-2] if self.name.endswith("_r") else f"{self.name}_r"
 
+        # `identifier` is not carried: it is derived from the name, which changed here
         return type(self)(
-            self.color_stops.reversed(), name=name, category=self.category
+            self.color_stops.reversed(),
+            name=name,
+            category=self.category,
+            interpolation=self.interpolation,
+            # under/over and neg_inf/pos_inf name the ends they extend, so they follow
+            under=self.over_color,
+            over=self.under_color,
+            neg_inf=self.pos_inf_color,
+            pos_inf=self.neg_inf_color,
+            bad=self.bad_color,
+            nan=self.nan_color,
         )
 
     def shifted(
@@ -740,8 +816,17 @@ class Colormap:
         object.__setattr__(self, _name, _value)
 
     def __reduce__(self) -> str | tuple[Any, ...]:
-        # for pickle
-        return self.__class__, (self.color_stops,)
+        # for pickle. An unmodified catalog colormap goes through as its name, which
+        # also restores `info`.
+        if self._catalog_name is not None:
+            return self.__class__, (self._catalog_name,)
+        # The stops go through as the object rather than as as_dict()'s samples, so a
+        # colormap backed by a lut function keeps the function.
+        return _rebuild_colormap, (
+            self.__class__,
+            self.color_stops,
+            self._constructor_kwargs(),
+        )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Colormap):
@@ -836,10 +921,7 @@ class Colormap:
         schema = handler(Any)
 
         def _serialize(obj: Colormap) -> Any:
-            if obj.info is not None and obj.info.qualified_name:
-                # this is a catalog item
-                return obj.info.qualified_name
-            return obj.as_dict()
+            return obj._catalog_name or obj.as_dict()
 
         ser = core_schema.plain_serializer_function_ser_schema(_serialize)
         return core_schema.no_info_after_validator_function(
@@ -954,6 +1036,14 @@ class Colormap:
     def to_pyqtgraph(self) -> pyqtgraph.ColorMap:
         """Return a `pyqtgraph.ColorMap`."""
         return _external.to_pyqtgraph(self)
+
+
+def _rebuild_colormap(
+    cls: type[Colormap], value: ColormapLike, kwargs: dict[str, Any]
+) -> Colormap:
+    # pickle's two-tuple reduce form passes positional arguments only, and the rest of
+    # the colormap's state is keyword-only
+    return cls(value, **kwargs)
 
 
 class ColorStop(NamedTuple):

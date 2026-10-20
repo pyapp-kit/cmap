@@ -1,4 +1,7 @@
+import inspect
+import pickle
 import sys
+from copy import copy, deepcopy
 from functools import partial
 from typing import Any
 
@@ -146,9 +149,6 @@ def test_with_extremes_preserves_interpolation() -> None:
 
 def test_colormap_copy() -> None:
     """Test Colormap copy."""
-    import pickle
-    from copy import copy, deepcopy
-
     cmap1 = Colormap(["red", "magenta", "blue"])
     cmap2 = Colormap(["r", (0.5, "magenta"), "b"])
     assert cmap1 == cmap2
@@ -417,6 +417,146 @@ def test_with_extremes() -> None:
 
     assert cm2.under_color == cm.under_color == Color("green")
     assert "under" in cm2._repr_html_()
+
+
+def _configured() -> Colormap:
+    return Colormap(
+        ["red", "blue"],
+        name="foo",
+        category="sequential",
+        interpolation="nearest",
+        under="green",
+        over="yellow",
+        bad="black",
+        neg_inf="cyan",
+        pos_inf="magenta",
+        nan="white",
+    )
+
+
+def test_with_extremes_preserves_what_is_not_passed() -> None:
+    cm = Colormap(["red", "blue"], identifier="my_id", under="green", nan="white")
+
+    new = cm.with_extremes(over="yellow")
+
+    assert new.under_color == Color("green")
+    assert new.nan_color == Color("white")
+    assert new.over_color == Color("yellow")
+    assert new.identifier == "my_id"
+
+
+def test_reversed_preserves_state_and_swaps_the_directional_colors() -> None:
+    cm = _configured()
+    # the comparisons with `cm` below only catch a dropped or unswapped field if
+    # every field is non-default and the extreme colors are all distinct
+    extremes = [cm.under_color, cm.over_color, cm.bad_color]
+    extremes += [cm.neg_inf_color, cm.pos_inf_color, cm.nan_color]
+    assert None not in extremes and len(set(extremes)) == len(extremes)
+    assert cm.category is not None and cm.interpolation != "linear"
+
+    rev = cm.reversed()
+
+    assert rev.name == f"{cm.name}_r"
+    assert rev.category == cm.category
+    assert rev.interpolation == cm.interpolation
+    # under/over and neg_inf/pos_inf name the ends they extend, so they follow them
+    assert rev.under_color == cm.over_color
+    assert rev.over_color == cm.under_color
+    assert rev.neg_inf_color == cm.pos_inf_color
+    assert rev.pos_inf_color == cm.neg_inf_color
+    assert rev.bad_color == cm.bad_color
+    assert rev.nan_color == cm.nan_color
+    assert rev.reversed() == cm
+
+
+# one catalog entry per kind of state that "_r" and reversed() could disagree on
+@pytest.mark.parametrize(
+    "name",
+    [
+        "napari:HiLo",  # under/over in the record, which must swap
+        "tab10",  # nearest interpolation
+        "napari:nan",  # bad in the record
+    ],
+)
+def test_reversed_agrees_with_the_r_suffix(name: str) -> None:
+    assert Colormap(name).reversed() == Colormap(f"{name}_r")
+
+
+def test_r_suffix_keeps_explicit_directional_colors() -> None:
+    # the record's colors swap; an explicit argument names the end it lands on
+    assert Colormap("napari:HiLo_r", under="green").under_color == Color("green")
+
+
+def test_pickle_preserves_constructor_state() -> None:
+    cm = _configured()
+
+    rt = pickle.loads(pickle.dumps(cm))  # noqa: S301
+
+    assert rt == cm
+    assert (rt.name, rt.identifier, rt.category, rt.interpolation) == (
+        cm.name,
+        cm.identifier,
+        cm.category,
+        cm.interpolation,
+    )
+
+
+@pytest.mark.parametrize("name", ["viridis", "viridis_r", "napari:HiLo_r"])
+def test_copies_of_a_catalog_colormap_keep_its_info(name: str) -> None:
+    cm = Colormap(name)
+
+    for copied in (pickle.loads(pickle.dumps(cm)), copy(cm), deepcopy(cm)):  # noqa: S301
+        assert copied == cm
+        assert copied.name == cm.name
+        assert copied.info is not None and copied.info == cm.info
+
+
+# a sample for every constructor argument besides `value`.  A new argument fails the
+# test below until it has a sample here, and that sample fails it until the argument
+# is in the overrides that `Colormap.__init__` checks before recording a catalog name.
+_ARGUMENT_SAMPLES: dict[str, Any] = {
+    "name": "renamed",
+    "identifier": "renamed",
+    "category": "sequential",
+    "interpolation": False,
+    "under": "red",
+    "over": "red",
+    "bad": "red",
+    "neg_inf": "red",
+    "pos_inf": "red",
+    "nan": "red",
+    "cmap_kwargs": {"start": 1.0},
+}
+
+
+def test_any_constructor_argument_disables_the_catalog_name() -> None:
+    params = set(inspect.signature(Colormap).parameters) - {"value"}
+    assert params == set(_ARGUMENT_SAMPLES)
+
+    assert Colormap("cubehelix")._catalog_name == "cubehelix:cubehelix"
+    for arg, sample in _ARGUMENT_SAMPLES.items():
+        cm = Colormap("cubehelix", **{arg: sample})
+        assert cm._catalog_name is None, f"{arg}= is not treated as an override"
+
+
+def test_copies_of_a_callable_colormap_stay_callable() -> None:
+    # as_dict() samples the function into 256 stops; a copy must keep the function
+    cm = Colormap("cubehelix", cmap_kwargs={"start": 1.0, "rotation": -1.0})
+
+    for copied in (pickle.loads(pickle.dumps(cm)), copy(cm), deepcopy(cm)):  # noqa: S301
+        npt.assert_array_equal(copied.lut(17, gamma=2), cm.lut(17, gamma=2))
+
+
+def test_as_dict_round_trip() -> None:
+    plain = Colormap(["red", "blue"])
+    assert set(plain.as_dict()) == {"name", "identifier", "category", "value"}
+
+    cm = _configured()
+    d = cm.as_dict()
+
+    assert d["interpolation"] == "nearest"
+    assert d["nan"] == list(Color("white"))
+    assert Colormap(**d) == cm
 
 
 def test_shifted() -> None:
