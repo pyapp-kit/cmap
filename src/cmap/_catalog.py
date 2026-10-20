@@ -19,8 +19,10 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 import cmap.data
 
 if TYPE_CHECKING:
+    from typing import NotRequired, Required, TypeAlias
+
     from _typeshed import FileDescriptorOrPath
-    from typing_extensions import NotRequired, Required, TypeAlias, TypedDict
+    from typing_extensions import TypedDict
 
     from ._colormap import ColormapLike, Interpolation
 
@@ -164,7 +166,7 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
                 if NAMESPACE_DELIMITER not in v["alias"]:  # pragma: no cover
                     raise ValueError(f"{namespaced!r} alias is not namespaced")
                 ctlg[namespaced] = v
-                ctlg[name] = v  # FIXME
+                ctlg[name] = {**v}  # FIXME
                 continue
 
             # here we add any global keys to the colormap that are not already there.
@@ -181,9 +183,12 @@ def _build_catalog(records: Iterable[FileDescriptorOrPath]) -> CatalogDict:
                 ctlg[name] = {"alias": namespaced, "conflicts": []}
             else:
                 # if the short name is already in the catalog, we have a conflict.
-                # add the fully namespaced name to the conflicts list.
+                # add the fully namespaced name to the conflicts list (unless the
+                # short name is already an alias for this very colormap, e.g. from
+                # another namespace's backwards-compatibility alias).
                 entry = cast("UnloadedCatalogAlias", ctlg[name])
-                entry.setdefault("conflicts", []).append(namespaced)
+                if entry.get("alias") != namespaced:
+                    entry.setdefault("conflicts", []).append(namespaced)
 
             # lastly, the `aliases` key of a colormap refers to aliases within the
             # namespace.  These are keys that *must* be accessed using the fully
@@ -244,10 +249,10 @@ class Catalog(Mapping[str, "CatalogItem"]):
 
         # sort record files.  Put matplotlib-related names first so that un-namespaced
         # names resolve to the matplotlib colormaps by default.
-        MPL_PRIORTY_NAMESPACES = ("matplotlib", "bids", "matlab", "gnuplot")
+        MPL_PRIORITY_NAMESPACES = ("matplotlib", "bids", "matlab", "gnuplot")
 
         def _sorter(x: Path) -> tuple[int, Path]:
-            if any(s in str(x) for s in MPL_PRIORTY_NAMESPACES):
+            if any(s in str(x) for s in MPL_PRIORITY_NAMESPACES):
                 return (0, x)
             return (1, x)
 

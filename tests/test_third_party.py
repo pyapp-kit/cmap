@@ -94,6 +94,10 @@ def test_napari_extreme_colors() -> None:
     np.testing.assert_allclose(ncm.high_color, Color(OVER).rgba)
     np.testing.assert_allclose(ncm.nan_color, Color(bad).rgba)
 
+    # a more specific nan color takes precedence over bad
+    specific = Colormap(["black", "white"], bad=bad, nan="magenta").to_napari()
+    np.testing.assert_allclose(specific.nan_color, Color("magenta").rgba)
+
 
 @pytest.mark.skipif(
     sys.platform == "darwin" and sys.version_info >= (3, 13),
@@ -114,7 +118,7 @@ def test_vispy(qapp: "QApplication") -> None:
 
 
 @pytest.mark.filterwarnings("ignore:\\*scattermapbox\\* is deprecated")
-@pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
+@pytest.mark.skipif(os.name == "nt", reason="segfaults")
 def test_plotly() -> None:
     px = pytest.importorskip("plotly.express")
 
@@ -159,7 +163,7 @@ def test_pygfx(qapp: "QApplication") -> None:
     canvas.deleteLater()
 
 
-@pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
+@pytest.mark.skipif(os.name == "nt", reason="segfaults")
 def test_bokeh() -> None:
     pytest.importorskip("bokeh")
     from bokeh.plotting import figure

@@ -1,3 +1,7 @@
+---
+render_macros: true
+---
+
 # Colormaps
 
 The [`cmap.Colormap`][cmap.Colormap] type represents a colormap.
@@ -13,7 +17,7 @@ more.
 from cmap import Colormap
 
 # argument can be any "ColormapLike".  See rules below
-cm = Colormap('viridis')
+cm = Colormap("viridis")
 ```
 
 ## `ColormapLike` objects
@@ -22,35 +26,35 @@ The following objects can be interpreted as a colormap, and used as the first ar
 to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectively as
 ["`ColormapLike`"][cmap.ColormapLike].  Briefly, valid arguments are of type:
 
-- [⬇️ `str`](#str)
-- [⬇️ `Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](colors.md#colorlike-objects))*
-- [⬇️ `numpy.ndarray`](#numpyndarray)
-- [⬇️ `dict`](#dict)
-- [⬇️ `Callable[[ArrayLike], ArrayLike]`](#callable)
+- [`str`](#str)
+- [`Iterable[ColorLike | tuple[float, ColorLike]]`](#iterablecolorlike-tuple)  *(see [`ColorLike`](colors.md#colorlike-objects))*
+- [`numpy.ndarray`](#numpyndarray)
+- [`dict`](#dict)
+- [`Callable[[ArrayLike], ArrayLike]`](#callable)
 
 ### `str`
 
 - A `string` containing a [recognized colormap name](catalog/index.md).
 
-    - `Colormap('viridis')` {{ cmap_expr: 'viridis' }}
-    - `Colormap('batlow')` {{ cmap_expr: 'batlow' }}
+    - `Colormap('viridis')` {{ cmap_expr("'viridis'") }}
+    - `Colormap('batlow')` {{ cmap_expr("'batlow'") }}
 
-    !!!note "Matplotlib names ✅"
+    !!!note "Matplotlib names"
         Any valid matplotlib colormap key that could be used in `matplotlib.colormaps[...]`
         is also a valid `cmap` colormap name.
 
 - A string containing a [recognized colormap name](catalog/index.md) suffixed with `"_r"`
    to reverse the colormap:
 
-    - `Colormap('viridis_r')` {{ cmap_expr: 'viridis_r' }}
-    - `Colormap('batlow_r')` {{ cmap_expr: 'batlow_r' }}
+    - `Colormap('viridis_r')` {{ cmap_expr("'viridis_r'") }}
+    - `Colormap('batlow_r')` {{ cmap_expr("'batlow_r'") }}
 
 ### `Iterable[ColorLike | tuple]`
 
 - An [`Iterable`][typing.Iterable] of [`ColorLike`](colors.md#colorlike-objects) objects:
 
-    - `Colormap(['blue', 'yellow', 'red'])` {{ cmap_expr: ['blue', 'yellow', 'red'] }}
-    - `Colormap([(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"])` {{ cmap_expr: [(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"] }}
+    - `Colormap(['blue', 'yellow', 'red'])` {{ cmap_expr("['blue', 'yellow', 'red']") }}
+    - `Colormap([(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"])` {{ cmap_expr('[(0, 0, 1.), "#FF0", "rgb(255, 0, 0)"]') }}
 
     !!!note
         In the case of an iterable of colors, all colors are assumed to be
@@ -60,17 +64,17 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
    ColorLike]` objects, where the `float` represents the position of the color
    along the colormap from 0-1 (*aka* the "color stop"):
 
-    - `Colormap([(0, 'blue'), (0.8, 'yellow'), (1, 'red')])` {{ cmap_expr: [(0, 'blue'), (0.8, 'yellow'), (1, 'red')] }}
+    - `Colormap([(0, 'blue'), (0.8, 'yellow'), (1, 'red')])` {{ cmap_expr("[(0, 'blue'), (0.8, 'yellow'), (1, 'red')]") }}
 
     If omitted, the first and last color stops are assumed to be at 0 and 1,
     respectively.
 
-    - `Colormap(['blue', (0.8, 'yellow'), 'red'])` {{ cmap_expr: ['blue', (0.8, 'yellow'), 'red'] }}
+    - `Colormap(['blue', (0.8, 'yellow'), 'red'])` {{ cmap_expr("['blue', (0.8, 'yellow'), 'red']") }}
 
     If the first or last color stop is *not* at 0 or 1, the first/last color is
     repeated at the 0th or 1 position, respectively.
 
-    - `Colormap([(0.4, 'blue'), (0.8, 'yellow'), 'red'])` {{ cmap_expr: [(0.4, 'blue'), (0.8, 'yellow'), 'red'] }}
+    - `Colormap([(0.4, 'blue'), (0.8, 'yellow'), 'red'])` {{ cmap_expr("[(0.4, 'blue'), (0.8, 'yellow'), 'red']") }}
 
          *(same as `['blue', (0.4, 'blue'), (0.8, 'yellow'), 'red']`)*
 
@@ -79,7 +83,7 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
     (or 0 and 1, if none are provided).  They are **NOT** placed at their global
     `index / (len(colors) - 1)`.
 
-    - `Colormap(['blue', 'green', (0.8, 'yellow'), 'red'])` {{ cmap_expr: ['blue', 'green', (0.8, 'yellow'), 'red'] }}
+    - `Colormap(['blue', 'green', (0.8, 'yellow'), 'red'])` {{ cmap_expr("['blue', 'green', (0.8, 'yellow'), 'red']") }}
 
         *(same as `['blue', (0.4, 'green'), (0.8, 'yellow'), 'red']`)*
 
@@ -89,33 +93,34 @@ A [`numpy.ndarray`][], in one of the following formats:
 
 - an **`(N, 3)`** array of `N` RGB colors equally spaced along the colormap:
 
-    `Colormap(np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]]))` {{ cmap_expr: np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]]) }}
+    `Colormap(np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]]))` {{ cmap_expr("np.array([[0, 0, 1.], [1., 1., 0], [1., 0, 0]])") }}
 
 - an **`(N, 4)`** array of `N` RGBA colors equally spaced along the colormap:
 
-    `Colormap(np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]]))` {{ cmap_expr: np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]]) }}
+    `Colormap(np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]]))` {{ cmap_expr("np.array([[0, 0, 1., 1.], [1., 1., 0, 0.7], [1., 0, 0, 0.3]])") }}
 
 - an **`(N, 5)`** array of color stops, where the first column is the position of the color stop
     and the remaining 4 columns are the RGBA colors:
 
+    <!-- fmt: off -->
     ```python
-    Colormap(
-        np.array([
-            [0.0, 0.0, 0.0, 1.0, 1.0],
-            [0.8, 1.0, 1.0, 0.0, 1.0],
-            [1.0, 1.0, 0.0, 0.0, 1.0]
-        ])
-    )
+    Colormap(np.array([
+        # pos, r,   g,   b,   a
+        [0.0, 0.0, 0.0, 1.0, 1.0],
+        [0.8, 1.0, 1.0, 0.0, 1.0],
+        [1.0, 1.0, 0.0, 0.0, 1.0],
+    ]))
     ```
+    <!-- fmt: on -->
 
-    {{ cmap_expr: np.array([[0, 0, 0, 1., 1.], [0.8, 1., 1., 0, 1.], [1., 1., 0, 0, 1.]]) }}
+    {{ cmap_expr("np.array([[0, 0, 0, 1., 1.], [0.8, 1., 1., 0, 1.], [1., 1., 0, 0, 1.]])") }}
 
 ### `dict`
 
 - A `{position -> color}` `dict` of color stops, where the keys are the positions of the color stops
    and the values are the colors:
 
-    - `Colormap({0: 'blue', 0.5: 'yellow', 1: 'red'})` {{ cmap_expr: {0: 'blue', 0.5: 'yellow', 1: 'red'} }}
+    - `Colormap({0: 'blue', 0.5: 'yellow', 1: 'red'})` {{ cmap_expr("{0: 'blue', 0.5: 'yellow', 1: 'red'}") }}
 
 - A [matplotlib-style `segmentdata`
    dict](https://matplotlib.org/stable/tutorials/colors/colormap-manipulation.html#creating-linear-segmented-colormaps),
@@ -126,35 +131,74 @@ A [`numpy.ndarray`][], in one of the following formats:
       and `y0` and `y1` are the values of the color on either side of the stop
       position.
 
+        <!-- fmt: off -->
         ```python
-        cdict = {'red':  [[0.0,  0.0, 0.0],
-                        [0.5,  1.0, 1.0],
-                        [1.0,  1.0, 1.0]],
-                'green': [[0.0,  0.0, 0.0],
-                        [0.25, 0.0, 0.0],
-                        [0.75, 1.0, 1.0],
-                        [1.0,  1.0, 1.0]],
-                'blue':  [[0.0,  0.0, 0.0],
-                        [0.5,  0.0, 0.0],
-                        [1.0,  1.0, 1.0]]}
+        cdict = {
+            #         x     y0   y1
+            "red":   [[0.0,  0.0, 0.0],
+                      [0.5,  1.0, 1.0],
+                      [1.0,  1.0, 1.0]],
+            "green": [[0.0,  0.0, 0.0],
+                      [0.25, 0.0, 0.0],
+                      [0.75, 1.0, 1.0],
+                      [1.0,  1.0, 1.0]],
+            "blue":  [[0.0,  0.0, 0.0],
+                      [0.5,  0.0, 0.0],
+                      [1.0,  1.0, 1.0]],
+        }
         Colormap(cdict)
         ```
+        <!-- fmt: on -->
 
-        {{ cmap_expr: {'red': [[0,0,0],[0.5,1.,1.],[1.,1.,1.]], 'green': [[0,0,0],[0.25,0,0],[0.75,1.,1.],[1.,1.,1.]], 'blue': [[0,0,0],[0.5,0,0],[1.,1.,1.]]} }}
+        {{ cmap_expr("{'red': [[0,0,0],[0.5,1.,1.],[1.,1.,1.]], 'green': [[0,0,0],[0.25,0,0],[0.75,1.,1.],[1.,1.,1.]], 'blue': [[0,0,0],[0.5,0,0],[1.,1.,1.]]}") }}
 
     - a callable that accepts an array of 0-1 values and returns another array of 0-1 values:
 
         `Colormap({"red": lambda x: x, "green": lambda x: x**2, "blue": lambda x: x**0.5})`
-        {{ cmap_expr: {"red": lambda x: x, "green": lambda x: x\*\*2, "blue": lambda x: x\*\*0.5} }}
+        {{ cmap_expr('{"red": lambda x: x, "green": lambda x: x**2, "blue": lambda x: x**0.5}') }}
 
 ### `Callable`
 
 - A single [`Callable`][typing.Callable], object which must accept an array of
   values and return an `(N, 3)` or `(N, 4)` array of colors
     - `Colormap(lambda x: np.stack([x, np.sin(x*10), np.cos(x*10)], axis=1))`
-      {{ cmap_expr: lambda x: np.stack([x, np.sin(x\*10), np.cos(x\*10)], axis=1) }}
+      {{ cmap_expr("lambda x: np.stack([x, np.sin(x*10), np.cos(x*10)], axis=1)") }}
 
 ## Usage
+
+### Mapping data to colors
+
+Call a colormap with an array of values to get an array of RGBA colors, with
+shape `data.shape + (4,)`. Float values are expected to be normalized to
+[0, 1]:
+
+```python
+import numpy as np
+from cmap import Colormap
+
+cm = Colormap("viridis")
+data = np.random.random((64, 64))
+
+cm(data)  # float RGBA array, shape (64, 64, 4)
+cm(data, bytes=True)  # uint8 RGBA array, shape (64, 64, 4)
+cm(0.5)  # a single Color
+```
+
+Values below 0, above 1, and NaN use the colormap's `under`, `over`, and
+`bad` colors. By default these are the first color, the last color, and
+transparent:
+
+```python
+cm = Colormap("viridis", under="black", over="white", bad="gray")
+cm([-0.1, 0.5, 1.2, np.nan], bytes=True)
+# array([[  0,   0,   0, 255],
+#        [ 32, 144, 140, 255],
+#        [255, 255, 255, 255],
+#        [128, 128, 128, 255]], dtype=uint8)
+```
+
+Integer arrays are used as indices directly into the colormap's lookup table
+(LUT). See [`Colormap.__call__`][cmap.Colormap.__call__] for details.
 
 ### Using qualitative colormaps
 
@@ -169,14 +213,14 @@ As with all colormaps, the color stop positions are in [0, 1]
 
 ```python
 ColorStops(
-  (0.0, Color((0.8941, 0.102, 0.1098))),
-  (0.14285714285714285, Color((0.2157, 0.4941, 0.7216))),
-  (0.2857142857142857, Color((0.302, 0.6863, 0.2902))),
-  (0.42857142857142855, Color((0.5961, 0.3059, 0.6392))),
-  (0.5714285714285714, Color((1.0, 0.498, 0.0))),
-  (0.7142857142857142, Color((1.0, 1.0, 0.2))),
-  (0.8571428571428571, Color((0.651, 0.3373, 0.1569))),
-  (1.0, Color((0.9686, 0.5059, 0.749)))
+    (0.0, Color((0.8941, 0.102, 0.1098))),
+    (0.14285714285714285, Color((0.2157, 0.4941, 0.7216))),
+    (0.2857142857142857, Color((0.302, 0.6863, 0.2902))),
+    (0.42857142857142855, Color((0.5961, 0.3059, 0.6392))),
+    (0.5714285714285714, Color((1.0, 0.498, 0.0))),
+    (0.7142857142857142, Color((1.0, 1.0, 0.2))),
+    (0.8571428571428571, Color((0.651, 0.3373, 0.1569))),
+    (1.0, Color((0.9686, 0.5059, 0.749))),
 )
 ```
 
@@ -264,6 +308,7 @@ c(np.arange(16) % c.num_colors)
 
 which returns the cycled RGBA color values in an array output
 
+<!-- fmt: off -->
 ```python
 array([[0.89411765, 0.10196078, 0.10980392, 1.        ],
        [0.21568627, 0.49411765, 0.72156863, 1.        ],
@@ -282,6 +327,7 @@ array([[0.89411765, 0.10196078, 0.10980392, 1.        ],
        [0.65098039, 0.3372549 , 0.15686275, 1.        ],
        [0.96862745, 0.50588235, 0.74901961, 1.        ]])
 ```
+<!-- fmt: on -->
 
 The behavior of calling a `Colormap` with an array depends on its `dtype`.
 With a floating point `dtype`, it expects the values to be [0, 1], so the
@@ -338,7 +384,7 @@ external visualization libraries.  To that end, `cmap.Colormap` provides
     Colormap("viridis").to_pygfx()
     ```
 
-    Returns an instance of `pygfx.Texture`.
+    Returns an instance of `pygfx.TextureMap`.
 
 - [plotly](https://plotly.com/python/)
 
@@ -415,25 +461,35 @@ matplotlib's builtin names.
 
 ## Usage with pydantic
 
-`Colormap` can be used as a field type in
-[pydantic](https://pydantic-docs.helpmanual.io/usage/types/). models.
+`Colormap` can be used as a field type in [pydantic](https://docs.pydantic.dev/)
+models. Fields accept any [`ColormapLike`](#colormaplike-objects) value.
+Colormaps from the catalog serialize to their name, and other colormaps
+serialize to the output of [`Colormap.as_dict`][cmap.Colormap.as_dict]. Either
+way, the result validates back to an equal colormap.
 
 ```python
 from pydantic import BaseModel
 from cmap import Colormap
 
+
 class Foo(BaseModel):
     colormap: Colormap
 
 
-foo = Foo(colormap='viridis')  # or any other ColormapLike
-foo.colormap
+Foo(colormap="viridis").model_dump_json()
+# '{"colormap":"bids:viridis"}'
+
+Foo(colormap=["red", "green"]).model_dump_json()
+# '{"colormap":{"name":"custom colormap","identifier":"custom_colormap",
+#   "category":null,"value":[[0.0,[1.0,0.0,0.0,1]],[1.0,[0.0,0.5019607843137255,0.0,1]]]}}'
 ```
 
-!!!tip "Serialization in pydantic"
-    Unfortunately, serialization with the `json` module is not easily
-    pluggable, so if you want to serialize a pydantic model with a `Colormap`
-    field to JSON, add the following encoder to your model:
+This also works in
+[`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/).
+
+??? note "pydantic v1"
+    With pydantic v1, `Colormap` fields validate the same way, but serializing
+    to JSON requires an encoder:
 
     ```python
     class Foo(BaseModel):
@@ -441,28 +497,7 @@ foo.colormap
 
         class Config:
             json_encoders = {Colormap: Colormap.as_dict}
-
-    #example
-    Foo(colormap=['red', 'green']).json()
     ```
-
-    results in
-
-    ```json
-    {"colormap":
-        {"name": "custom colormap",
-         "identifier": "custom_colormap",
-          "category": null,
-          "color_stops": [[0.0, [1.0, 0.0, 0.0, 1]], [1.0, [0.0, 0.5019607843137255, 0.0, 1]]]
-        }
-    }
-    ```
-
-!!!tip "Serialization in `psygnal.EventedModel`"
-    `Colormap` supports serialization in
-    [`psygnal.EventedModel`](https://psygnal.readthedocs.io/en/latest/API/model/)
-    out of the box.  The `json_encoders = {Colormap: Colormap.as_dict}` line in the `Config`
-    class mentioned above is not necessary.
 
 ## Rich repr
 
