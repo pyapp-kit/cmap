@@ -81,6 +81,9 @@
       "data": "cmap.data.matplotlib:nipy_spectral",
       "info": "Contributed to matplotlib [in 2006](https://sourceforge.net/p/matplotlib/mailman/message/8931272/) by Tim Leslie from the [nipy](http://neuroimaging.scipy.org/) project."
     },
+    "okabe_ito": {
+      "alias": "okabeito:okabeito"
+    },
     "plasma": {
       "alias": "bids:plasma"
     },

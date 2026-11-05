@@ -11,7 +11,7 @@ except PackageNotFoundError:  # pragma: no cover
 
 from ._color import HSLA, HSVA, RGBA, RGBA8, Color, ColorLike
 from ._colormap import Colormap, ColormapLike, ColorStop, ColorStops
-from ._util import to_mpl
+from ._util import register_mpl, to_mpl
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -64,18 +64,20 @@ if TYPE_CHECKING:
 else:
     from ._catalog import Catalog, CatalogItem
 
-__all__ = [
-    "HSLA",
-    "HSVA",
-    "RGBA",
-    "RGBA8",
+# (in order of importance: this sets the order of the API docs)
+__all__ = [  # noqa: RUF022
+    "Colormap",
+    "Color",
+    "ColormapLike",
+    "ColorLike",
+    "ColorStops",
+    "ColorStop",
     "Catalog",
     "CatalogItem",
-    "Color",
-    "ColorLike",
-    "ColorStop",
-    "ColorStops",
-    "Colormap",
-    "ColormapLike",
+    "register_mpl",
     "to_mpl",
+    "RGBA",
+    "RGBA8",
+    "HSLA",
+    "HSVA",
 ]

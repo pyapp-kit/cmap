@@ -533,4 +533,4 @@ delta_green = [
     [0.99962532, 0.99137112, 0.80410124],
 ]
 
-delta = delta_blue[::1] + delta_green[-2::-1]
+delta = delta_blue + delta_green[::-1]

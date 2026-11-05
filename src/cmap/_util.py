@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from fnmatch import fnmatchcase
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import numpy as np
@@ -46,7 +47,9 @@ def plot_color_gradients(
         bottom, top = top, bottom
     fig.subplots_adjust(top=top, bottom=bottom, left=0.2, right=0.99)
 
-    for i, (ax, name) in enumerate(zip(axs[:: 2 if compare else 1], cmap_list)):
+    for i, (ax, name) in enumerate(
+        zip(axs[:: 2 if compare else 1], cmap_list, strict=False)
+    ):
         cm = _ensure_cmap(name).to_mpl()
         ax.imshow(gradient, aspect="auto", cmap=cm)
         ax.text(
@@ -256,8 +259,8 @@ def sineramp(
     """Generate test image consisting of a sine wave superimposed on a ramp function.
 
     This function and all documentation is based on the MATLAB function of the same
-    name, written by Peter Kovesi and available from his website:
-    https://www.peterkovesi.com/matlabfns/
+    name, written by Peter Kovesi and available at:
+    https://codeberg.org/peterkovesi/matlabfns/src/branch/main/Misc/sineramp.m
 
     Copyright (c) 1996-2005 Peter Kovesi
     School of Computer Science & Software Engineering
@@ -346,8 +349,8 @@ def circlesineramp(
     """Generate test image for evaluating cyclic color maps.
 
     This function and all documentation is based on the MATLAB function of the same
-    name, written by Peter Kovesi and available from his website:
-    https://www.peterkovesi.com/matlabfns/
+    name, written by Peter Kovesi and available at:
+    https://codeberg.org/peterkovesi/matlabfns/src/branch/main/Misc/circlesineramp.m
 
     Copyright (c) 1996-2005 Peter Kovesi
     School of Computer Science & Software Engineering
@@ -479,13 +482,9 @@ def report(
     RGB = np.clip(cast("np.ndarray", cspace_convert(RGB, initial_space, "sRGB1")), 0, 1)
     Jab = cast("np.ndarray", cspace_convert(RGB, "sRGB1", uniform_space))
 
-    local_deltas = np.sqrt(np.sum((Jab[:-1, :] - Jab[1:, :]) ** 2, axis=-1))
-    local_deltas = np.insert(local_deltas, 0, 0)  # keep length the same
-    percep_derivs = n * local_deltas  # export
-
-    lightness_deltas = np.diff(Jab[:, 0])
-    lightness_deltas = np.insert(lightness_deltas, 0, 0)  # keep length same
-    lightness_derivs = n * lightness_deltas  # export
+    # derivatives with respect to x (same length as x, one-sided at the ends)
+    percep_derivs = np.linalg.norm(np.gradient(Jab, x, axis=0), axis=-1)  # export
+    lightness_derivs = np.gradient(Jab[:, 0], x)  # export
 
     JchMs = cspace_convert(RGB, "sRGB1", "JChMs")
     color = [
@@ -575,7 +574,7 @@ def to_mpl(
     N: int = 256,
     gamma: float = 1.0,
 ) -> matplotlib.colors.Colormap:
-    """Convienence function to create a matplotlib colormap.
+    """Convenience function to create a matplotlib colormap.
 
     Arguments are the same as for [cmap.Colormap][]. This simply creates the
     colormap instance and returns the value of `to_matplotlib()`.
@@ -593,6 +592,68 @@ def to_mpl(
         bad=bad,
     )
     return cm.to_matplotlib(N=N, gamma=gamma)
+
+
+def register_mpl(*patterns: str) -> list[str]:
+    """Register colormaps from the cmap catalog with `matplotlib.colormaps`.
+
+    Call this explicitly to make catalog names usable as strings anywhere
+    matplotlib accepts a colormap name.
+
+    Colormaps are registered under their canonical, fully-qualified cmap name
+    (lowercase, with `_` instead of `-` or spaces; see `Colormap(name).name`), along
+    with a reversed `_r` version.  Short names like "viridis" are never registered, so
+    as not to collide with matplotlib's colormaps.  Names that are already registered
+    are left untouched, so it is safe to call this multiple times.
+
+    Parameters
+    ----------
+    *patterns : str
+        Colormap names or `fnmatch`-style patterns (e.g. `"tol:*"`) to register.
+        Any name accepted by `Colormap` works (including short names and aliases).
+        `"*"` registers the entire catalog, but be aware that matplotlib's
+        registration time grows with the size of its registry: this may take many
+        seconds.
+
+    Returns
+    -------
+    list[str]
+        The canonical names of the matched colormaps.
+
+    Examples
+    --------
+    >>> import cmap
+    >>> cmap.register_mpl("tol:*", "batlow")  # doctest: +SKIP
+    >>> plt.imshow(data, cmap="crameri:batlow_r")  # doctest: +SKIP
+    """
+    import matplotlib as mpl
+
+    from cmap import Colormap
+
+    if not patterns:
+        raise TypeError("register_mpl() requires at least one name or pattern.")
+    catalog = Colormap.catalog()
+    norm = catalog._norm_name
+    resolved: set[str] = set()
+    for pattern in patterns:
+        matches = {
+            catalog[catalog.resolve(key)].qualified_name
+            for key in catalog
+            if fnmatchcase(norm(key), norm(pattern))
+        }
+        if not matches:
+            raise KeyError(f"No colormaps in the cmap catalog match {pattern!r}.")
+        resolved |= matches
+
+    # look up `mpl.colormaps` at call time: downstream libraries (e.g. UltraPlot)
+    # may have replaced it with their own registry.
+    existing = set(mpl.colormaps)
+    for name in resolved - existing:
+        mpl_cm = Colormap(name).to_mpl()
+        for cm in (mpl_cm, mpl_cm.reversed()):
+            if cm.name not in existing:
+                mpl.colormaps.register(cm)
+    return sorted(resolved)
 
 
 if __name__ == "__main__":  # pragma: no cover

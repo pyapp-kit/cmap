@@ -17,12 +17,7 @@ try:
 
     pydanticRed = pydantic_extra_types.color.Color("red")
 except ImportError:
-    try:
-        import pydantic.color
-
-        pydanticRed = pydantic.color.Color("red")
-    except ImportError:
-        pydanticRed = "red"
+    pydanticRed = "red"
 
 
 @pytest.mark.parametrize(

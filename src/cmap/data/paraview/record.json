@@ -44,5 +44,7 @@
     }
   },
   "info": "Color maps of the ParaView platform for interactive, scientific visualization.",
-  "namespace": "paraview"
+  "license": "BSD-3-Clause",
+  "namespace": "paraview",
+  "source": "https://github.com/Kitware/ParaView"
 }

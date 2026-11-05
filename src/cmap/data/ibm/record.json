@@ -12,6 +12,7 @@
     }
   },
   "info": "Color palettes for data visualizations from the IBM Design Language. Designed to maximize accessibility and harmony within a page.",
+  "license": "Apache-2.0",
   "namespace": "ibm",
   "source": "https://carbondesignsystem.com/data-visualization/color-palettes/#categorical-palettes"
 }

@@ -9,7 +9,9 @@ import pytest
 
 @pytest.fixture(params=(False, True), ids=lambda x: "numba" if x else "no_numba")
 def use_numba(request, monkeypatch) -> bool:
-    sys.modules.pop("numba", None)
+    # note: don't pop "numba" itself from sys.modules.  Plugins import it at collection
+    # time, and evicting only the parent leaves the numba.* submodules behind, breaking
+    # the re-imported package (numba.core would be missing).
     sys.modules.pop("cmap.data.glasbey", None)
     sys.modules.pop("cmap.data.glasbey._internals", None)
     if not request.param:
@@ -38,3 +40,12 @@ def test_glasbey_create_palette(
             grid_size=grid_size,
             cvd_severity=cvd_severity,
         )
+
+
+def test_glasbey_is_qualitative() -> None:
+    """Glasbey's palette is 256 maximally distinct categories, not a ramp."""
+    from cmap import Colormap
+
+    cm = Colormap("glasbey:glasbey")
+    assert cm.category == "qualitative"
+    assert cm.interpolation == "nearest"

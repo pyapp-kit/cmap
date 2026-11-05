@@ -68,8 +68,35 @@ def test_matplotlib() -> None:
 def test_napari(qapp: "QApplication") -> None:
     napari = pytest.importorskip("napari")
 
-    v = napari.view_image(IMG, colormap=CMAP.to_napari())
+    # napari.view_image was removed in napari 0.7
+    v, _ = napari.imshow(IMG, colormap=CMAP.to_napari())
     v.close()
+
+
+def test_napari_no_deprecated_field_access() -> None:
+    pytest.importorskip("napari")
+    from cmap._external import _napari_colormap_param_names
+
+    # the names are cached, so an earlier conversion may already have paid the warning
+    _napari_colormap_param_names.cache_clear()
+    assert CMAP.to_napari() is not None
+
+
+@pytest.mark.filterwarnings("ignore")
+def test_napari_extreme_colors() -> None:
+    # nan_color/low_color/high_color were added in napari 0.6.1
+    pytest.importorskip("napari", minversion="0.6.1")
+
+    bad = "yellow"
+    ncm = Colormap(["black", "white"], under=UNDER, over=OVER, bad=bad).to_napari()
+
+    np.testing.assert_allclose(ncm.low_color, Color(UNDER).rgba)
+    np.testing.assert_allclose(ncm.high_color, Color(OVER).rgba)
+    np.testing.assert_allclose(ncm.nan_color, Color(bad).rgba)
+
+    # a more specific nan color takes precedence over bad
+    specific = Colormap(["black", "white"], bad=bad, nan="magenta").to_napari()
+    np.testing.assert_allclose(specific.nan_color, Color("magenta").rgba)
 
 
 @pytest.mark.skipif(
@@ -91,7 +118,7 @@ def test_vispy(qapp: "QApplication") -> None:
 
 
 @pytest.mark.filterwarnings("ignore:\\*scattermapbox\\* is deprecated")
-@pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
+@pytest.mark.skipif(os.name == "nt", reason="segfaults")
 def test_plotly() -> None:
     px = pytest.importorskip("plotly.express")
 
@@ -136,7 +163,7 @@ def test_pygfx(qapp: "QApplication") -> None:
     canvas.deleteLater()
 
 
-@pytest.mark.skipif(os.name == "nt" and sys.version_info >= (3, 11), reason="segfaults")
+@pytest.mark.skipif(os.name == "nt", reason="segfaults")
 def test_bokeh() -> None:
     pytest.importorskip("bokeh")
     from bokeh.plotting import figure

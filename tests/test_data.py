@@ -19,6 +19,14 @@ if TYPE_CHECKING:
     from matplotlib.colors import Colormap as MPLColormap
 
 catalog = Colormap.catalog()
+_CRAMERI_NAMES = sorted(
+    k.split(":")[1] for k in catalog.namespaced_keys() if k.startswith("crameri:")
+)
+_CMOCEAN_NAMES = sorted(
+    k.split(":")[1] for k in catalog.namespaced_keys() if k.startswith("cmocean:")
+)
+# cropped halves of the diverging maps; cmap-specific, no upstream equivalent
+_CMOCEAN_CMAP_ONLY = {"balance_blue", "curl_pink", "delta_blue"}
 
 
 @pytest.mark.skipif(not MPL_CMAPS, reason="matplotlib not installed")
@@ -27,14 +35,54 @@ def test_matplotlib_name_parity() -> None:
         raise AssertionError(f"missing cmap keys from matplotlib: {missing}")
 
 
+def test_crameri_data_parity() -> None:
+    """Our crameri tables must stay bit-exact with Scientific Colour Maps 8.0.1.
+
+    `cmcrameri` vendors the same deposit we cite (zenodo 8409685), so it makes a
+    convenient oracle. It doesn't ship `naviaW`, which is checked by name instead.
+    """
+    cm = pytest.importorskip("cmcrameri.cm")
+
+    checked = []
+    for name in _CRAMERI_NAMES:
+        if (theirs := getattr(cm, name, None)) is None:
+            continue
+        ours = np.asarray(Colormap(f"crameri:{name}").color_stops.color_array)[:, :3]
+        npt.assert_array_equal(ours, np.asarray(theirs.colors)[:, :3], err_msg=name)
+        checked.append(name)
+
+    if missing := (set(_CRAMERI_NAMES) - set(checked) - {"naviaW"}):
+        raise AssertionError(f"missing cmap keys from cmcrameri: {missing}")
+
+
+def test_cmocean_data_parity() -> None:
+    """Our cmocean tables must match the ones cmocean itself renders.
+
+    cmocean serves `cmocean/rgb/<name>-rgb.txt`; note that several of its viscm
+    source files (`rgb/<name>.py`) hold a different table, so those are not a
+    valid source. The tolerance covers our literals being rounded to 8 decimals.
+    """
+    cm = pytest.importorskip("cmocean.cm")
+
+    for name in _CMOCEAN_NAMES:
+        if name in _CMOCEAN_CMAP_ONLY:
+            continue
+        ours = np.asarray(Colormap(f"cmocean:{name}")(_GRADIENT))[:, :3]
+        theirs = np.asarray(getattr(cm, name)(_GRADIENT))[:, :3]
+        npt.assert_allclose(ours, theirs, atol=1e-8, err_msg=name)
+
+
 def test_napari_name_parity() -> None:
     # might need to importorskip later
     pytest.importorskip("napari")
     import napari.utils.colormaps.colormap_utils as ncm
 
     napari_cmaps: set[str] = set(ncm.AVAILABLE_COLORMAPS)
-    napari_cmaps.update(ncm._VISPY_COLORMAPS_ORIGINAL)
-    napari_cmaps.update(ncm._MATPLOTLIB_COLORMAP_NAMES)
+    vispy_cmaps = getattr(ncm, "_VISPY_COLORMAPS", None)
+    if vispy_cmaps is None:  # napari < 0.9
+        vispy_cmaps = ncm._VISPY_COLORMAPS_ORIGINAL
+    napari_cmaps.update(vispy_cmaps)
+    napari_cmaps.update(ncm.matplotlib_colormaps)
     # TODO: later it would be good to make sure we can accept all strings
     # without having to do any extra work
     napari_cmaps = {
@@ -131,6 +179,6 @@ def test_mpl_conversion() -> None:
     ]
 
     result = _mpl_segmentdata_to_stops(data)
-    for (rstop, rcolor), (estop, ecolor) in zip(result, expected):
+    for (rstop, rcolor), (estop, ecolor) in zip(result, expected, strict=False):
         assert rstop == estop
         assert np.allclose(rcolor, ecolor)

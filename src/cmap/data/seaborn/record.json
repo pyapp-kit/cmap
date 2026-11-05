@@ -1,6 +1,6 @@
 {
   "authors": [
-    "John Doe"
+    "Michael Waskom"
   ],
   "colormaps": {
     "crest": {
@@ -23,12 +23,39 @@
       "category": "sequential",
       "data": "cmap.data.seaborn:rocket"
     },
+    "tab10": {
+      "alias": "tableau:tab10"
+    },
+    "tab10_colorblind": {
+      "alias": "tableau:tab10_colorblind"
+    },
+    "tab10_light": {
+      "alias": "tableau:tab10_light"
+    },
+    "tab10_medium": {
+      "alias": "tableau:tab10_medium"
+    },
+    "tab10_new": {
+      "alias": "tableau:tab10_new"
+    },
+    "tab20": {
+      "alias": "tableau:tab20"
+    },
+    "tab20b": {
+      "alias": "tableau:tab20b"
+    },
+    "tab20c": {
+      "alias": "tableau:tab20c"
+    },
+    "tab_traffic_light": {
+      "alias": "tableau:tab_traffic_light"
+    },
     "vlag": {
       "category": "diverging",
       "data": "cmap.data.seaborn:vlag"
     }
   },
-  "info": "This is a test dataset",
+  "info": "Colormaps from seaborn, the statistical data visualization library.",
   "license": "BSD-3-Clause",
   "namespace": "seaborn",
   "source": "https://github.com/mwaskom/seaborn"

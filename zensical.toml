@@ -1,0 +1,157 @@
+# https://zensical.org/docs/setup/basics/
+#
+# The colormap catalog is generated before building:
+#
+#   uv run --group docs python docs/_gen_catalog.py
+#   uv run --group docs zensical serve
+
+[project]
+site_name = "cmap"
+site_description = "Colors and scientific colormaps for python, no dependencies"
+site_url = "https://cmap-docs.readthedocs.io/en/stable/"
+repo_name = "pyapp-kit/cmap"
+repo_url = "https://github.com/pyapp-kit/cmap"
+
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = [
+  "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.1/chart.umd.min.js",
+  "javascripts/cmap.js",
+]
+
+exclude_docs = """
+_*.py
+__pycache__/
+overrides/
+"""
+# colormap pages are reached from the catalog / category pages and search
+not_in_nav = """
+catalog/*/*.md
+catalog/collections/*/index.md
+"""
+
+# rebuild when docstrings change
+watch = ["src"]
+
+nav = [
+  { "Overview" = "index.md" },
+  { "Colors" = "colors.md" },
+  { "Colormaps" = "colormaps.md" },
+  { "Colormap Catalog" = [
+    "catalog/index.md",
+    { "Sequential" = "catalog/sequential/index.md" },
+    { "Diverging" = "catalog/diverging/index.md" },
+    { "Cyclic" = "catalog/cyclic/index.md" },
+    { "Qualitative" = "catalog/qualitative/index.md" },
+    { "Miscellaneous" = "catalog/miscellaneous/index.md" },
+    { "Collections" = "catalog/collections/index.md" },
+  ] },
+  { "Compare" = "compare.md" },
+  { "FAQ" = "faq.md" },
+]
+
+[project.theme]
+language = "en"
+favicon = "images/favicon.svg"
+custom_dir = "docs/overrides"
+features = [
+  "content.code.annotate",
+  "content.code.copy",
+  "content.tabs.link",
+  "content.tooltips",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.path",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+]
+
+[project.theme.icon]
+logo = "lucide/swatch-book"
+repo = "fontawesome/brands/github"
+
+# dark by default (the first palette is used until the user picks one)
+[[project.theme.palette]]
+scheme = "slate"
+primary = "pink"
+accent = "pink"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+# (pink links are too low-contrast on white)
+[[project.theme.palette]]
+scheme = "default"
+primary = "deep purple"
+accent = "deep purple"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+md_in_html = {}
+tables = {}
+toc.permalink = "#"
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.extra = {}
+pymdownx.highlight = {}
+pymdownx.inlinehilite = {}
+pymdownx.snippets = {}
+pymdownx.superfences = {}
+pymdownx.tabbed.alternate_style = true
+
+[project.plugins.autorefs]
+resolve_closest = true
+
+[project.plugins.api-autonav]
+modules = ["src/cmap"]
+exclude = ["cmap.data"]
+
+[project.plugins.macros]
+module_name = "docs/_macros"
+# by default, every file in docs/ is watched as a potential jinja include,
+# which makes builds *very* slow with the generated catalog. We don't use includes.
+include_dir = "docs/_includes"
+render_by_default = false
+on_error_fail = true
+on_undefined = "strict"
+
+[project.plugins.minify]
+minify_html = true
+minify_js = true
+minify_css = true
+js_files = ["javascripts/cmap.js"]
+css_files = ["stylesheets/extra.css"]
+
+[project.plugins.mkdocstrings.handlers.python]
+inventories = [
+  "https://docs.python.org/3/objects.inv",
+  "https://numpy.org/doc/stable/objects.inv",
+]
+
+[project.plugins.mkdocstrings.handlers.python.options]
+show_root_heading = true
+docstring_style = "numpy"
+line_length = 50
+show_signature_annotations = true
+annotations_path = "source"
+show_bases = false
+show_source = false
+docstring_section_style = "list"
+merge_init_into_class = true
+# module members in `__all__` order (most important first), class members alphabetical
+members_order = ["__all__", "alphabetical"]
+group_by_category = false
+filters = ['(__call__|^[^_])']
+heading_level = 1
+parameter_headings = false
+separate_signature = true
+show_symbol_type_heading = true
+show_symbol_type_toc = true
+# no "Modules" section: `cmap.data` is the only submodule, and it has no public API
+summary = { attributes = true, functions = true, classes = true, modules = false }

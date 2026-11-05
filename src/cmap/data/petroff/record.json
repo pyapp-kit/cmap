@@ -18,6 +18,7 @@
     }
   },
   "info": "Color sequences generated using a data-driven aesthetic-preference model and accessibility constraints.",
+  "license": "CC0",
   "namespace": "petroff",
   "source": "https://arxiv.org/abs/2107.02270"
 }
