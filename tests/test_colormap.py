@@ -174,6 +174,8 @@ def test_single_color_colormap() -> None:
         ["violet"],
         {0.5: "violet"},
         [(0.5, "violet")],  # explicit position is dropped — meaningless for f(x)=c
+        [(0.5, *Color("violet").rgba)],  # (pos, r, g, b, a) stop
+        np.array([[0.5, *Color("violet").rgba]]),
     ):
         cmap = Colormap(value)
         assert cmap.color_stops == expected

@@ -1762,14 +1762,14 @@ def _parse_colorstops(
         # We duplicate the color at positions 0 and 1, discarding any explicit
         # stop position the user may have provided (which is meaningless for a
         # constant mapping).
-        item = _clr_seq[0]
-        if isinstance(item, (tuple, list)) and len(item) == 2:
-            item = item[1]
-        elif (isinstance(item, (tuple, list)) and len(item) == 5) or (
-            isinstance(item, np.ndarray) and item.shape == (5,)
+        only: Any = _clr_seq[0]
+        if isinstance(only, (tuple, list)) and len(only) == 2:
+            only = only[1]
+        elif (isinstance(only, (tuple, list)) and len(only) == 5) or (
+            isinstance(only, np.ndarray) and only.shape == (5,)
         ):
-            item = list(item)[1:]
-        _clr_seq = [item, item]
+            only = list(only)[1:]
+        _clr_seq = [only, only]
 
     _positions: list[float | None] = []
     _colors: list[Color] = []

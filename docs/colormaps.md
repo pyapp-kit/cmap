@@ -91,7 +91,7 @@ to the [`cmap.Colormap`][] constructor; `cmap` refers to these objects collectiv
     value of `x` (i.e. `f(x) = c`).  Any explicit stop position on the single
     color is ignored, since position is meaningless for a constant mapping.
 
-    - `Colormap(['violet'])` {{ cmap_expr: ['violet'] }}
+    - `Colormap(['violet'])` {{ cmap_expr("['violet']") }}
 
 ### `numpy.ndarray`
 
